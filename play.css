@@ -1,0 +1,160 @@
+/* Sized for a Tesla center screen (~1920x1200 landscape), readable at a glance. */
+:root {
+	--bg: #0b0f1a;
+	--panel: #161d2e;
+	--panel-edge: #26304a;
+	--text: #f4f6fb;
+	--muted: #9aa5c0;
+	--accent: #ffcc33;
+	--correct: #2ecc71;
+	--radius: 1.2rem;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+	margin: 0;
+	height: 100%;
+	background: var(--bg);
+	color: var(--text);
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+.board {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	padding: 2.5vh 3vw;
+	gap: 2.5vh;
+}
+
+/* Header */
+.bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	font-size: clamp(1.25rem, 3vh, 2.25rem);
+	color: var(--muted);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+.bar-title { color: var(--accent); }
+
+/* Main area */
+.stage {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 4vh;
+}
+.stage.is-idle { align-items: center; text-align: center; }
+
+.question {
+	margin: 0;
+	font-size: clamp(2rem, 7vh, 5.5rem);
+	line-height: 1.12;
+	font-weight: 800;
+	text-wrap: balance;
+}
+.question.is-final { color: var(--accent); text-align: center; }
+
+.subtitle {
+	margin: 0;
+	font-size: clamp(1.25rem, 3.5vh, 2.5rem);
+	color: var(--muted);
+}
+
+/* Choices */
+.choices {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2vh 2vw;
+}
+.choices.count-1, .choices.count-3 { grid-template-columns: 1fr; }
+
+.choice {
+	display: flex;
+	align-items: center;
+	gap: 1.5vw;
+	padding: 2.5vh 2vw;
+	background: var(--panel);
+	border: 3px solid var(--panel-edge);
+	border-radius: var(--radius);
+	font-size: clamp(1.5rem, 4.5vh, 3.5rem);
+	font-weight: 700;
+	transition: opacity 0.3s, background 0.3s, border-color 0.3s;
+}
+.choice-letter {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 1.6em;
+	height: 1.6em;
+	border-radius: 50%;
+	background: var(--accent);
+	color: var(--bg);
+	font-weight: 900;
+}
+.choice.is-correct {
+	background: var(--correct);
+	border-color: var(--correct);
+	color: #04210f;
+}
+.choice.is-correct .choice-letter { background: #04210f; color: var(--correct); }
+.choice.is-dim { opacity: 0.3; }
+
+.verdict {
+	font-size: clamp(1.75rem, 5.5vh, 4rem);
+	font-weight: 800;
+	color: var(--accent);
+	text-align: center;
+}
+
+/* Score strip under questions */
+.strip {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 1.5vw;
+}
+.chip {
+	display: flex;
+	gap: 0.6em;
+	padding: 1vh 1.5vw;
+	background: var(--panel);
+	border-radius: 999px;
+	font-size: clamp(1.1rem, 3vh, 2rem);
+	font-weight: 700;
+}
+.chip-score { color: var(--accent); }
+
+/* Scoreboard */
+.scores {
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+	width: min(100%, 60rem);
+	display: flex;
+	flex-direction: column;
+	gap: 1.5vh;
+}
+.score-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 2vh 2.5vw;
+	background: var(--panel);
+	border: 3px solid var(--panel-edge);
+	border-radius: var(--radius);
+	font-size: clamp(1.5rem, 5vh, 3.75rem);
+	font-weight: 800;
+}
+.score-value { color: var(--accent); }
+.score-row.is-leader { border-color: var(--accent); }
+
+.noscript { padding: 2rem; font-size: 2rem; }
