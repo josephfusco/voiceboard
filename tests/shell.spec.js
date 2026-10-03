@@ -17,6 +17,7 @@ test.describe('shell', () => {
 		const page = await open('g=trivia');
 		await expect(page.locator('.dock-clock')).toHaveText(/^\d{1,2}:\d{2}$/);
 		await expect(page.locator('a.dock-item')).toHaveCount(4);
+		await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
 		await expect(page.locator('.dock-item.is-active')).toHaveAttribute('aria-label', 'Trivia');
 	});
 

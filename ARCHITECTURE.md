@@ -12,10 +12,11 @@ The voice assistant runs the game, the screen shows it, and WordPress keeps the 
 | Timer, confetti | ✓ (`timer=`, `fx=`) | | Pacing is the host's call. |
 | Theme (Tesla / Cyber) | ✓ (`theme=`) | ✓ (sidebar toggle) | A personal preference, remembered on the device. |
 | Language | ✓ (`lang=`) | | Matches the conversation; remembered on the device. |
+| Clearing this device's players | ✓ (`reset=1`) | ✓ (New game, with confirmation) | Starting over is the passengers' call too; the next `p=` still sets the roster. |
 | Fullscreen | | ✓ | Browsers allow it only after a tap. |
 | Answering by tapping | later | later | Needs a path back to the assistant (see sessions). Until then, players answer out loud. |
 
-Touch never changes game state; it only changes what this screen shows or how it looks, so the assistant and the screen can't disagree.
+Touch never changes the game the assistant is running; it changes what this screen shows, how it looks, or (after a confirmation) what this device remembers, so the assistant and the screen can't disagree.
 
 ## Where state lives
 

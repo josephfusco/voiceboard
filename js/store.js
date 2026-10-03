@@ -54,3 +54,7 @@ export const sync = (state, { app, search }) => {
 export const loadPreference = (key) => load()[key];
 export const savePreference = (key, value) => save({ ...load(), [key]: value });
 export const saveTheme = (theme) => savePreference('theme', theme);
+
+// Touch "New game": forget this device's players and scores. The Hall of Fame stays,
+// and the current URL is not re-applied because it's already marked as seen.
+export const clearRoster = () => save({ ...load(), players: [] });

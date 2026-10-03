@@ -1,7 +1,7 @@
 // CarPlay-style sidebar: clock on top, apps in the middle, home at the bottom.
 import { apps } from './registry.js';
 import { appLink, h, icon } from './dom.js';
-import { THEMES, saveTheme } from './store.js';
+import { THEMES, clearRoster, saveTheme } from './store.js';
 import { lang, t } from './i18n.js';
 
 const clock = () => {
@@ -40,6 +40,37 @@ const themeToggle = (theme) => {
 	return button;
 };
 
+// Clears this device's players and scores after a confirmation, since it can't be undone.
+const newGameButton = () => {
+	const dialog = h('dialog', 'confirm',
+		h('h2', null, t('clearTitle')),
+		h('p', 'muted', t('clearBody')),
+		h('form', 'confirm-actions',
+			h('button', 'button', t('cancel')),
+			h('button', 'button is-danger', t('clear'))));
+	const [cancel, clear] = dialog.querySelectorAll('button');
+	cancel.value = 'cancel';
+	clear.value = 'clear';
+	dialog.querySelector('form').method = 'dialog';
+	dialog.addEventListener('close', () => {
+		if (dialog.returnValue === 'clear') {
+			clearRoster();
+			location.reload();
+		}
+	});
+	document.body.append(dialog);
+
+	const button = h('button', 'dock-item', icon(['M3 12a9 9 0 1 0 3-6.7', 'M3 4v5h5']));
+	button.type = 'button';
+	button.setAttribute('aria-label', t('newGame'));
+	button.addEventListener('click', () => {
+		dialog.returnValue = '';
+		dialog.showModal();
+		cancel.focus();
+	});
+	return button;
+};
+
 export const dock = (current, theme) => {
 	const item = (app) => {
 		const link = appLink(app.name, `dock-item${app === current ? ' is-active' : ''}`, icon(app.icon));
@@ -51,6 +82,7 @@ export const dock = (current, theme) => {
 	return [
 		clock(),
 		h('div', 'dock-apps', all.filter((a) => a.dock !== 'bottom').map(item)),
+		newGameButton(),
 		themeToggle(theme),
 		all.filter((a) => a.dock === 'bottom').map(item),
 	];

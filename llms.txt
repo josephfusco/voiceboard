@@ -11,6 +11,7 @@ Board URL: {board}
 - Players are remembered between URLs. Set them once with p=, then send only score changes with add=.
 - You decide everything else (questions, answers, who was right) and say it out loud.
 - Encode spaces as + and ? as %3F. Separate choices with |.
+- Keep each URL under 2,000 characters. Letters outside English can take up to 9 characters each once encoded, so keep questions short in those languages. The server rejects URLs longer than about 10,000 characters.
 
 ## Every game
 

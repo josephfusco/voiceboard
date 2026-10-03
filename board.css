@@ -390,3 +390,37 @@ a.card { transition: transform 0.1s; }
 [data-theme="cyber"] .verdict,
 [data-theme="cyber"] .tile .icon { text-shadow: 0 0 18px #29e3ff88; }
 [data-theme="cyber"] .fx-timer { background: radial-gradient(closest-side, var(--bg) 84%, transparent 85%), conic-gradient(var(--accent) var(--left), #1f2328 0); }
+
+/* Confirmation dialog */
+.confirm {
+	width: min(92vw, 34rem);
+	padding: 4vh 2.6vw 3vh;
+	border: 0;
+	border-radius: var(--radius);
+	background: var(--card);
+	color: var(--text);
+	box-shadow: 0 24px 64px #00000040;
+	font-size: clamp(1rem, 2.4vh, 1.5rem);
+}
+.confirm::backdrop { background: #0000008c; }
+.confirm h2 { margin: 0 0 1.5vh; font-size: 1.4em; font-weight: 600; }
+.confirm p { margin: 0 0 3.5vh; line-height: 1.45; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 1vw; }
+.button {
+	min-width: 7em;
+	padding: 1.4vh 1.6vw;
+	border: 0;
+	border-radius: 999px;
+	background: var(--bg);
+	color: var(--text);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+.button.is-danger { background: var(--danger); color: #fff; }
+[data-theme="cyber"] .confirm,
+[data-theme="cyber"] .button {
+	border-radius: 0;
+	clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+}
+[data-theme="cyber"] .button { --chamfer: 8px; }
