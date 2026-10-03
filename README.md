@@ -97,45 +97,29 @@ The instructions live in one file, `llms.txt`, and the plugin publishes them wit
 ## Structure
 
 ```
-voiceboard.php        WordPress plugin: routes /board/, /llms.txt, the transcript, and the home redirect
-includes/sessions.php sessions, transcript, URL log, presence, pruning, admin screen
-includes/abilities.php abilities for MCP-capable assistants
-includes/hardening.php security headers, users endpoint closed to visitors
-index.html            shell (the plugin embeds llms.txt into it)
-llms.txt              assistant instructions, single source of truth
-board.css             light/dark and Cyber themes, sidebar, screens, effects
-js/main.js            boot: URL -> app -> remembered state -> screen -> effects
-js/registry.js        keyed registries for apps and effects
-js/dom.js             h() element builder, icons, app links
-js/report.js          reports each screen to the plugin (sessions, URL log, presence)
-js/params.js          typed param parsers and readParams(search, schema)
-js/store.js           localStorage roster, history, and device preferences
-js/i18n.js            language choice, t() for labels, number formatting
-js/locales.js         label translations
-js/dock.js            sidebar
-js/screens.js         shared header, score strip, scoreboard, idle
-js/apps/              home launcher, hall of fame
-js/games/             trivia, categories
-js/effects/           confetti, timer
+voiceboard.php           core plugin: board, routes, settings, module loading
+includes/modules.php     module registry, import map, bundled module loader
+includes/screens.php     screen reports: /voiceboard/v1/ping and bye, validation, rate limits, hooks
+includes/hardening.php   security headers on Voiceboard's responses
+index.html               board shell (the plugin fills in modules and embeds llms.txt)
+llms.txt                 core assistant instructions; each module adds its own section
+board.css                light/dark and Cyber themes, sidebar, screens, effects
+js/voiceboard.js         the public API modules import as 'voiceboard'
+js/main.js               boot: URL -> modules -> app -> remembered state -> screen -> effects -> report
+js/registry.js           keyed registries for apps and effects
+js/params.js             typed param parsers and readParams(search, schema)
+js/dom.js                h() element builder, icons, app links
+js/screens.js            shared header, score strip, scoreboard, idle and next screens
+js/store.js              localStorage roster, history, device preferences, car ID
+js/i18n.js               language choice, t() for labels, addStrings() for modules
+js/locales.js            core label translations
+js/dock.js               sidebar
+js/report.js             reports each screen to the plugin
+js/apps/                 built-in Home and Hall of Fame
+plugins/                 modules: each folder is a plugin (see plugins/README.md)
 ```
 
-### Adding a game
-
-Create `js/games/<name>.js` and import it from `main.js` (import order is sidebar order):
-
-```js
-apps.register('name', {
-	title: t('name.title'),               // labels live in js/locales.js
-	description: t('name.description'),   // one line for the home tile
-	phrase: t('name.phrase'),             // shown as "Open <site> and host name"
-	icon: ['M4 4h16v16H4z'],              // 24x24 SVG path data
-	params: { x: text },                  // merged with the shared params
-	screens: { ...sharedScreens, play },  // each screen: (state) => nodes
-	pick: (state) => 'play',              // which screen to show
-}, { alias: ['other-name'] });
-```
-
-Effects register the same way with `effects.register(name, { params, active(state), mount(board, state) })`.
+Every game, effect, and server feature lives in `plugins/` and is built only on the public JavaScript API and the core's PHP hooks. [plugins/README.md](plugins/README.md) explains how to write one and lists every hook.
 
 ## Development
 

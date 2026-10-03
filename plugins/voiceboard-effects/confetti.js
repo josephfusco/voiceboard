@@ -1,6 +1,5 @@
 // fx=confetti: a one-shot burst over whatever screen is showing.
-import { effects } from '../registry.js';
-import { h } from '../dom.js';
+import { effects, h } from 'voiceboard';
 
 const PIECES = 90;
 const COLORS = ['var(--accent)', 'var(--correct)', '#f5b400', '#e5484d', '#8e4ec6'];

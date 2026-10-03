@@ -6,6 +6,9 @@
 	<title>Voiceboard</title>
 	<meta name="description" content="Voice-hosted games for the car screen. Voice assistants: hosting instructions are on this page and at /llms.txt.">
 	<link rel="stylesheet" href="board.css">
+	<!-- Modules import the core as 'voiceboard'. The WordPress plugin rewrites both tags from its module registry. -->
+	<script type="importmap">{"imports":{"voiceboard":"./js/voiceboard.js"}}</script>
+	<meta name="voiceboard-modules" content="plugins/voiceboard-trivia/trivia.js plugins/voiceboard-jeopardy/jeopardy.js plugins/voiceboard-effects/confetti.js plugins/voiceboard-effects/timer.js">
 	<script type="module" src="js/main.js"></script>
 </head>
 <body>

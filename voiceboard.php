@@ -13,11 +13,16 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/includes/sessions.php';
-require_once __DIR__ . '/includes/abilities.php';
+define( 'VOICEBOARD_FILE', __FILE__ );
+
+// Core: the board, its routes, screen reporting, and the module registry. Everything else
+// (games, effects, sessions, presence, abilities) is a module in plugins/, built on these hooks.
+require_once __DIR__ . '/includes/modules.php';
+require_once __DIR__ . '/includes/screens.php';
 require_once __DIR__ . '/includes/hardening.php';
 
-register_deactivation_hook( __FILE__, static fn () => wp_clear_scheduled_hook( 'voiceboard_prune' ) );
+// Modules clean up scheduled work here (the sessions module stops its pruning).
+register_deactivation_hook( __FILE__, static fn () => do_action( 'voiceboard_deactivate' ) );
 
 /**
  * The board's path below the site root ("" = the root itself).
@@ -39,10 +44,13 @@ function voiceboard_url(): string {
 }
 
 /**
- * Assistant instructions from llms.txt, with this site's board URL filled in.
+ * Assistant instructions: the core llms.txt with each module's section in place of {modules},
+ * and this site's board URL filled in.
  */
 function voiceboard_instructions(): string {
-	return str_replace( '{board}', voiceboard_url(), (string) file_get_contents( __DIR__ . '/llms.txt' ) );
+	$sections = array_filter( array_map( static fn ( $module ) => trim( (string) $module['instructions'] ), voiceboard_modules() ) );
+	$text     = str_replace( '{modules}', implode( "\n\n", $sections ), (string) file_get_contents( __DIR__ . '/llms.txt' ) );
+	return str_replace( '{board}', voiceboard_url(), (string) apply_filters( 'voiceboard_instructions', $text ) );
 }
 
 /**
@@ -101,26 +109,22 @@ add_action(
 			}
 		}
 
-		// Plain-text transcript an assistant can read back: /board/session/<code>. Never cached.
-		if ( preg_match( '#^' . preg_quote( $route( voiceboard_path() . '/session' ), '#' ) . '/([a-z0-9-]+)$#', $request, $match ) ) {
-			$session = voiceboard_session( $match[1] );
-			nocache_headers();
-			voiceboard_common_headers();
-			status_header( $session ? 200 : 404 );
-			header( 'Content-Type: text/plain; charset=utf-8' );
-			echo $session ? voiceboard_transcript( $session ) : "No session with that code yet.\n"; // phpcs:ignore WordPress.Security.EscapeOutput
-			exit;
+		// Module routes below the board path: array( 'regex' => callback( $matches ) ). The callback sends the response.
+		foreach ( (array) apply_filters( 'voiceboard_routes', array() ) as $pattern => $callback ) {
+			if ( preg_match( '#^' . preg_quote( $route( voiceboard_path() ), '#' ) . '/?' . $pattern . '$#', $request, $match ) ) {
+				voiceboard_common_headers();
+				call_user_func( $callback, $match );
+				exit;
+			}
 		}
 
 		switch ( $request ) {
 			case $route( voiceboard_path() ):
-				// Static shell (state lives in the query string), so it caches well.
-				status_header( 200 );
-				header( 'Content-Type: text/html; charset=utf-8' );
-				header( 'Cache-Control: public, max-age=300' );
-				voiceboard_board_headers();
-
-				$html = (string) file_get_contents( __DIR__ . '/index.html' );
+				$html       = (string) file_get_contents( __DIR__ . '/index.html' );
+				$import_map = voiceboard_import_map();
+				// Every registered module, and the import map they use to reach the core API.
+				$html = preg_replace_callback( '#<script type="importmap">.*?</script>#s', static fn () => "<script type=\"importmap\">$import_map</script>", $html );
+				$html = preg_replace_callback( '#<meta name="voiceboard-modules"[^>]*>#', static fn () => sprintf( '<meta name="voiceboard-modules" content="%s">', esc_attr( implode( ' ', voiceboard_module_scripts() ) ) ), $html );
 				// Path-only <base>, so relative assets load from the plugin on whatever host served the page.
 				// The REST base tells the board where to report screens (sessions, URL log, presence).
 				$html = str_replace(
@@ -134,6 +138,12 @@ add_action(
 				);
 				// Full instructions for assistants that read the page without running JavaScript.
 				$html = preg_replace( '#<main id="board">.*?</main>#s', '<main id="board"><pre>' . esc_html( voiceboard_instructions() ) . '</pre></main>', $html );
+
+				// Static shell (state lives in the query string), so it caches well. The CSP allows the inline import map by hash.
+				status_header( 200 );
+				header( 'Content-Type: text/html; charset=utf-8' );
+				header( 'Cache-Control: public, max-age=300' );
+				voiceboard_board_headers( "'sha256-" . base64_encode( hash( 'sha256', $import_map, true ) ) . "'" );
 				echo $html; // phpcs:ignore WordPress.Security.EscapeOutput
 				exit;
 

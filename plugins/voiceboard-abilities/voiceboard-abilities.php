@@ -1,23 +1,19 @@
 <?php
 /**
- * Abilities API (in core since 6.9): read-only tools an MCP-capable assistant can call through
- * the MCP Adapter. Nothing here runs on older WordPress, where these hooks never fire.
+ * Plugin Name:       Voiceboard Abilities
+ * Description:       Read-only abilities (hosting instructions, build a board URL) for assistants that call tools through the MCP Adapter.
+ * Requires Plugins:  voiceboard
+ * License:           GPL-2.0-or-later
+ *
+ * Bundled with Voiceboard and loaded automatically. Uses the Abilities API (core since 6.9);
+ * on older WordPress these hooks never fire.
  */
 
 defined( 'ABSPATH' ) || exit;
-
-add_action(
-	'wp_abilities_api_categories_init',
-	static function () {
-		wp_register_ability_category(
-			'voiceboard',
-			array(
-				'label'       => __( 'Voiceboard', 'voiceboard' ),
-				'description' => __( 'Voice-hosted game boards for the car screen.', 'voiceboard' ),
-			)
-		);
-	}
-);
+if ( defined( 'VOICEBOARD_ABILITIES' ) ) {
+	return;
+}
+define( 'VOICEBOARD_ABILITIES', __FILE__ );
 
 add_action(
 	'wp_abilities_api_init',
@@ -54,32 +50,6 @@ add_action(
 				'output_schema'       => array( 'type' => 'string' ),
 				'execute_callback'    => static fn ( $params = array() ) => voiceboard_url() . ( $params ? '?' . http_build_query( (array) $params, '', '&', PHP_QUERY_RFC3986 ) : '' ),
 				'permission_callback' => '__return_true',
-				'meta'                => $read_only,
-			)
-		);
-
-		wp_register_ability(
-			'voiceboard/get-transcript',
-			array(
-				'label'               => __( 'Get a session transcript', 'voiceboard' ),
-				'description'         => __( 'Players, scores, the screen showing now, and the questions already asked in a session.', 'voiceboard' ),
-				'category'            => 'voiceboard',
-				'input_schema'        => array(
-					'type'       => 'object',
-					'properties' => array(
-						'code' => array(
-							'type'        => 'string',
-							'description' => __( 'The session code from the code= URL parameter.', 'voiceboard' ),
-						),
-					),
-					'required'   => array( 'code' ),
-				),
-				'output_schema'       => array( 'type' => 'string' ),
-				'execute_callback'    => static function ( $input ) {
-					$session = voiceboard_session( voiceboard_clean_code( $input['code'] ?? '' ) );
-					return $session ? voiceboard_transcript( $session ) : new WP_Error( 'voiceboard_no_session', __( 'No session with that code.', 'voiceboard' ) );
-				},
-				'permission_callback' => static fn () => current_user_can( 'read' ),
 				'meta'                => $read_only,
 			)
 		);

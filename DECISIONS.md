@@ -38,6 +38,7 @@ A running list of decisions. Checked items are decided; unchecked items are open
 ## Platform
 
 - [x] WordPress plugin, routing on `parse_request`; no rewrite rules.
+- [x] Pluggable: the core provides the board, routes, screen reports, and hooks; every game, effect, and server feature is a module in `plugins/`, each a standalone plugin built only on the public API. Tests enforce that boundary.
 - [x] Assistant instructions live in one file, `llms.txt`, served at `/llms.txt` and embedded in the board HTML.
 - [x] The home page redirects to the board but leaves WordPress URLs (`?p=`, `?s=`, previews) alone.
 - [x] Presence API is optional; without it, only "who's online" goes away.

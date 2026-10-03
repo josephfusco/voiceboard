@@ -24,6 +24,7 @@ test.describe('README stays in sync', () => {
 			...['voiceboard.php', 'index.html', 'llms.txt', 'board.css'],
 			...readdirSync(new URL('js/', root), { withFileTypes: true }).map((e) => `js/${e.name}${e.isDirectory() ? '/' : ''}`),
 			...readdirSync(new URL('includes/', root)).map((name) => `includes/${name}`),
+			'plugins/',
 		];
 		expect(entries.filter((entry) => !readme.includes(entry))).toEqual([]);
 	});

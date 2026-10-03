@@ -1,7 +1,5 @@
 // timer=15: a countdown ring that drains on its own, no new URL needed.
-import { effects } from '../registry.js';
-import { h } from '../dom.js';
-import { int } from '../params.js';
+import { effects, h, int } from 'voiceboard';
 
 effects.register('timer', {
 	params: { timer: (v) => Math.min(int(v), 600) },

@@ -18,3 +18,8 @@ export const t = (key, vars = {}) =>
 	(LOCALES[lang][key] ?? LOCALES.en[key] ?? key).replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? '');
 
 export const num = (n) => new Intl.NumberFormat(lang).format(n);
+
+// Modules add their own labels: addStrings({ en: { 'mygame.title': 'My game' }, es: { ... } }).
+export const addStrings = (table) => {
+	for (const [code, strings] of Object.entries(table)) Object.assign((LOCALES[code] ??= {}), strings);
+};

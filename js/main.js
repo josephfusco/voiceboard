@@ -6,13 +6,19 @@ import { dock } from './dock.js';
 import { dir, lang, t } from './i18n.js';
 import { report } from './report.js';
 
-// Registration order is sidebar order.
-import './games/trivia.js';
-import './games/categories.js';
-import './apps/hall.js';
-import './apps/home.js';
-import './effects/confetti.js';
-import './effects/timer.js';
+// Modules (games, effects) are listed by the page: the WordPress plugin fills in every registered
+// module, and static hosting lists the bundled ones. They load in order, so order is sidebar order,
+// then the built-in Hall of Fame and Home.
+const modules = document.querySelector('meta[name="voiceboard-modules"]')?.content.split(/\s+/).filter(Boolean) ?? [];
+for (const url of modules) {
+	try {
+		await import(new URL(url, document.baseURI).href);
+	} catch (error) {
+		console.warn(`Voiceboard module failed to load: ${url}`, error);
+	}
+}
+await import('./apps/hall.js');
+await import('./apps/home.js');
 
 const search = location.search;
 const { g } = readParams(search, { g: common.g });

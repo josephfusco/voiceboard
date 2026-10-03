@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { test, expect } from './fixtures.js';
 import { PARAMS } from './params.js';
 
@@ -6,7 +6,10 @@ import { PARAMS } from './params.js';
 
 test('llms.txt documents every parameter', async ({ boardPath }) => {
 	test.skip(boardPath !== '/', 'file check; run once');
-	const text = readFileSync(new URL('../llms.txt', import.meta.url), 'utf8');
+	// The core file plus every module's section, as the plugin serves it.
+	const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+	const modules = readdirSync(new URL('../plugins/', import.meta.url)).filter((name) => existsSync(new URL(`../plugins/${name}/instructions.md`, import.meta.url)));
+	const text = [read('llms.txt'), ...modules.map((name) => read(`plugins/${name}/instructions.md`))].join('\n');
 	const missing = PARAMS.filter((key) => !new RegExp(`(^- |\\b)${key}[=:]`, 'm').test(text));
 	expect(missing).toEqual([]);
 });
