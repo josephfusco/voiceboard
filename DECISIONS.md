@@ -62,7 +62,10 @@ A running list of decisions. Checked items are decided; unchecked items are open
 
 ## License and credit
 
-- [x] GPL-3.0-or-later with a section 7(b) attribution term: works based on Voiceboard keep "Made by Joe Fusco" on the final screen and the copyright notice in the source.
+- [x] GPL-3.0-or-later with section 7 terms: keep the credit and notices (b), mark modified versions (c), no use of the author's name for promotion (d), no rights to the Voiceboard name or domains (e).
+- [x] Copyright held by Joseph M. Fusco III and successors in interest; commercial licenses offered for other terms (dual licensing). Pass it on through the will.
+- [x] Site content (writing, screenshots) is all rights reserved; only the code is GPL.
+- [ ] Ask outside contributors to sign a contributor agreement, so dual licensing stays possible.
 - [x] The only on-board credit is one small line on the final screen, linking to josephfus.co in a new tab.
 - [ ] If submitting to the WordPress.org directory, make the credit opt-in (its guidelines forbid default front-end credits).
 
