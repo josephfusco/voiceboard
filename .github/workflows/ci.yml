@@ -43,3 +43,28 @@ jobs:
         run: gh release create "$GITHUB_REF_NAME" voiceboard.zip --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
+
+  # Push to main -> tests pass -> plugin files rsync'd over SSH. Host, user, and path
+  # live in the "production" environment, so nothing host-specific is in the repo.
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.SITE_URL }}
+    concurrency: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage plugin files (same contents as the release zip)
+        run: mkdir -p dist && git archive --prefix=voiceboard/ HEAD | tar -x -C dist
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          echo "${{ vars.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Sync
+        run: rsync -az --delete -e "ssh -i ~/.ssh/deploy" dist/voiceboard/ "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ vars.DEPLOY_PATH }}"
+      - name: Post-deploy
+        if: vars.POST_DEPLOY_COMMAND != ''
+        run: ssh -i ~/.ssh/deploy "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}" "${{ vars.POST_DEPLOY_COMMAND }}"
