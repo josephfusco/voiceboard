@@ -72,7 +72,7 @@ test.describe('new game (touch)', () => {
 		await expect(page.locator('.chip')).toHaveText(['Joe100', 'Sam50']);
 
 		await page.getByRole('button', { name: 'New game' }).click();
-		await page.getByRole('button', { name: 'Clear', exact: true }).click();
+		await Promise.all([page.waitForEvent('load'), page.getByRole('button', { name: 'Clear', exact: true }).click()]);
 		await expect(page.locator('.chip')).toHaveCount(0);
 		await page.reload();
 		await expect(page.locator('.chip')).toHaveCount(0);
@@ -84,7 +84,7 @@ test.describe('new game (touch)', () => {
 		await page.keyboard.press('Escape');
 		await expect(page.locator('.score-row')).toHaveCount(1);
 		await page.getByRole('button', { name: 'New game' }).click();
-		await page.getByRole('button', { name: 'Clear', exact: true }).click();
+		await Promise.all([page.waitForEvent('load'), page.getByRole('button', { name: 'Clear', exact: true }).click()]);
 		await open('g=hall');
 		await expect(page.locator('.score-row')).toHaveCount(1);
 	});
