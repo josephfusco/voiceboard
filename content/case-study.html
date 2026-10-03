@@ -4,7 +4,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>This post covers how it works, the decisions behind it, why WordPress fits, and what isn't built yet.</p>
+<p>It's a small project, but it leans on the same parts of WordPress that run much larger sites, which is the point of writing it up.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -12,7 +12,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>The assistant is the host: it asks the questions, judges the answers, and opens a new URL whenever the screen should change. The page draws whatever the query string describes. A trivia question looks like this:</p>
+<p>The assistant asks the questions, judges the answers, and opens a new URL whenever the screen should change; the page draws whatever the query string describes. A trivia question:</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:code -->
@@ -22,7 +22,7 @@
 <!-- /wp:code -->
 
 <!-- wp:paragraph -->
-<p>That one link shows the question, four lettered choices, the progress, both scores, and a 15-second countdown that runs on its own. Swap in <code>st=reveal&amp;a=B&amp;r=Sam</code> and Saturn turns green with Sam's name under it. Each of these is a complete screen, exactly as an assistant would open it:</p>
+<p>That link draws the question, four choices, both scores, and a countdown that runs on its own. Swap in <code>st=reveal&amp;a=B&amp;r=Sam</code> and Saturn turns green with Sam's name under it. Each of these is a complete screen:</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:list -->
@@ -48,7 +48,7 @@
 <!-- /wp:list -->
 
 <!-- wp:paragraph -->
-<p>The browser is the whole runtime, so there's nothing to install or pair, and because a URL fully describes its screen, a reload never loses the game. Assistants write messy URLs, so the page forgives them: it decodes values encoded twice, accepts an answer as <code>B</code>, <code>2</code>, or <code>Saturn</code>, and opens the home screen for a game it doesn't know.</p>
+<p>Since a URL fully describes its screen, there's nothing to install and a reload never loses the game. Assistants write messy URLs, so the page is forgiving: it decodes values encoded twice, accepts an answer as <code>B</code>, <code>2</code>, or <code>Saturn</code>, and falls back to the home screen for a game it doesn't know.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -56,11 +56,11 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Nobody should have to read a prompt aloud before a road trip, so the site explains itself. The hosting rules live in one file, <a href="https://voiceboard.wpengine.com/llms.txt">llms.txt</a>, which the plugin serves at <code>/llms.txt</code> and also embeds in the board's HTML for tools that read pages without running JavaScript, each time with the board URL of whatever domain the visitor typed.</p>
+<p>Nobody should have to read a prompt aloud before a road trip, so the site explains itself. The rules live in one file, <a href="https://voiceboard.wpengine.com/llms.txt">llms.txt</a>, which the plugin serves at <code>/llms.txt</code> and embeds in the board's HTML for tools that don't run JavaScript, filled in with the domain the visitor used.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>The home page redirects to the board, so the instruction a person gives is a single sentence: "Open voiceboard.wpengine.com and host trivia." The board shows that sentence on screen, too.</p>
+<p>The home page redirects to the board, so all a person says is "Open voiceboard.wpengine.com and host trivia," the same sentence the board displays.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -84,12 +84,16 @@
 <!-- /wp:table -->
 
 <!-- wp:paragraph -->
-<p>The URL and localStorage are enough to play: the device remembers the roster, so after the first question the assistant sends only changes like <code>add=Sam:100</code>, and reopening a URL never applies a change twice. WordPress keeps what one browser can't, a transcript the assistant can read back and a log of what assistants actually send, while Presence answers a single question: who is playing right now.</p>
+<p>The first two are enough to play. The device remembers the roster, so after the first question the assistant sends only changes like <code>add=Sam:100</code>, and reopening a URL never counts a change twice. WordPress holds what one browser can't share (a transcript the assistant can read back, and a log of the URLs assistants really send), and Presence answers who is playing right now.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":3} -->
 <h3 class="wp-block-heading">Features grow with the assistant</h3>
 <!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Each level adds to the one before and depends on nothing above it.</p>
+<!-- /wp:paragraph -->
 
 <!-- wp:list {"ordered":true} -->
 <ol class="wp-block-list"><!-- wp:list-item -->
@@ -105,16 +109,12 @@
 <!-- /wp:list-item --></ol>
 <!-- /wp:list -->
 
-<!-- wp:paragraph -->
-<p>No level depends on the one above it.</p>
-<!-- /wp:paragraph -->
-
 <!-- wp:heading -->
 <h2 class="wp-block-heading">Why WordPress</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>A car game board is an unusual WordPress project, yet every server-side piece it needs is a WordPress primitive. Most have run in production for years; Presence and Abilities are newer and sit on the same foundations.</p>
+<p>Every server-side piece a car game board needs turns out to be something WordPress already has. Most of these have run in production for years; Presence and Abilities are newer, built on the same hooks and data model.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:list -->
@@ -127,7 +127,7 @@
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>WP-Cron prunes old sessions, and a small REST endpoint receives each page view and serves the transcript.</li>
+<li>A REST endpoint receives each page view and serves the transcript, and WP-Cron prunes old sessions.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
@@ -148,11 +148,11 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Anyone with an assistant that can hold a conversation and a screen with a browser gets a game show host and several games at no cost, and the board doesn't care which assistant opens the URL.</p>
+<p>Anyone with a conversational assistant and a screen with a browser gets a game show host and several games for free, whichever assistant they use.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Because the assistant reads everything aloud, playing asks for nothing more than a glance at the scores. That includes kids who can't read fluently yet, older adults who would rather talk than tap, and people with limited mobility. The board uses large type, follows the device's light or dark setting, announces changes to screen readers, and skips the confetti when reduced motion is on.</p>
+<p>The assistant reads everything aloud, so playing takes no more than a glance at the scores, which opens it to kids who can't read fluently yet, older adults who would rather talk than tap, and people with limited mobility. On screen, the type is large, the colors follow the device's light or dark setting, the countdown is marked as a timer for screen readers, and confetti stays off when reduced motion is on.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -168,7 +168,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Shipped: trivia and a Jeopardy-style board, two themes, the timer and confetti, the remembered roster and Hall of Fame, the plugin with llms.txt and the home redirect, and continuous deployment.</p>
+<p>Shipped: trivia, a Jeopardy-style board, two themes, the timer and confetti, the remembered roster and Hall of Fame, and the plugin with llms.txt, the home redirect, and continuous deployment.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
@@ -176,7 +176,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Not yet tested: a real assistant in a real car. We don't know whether an in-car assistant reads the instructions on its own, how reliably it writes these URLs over a long game, or whether reopening a URL reuses the same tab. The URL log is meant to answer those questions, and we'll write up what it shows.</p>
+<p>Not yet tested: a real assistant in a real car. Whether an in-car assistant reads the instructions on its own, how reliably it writes URLs over a long game, and whether reopening a URL reuses the tab are open questions; the URL log is built to answer them, and we'll publish what it shows.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
