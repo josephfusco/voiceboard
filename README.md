@@ -125,4 +125,4 @@ npm run serve         # static preview on :8766
 npm run wp            # WordPress + plugin on :9400, board at /board/
 ```
 
-Tag `v*` to publish a release with `voiceboard.zip`.
+Releases are automated with release-please: use conventional commits (`feat:`, `fix:`), and merging the release PR it opens tags the version, updates `CHANGELOG.md` and the plugin header, and attaches `voiceboard.zip`. Every push to `main` that passes tests also deploys.

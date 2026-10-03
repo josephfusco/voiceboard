@@ -1,0 +1,27 @@
+name: Release Please
+
+# Conventional commits on main (feat:, fix:) open a release PR that bumps the version
+# and changelog. Merging it tags the release; the plugin zip is attached here.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+      - uses: actions/checkout@v4
+        if: steps.release.outputs.release_created
+      - name: Attach plugin zip
+        if: steps.release.outputs.release_created
+        run: |
+          git archive --format=zip --prefix=voiceboard/ -o voiceboard.zip HEAD
+          gh release upload "${{ steps.release.outputs.tag_name }}" voiceboard.zip
+        env:
+          GH_TOKEN: ${{ github.token }}

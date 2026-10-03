@@ -2,7 +2,9 @@
 /**
  * Plugin Name:       Voiceboard
  * Description:       Voice-hosted game boards for the car screen. A voice assistant opens /board/?… URLs; the page renders them.
- * Version:           0.2.0
+ * x-release-please-start-version
+ * Version:           0.1.0
+ * x-release-please-end
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * License:           GPL-2.0-or-later
@@ -19,11 +21,15 @@ function voiceboard_path(): string {
 }
 
 /**
- * The board's absolute URL, e.g. https://example.com/board/.
+ * The board's absolute URL on the host the visitor actually used, e.g. https://example.com/board/.
+ *
+ * A site can answer on several domains; instructions and redirects should match the one that was typed.
  */
 function voiceboard_url(): string {
 	$path = voiceboard_path();
-	return home_url( '' === $path ? '/' : user_trailingslashit( $path ) );
+	$url  = home_url( '' === $path ? '/' : "/$path/" );
+	$host = preg_replace( '/[^a-z0-9.\-:]/i', '', (string) ( $_SERVER['HTTP_HOST'] ?? '' ) );
+	return $host ? (string) preg_replace( '#^(https?://)[^/]+#', '${1}' . $host, $url ) : $url;
 }
 
 /**
@@ -110,7 +116,8 @@ add_action(
 					static fn ( $m ) => rawurlencode( $m[0] ),
 					(string) wp_unslash( $_SERVER['QUERY_STRING'] ?? '' )
 				);
-				wp_safe_redirect( voiceboard_url() . ( '' === $query ? '' : "?$query" ), 302, 'Voiceboard' );
+				// Relative, so the visitor stays on the domain they typed.
+				wp_safe_redirect( wp_make_link_relative( voiceboard_url() ) . ( '' === $query ? '' : "?$query" ), 302, 'Voiceboard' );
 				exit;
 		}
 	}
