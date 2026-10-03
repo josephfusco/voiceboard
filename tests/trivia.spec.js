@@ -110,3 +110,13 @@ test.describe('turns', () => {
 		await expect(page.locator('.eyebrow')).toHaveText('Siguiente turno');
 	});
 });
+
+test('the final screen ends with a small credit linking to the maker', async ({ open, page }) => {
+	await open('g=trivia&st=end&p=Joe:300,Sam:500');
+	const credit = page.locator('a.credit');
+	await expect(credit).toHaveText('Made by Joe Fusco');
+	await expect(credit).toHaveAttribute('href', 'https://josephfus.co');
+	await expect(credit).toHaveAttribute('target', '_blank');
+	await open('g=trivia&st=score&p=Joe:300');
+	await expect(page.locator('a.credit')).toHaveCount(0);
+});

@@ -3,7 +3,8 @@
  * Plugin Name:       Voiceboard Presence
  * Description:       Shows which boards are open right now, using the Presence API feature plugin: a voiceboard/session/<code> room per game and a voiceboard/cars room for all boards.
  * Requires Plugins:  voiceboard
- * License:           GPL-2.0-or-later
+ * License:           GPL-3.0-or-later
+ * Copyright (C) 2026 Joseph M. Fusco III. See LICENSE in Voiceboard for the attribution terms.
  *
  * Bundled with Voiceboard and loaded automatically. Does nothing unless the Presence API is active.
  */

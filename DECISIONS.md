@@ -60,6 +60,12 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Inspired by in-car interfaces; no carmaker fonts or logos.
 - [ ] Replace hand-drawn icons with a consistent open set (Lucide proposed).
 
+## License and credit
+
+- [x] GPL-3.0-or-later with a section 7(b) attribution term: works based on Voiceboard keep "Made by Joe Fusco" on the final screen and the copyright notice in the source.
+- [x] The only on-board credit is one small line on the final screen, linking to josephfus.co in a new tab.
+- [ ] If submitting to the WordPress.org directory, make the credit opt-in (its guidelines forbid default front-end credits).
+
 ## Process
 
 - [x] Push to `main` runs Playwright against static files, the plugin at `/board/`, and the plugin at the site root; only a green run deploys.

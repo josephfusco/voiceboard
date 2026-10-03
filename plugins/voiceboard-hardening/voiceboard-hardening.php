@@ -3,7 +3,8 @@
  * Plugin Name:       Voiceboard Hardening
  * Description:       Site hardening for a public Voiceboard site: the users endpoint is closed to visitors who aren't logged in, so it can't list usernames.
  * Requires Plugins:  voiceboard
- * License:           GPL-2.0-or-later
+ * License:           GPL-3.0-or-later
+ * Copyright (C) 2026 Joseph M. Fusco III. See LICENSE in Voiceboard for the attribution terms.
  *
  * Bundled with Voiceboard and loaded automatically. Turn it off with the voiceboard_load_bundled_module filter.
  */

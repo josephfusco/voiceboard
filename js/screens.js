@@ -20,6 +20,13 @@ export const verdict = (r) => r && h('div', 'verdict', r.toLowerCase() === 'none
 
 export const answerCard = (answer) => h('div', 'card choice is-correct', answer);
 
+// A quiet sign-off on the final screen only; opens in a new tab so the game stays on screen.
+const credit = () => {
+	const link = h('a', 'credit', t('madeBy', { name: 'Joe Fusco' }));
+	Object.assign(link, { href: 'https://josephfus.co', target: '_blank', rel: 'noopener' });
+	return link;
+};
+
 const scoreboard = (final) => (state) => {
 	const sorted = [...state.p].sort((a, b) => b.score - a.score);
 	const top = sorted[0]?.score;
@@ -34,6 +41,7 @@ const scoreboard = (final) => (state) => {
 			h('ol', `scores count-${sorted.length}`, sorted.map(({ name, score }) =>
 				h('li', `card score-row${final && score === top ? ' is-leader' : ''}`,
 					h('span', null, name), h('span', 'score-value', num(score)))))),
+		final && credit(),
 	];
 };
 

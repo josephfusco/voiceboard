@@ -134,3 +134,8 @@ npm run wp:root       # board at the site root with the site theme, on :9401
 ```
 
 Every push to `main` that passes the tests deploys. Release-please reads conventional commits (`feat:`, `fix:`) and opens a release PR; merging it tags the version, updates `CHANGELOG.md` and the plugin header, and attaches `voiceboard.zip`. Issue labels follow the WordPress/presence-api scheme (`[Type]`, `[Area]`, and workflow labels).
+
+## License
+
+Copyright (C) 2026 Joseph M. Fusco III. Voiceboard is free software under the [GNU GPL v3 or later](LICENSE), with additional attribution terms: works based on it keep the "Made by Joe Fusco" credit on the final game screen and the copyright notice in the source. See [LICENSE](LICENSE).
+

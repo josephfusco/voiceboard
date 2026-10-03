@@ -3,7 +3,8 @@
  * Plugin Name:       Voiceboard Trivia
  * Description:       Trivia for Voiceboard: multiple choice or open-ended questions, with turns and reveals.
  * Requires Plugins:  voiceboard
- * License:           GPL-2.0-or-later
+ * License:           GPL-3.0-or-later
+ * Copyright (C) 2026 Joseph M. Fusco III. See LICENSE in Voiceboard for the attribution terms.
  *
  * Bundled with Voiceboard and loaded automatically; copy this folder to wp-content/plugins to run it on its own.
  */

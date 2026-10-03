@@ -3,7 +3,8 @@
  * Plugin Name:       Voiceboard Sessions
  * Description:       Keeps a transcript for each game (players, scores, questions asked) that the assistant can read back, plus a log of every URL a board received.
  * Requires Plugins:  voiceboard
- * License:           GPL-2.0-or-later
+ * License:           GPL-3.0-or-later
+ * Copyright (C) 2026 Joseph M. Fusco III. See LICENSE in Voiceboard for the attribution terms.
  *
  * Bundled with Voiceboard and loaded automatically; copy this folder to wp-content/plugins to run it on its own.
  * Built entirely on core hooks: voiceboard_screen_check, voiceboard_screen, voiceboard_routes, voiceboard_deactivate.

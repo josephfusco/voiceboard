@@ -3,7 +3,8 @@
  * Plugin Name:       Voiceboard Abilities
  * Description:       Read-only abilities (hosting instructions, build a board URL) for assistants that call tools through the MCP Adapter.
  * Requires Plugins:  voiceboard
- * License:           GPL-2.0-or-later
+ * License:           GPL-3.0-or-later
+ * Copyright (C) 2026 Joseph M. Fusco III. See LICENSE in Voiceboard for the attribution terms.
  *
  * Bundled with Voiceboard and loaded automatically. Uses the Abilities API (core since 6.9);
  * on older WordPress these hooks never fire.
