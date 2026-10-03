@@ -4,6 +4,7 @@ import { MAX_PLAYERS } from './params.js';
 
 const KEY = 'voiceboard';
 const HISTORY = 20;
+export const THEMES = ['tesla', 'cyber'];
 
 const load = () => {
 	try {
@@ -43,5 +44,11 @@ export const sync = (state, { app, search }) => {
 		save(data);
 	}
 
-	return { ...state, p: data.players, history: data.history };
+	// Theme is a device preference: a theme= URL sets it, otherwise the last choice sticks.
+	if (THEMES.includes(state.theme) && state.theme !== data.theme) save({ ...data, theme: state.theme });
+
+	return { ...state, p: data.players, history: data.history, theme: THEMES.includes(state.theme) ? state.theme : data.theme ?? THEMES[0] };
 };
+
+// Touch-only setting; never part of game state.
+export const saveTheme = (theme) => save({ ...load(), theme });

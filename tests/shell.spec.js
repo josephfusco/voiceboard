@@ -16,7 +16,7 @@ test.describe('shell', () => {
 	test('sidebar shows a clock, the apps, and marks the active one', async ({ open }) => {
 		const page = await open('g=trivia');
 		await expect(page.locator('.dock-clock')).toHaveText(/^\d{1,2}:\d{2}$/);
-		await expect(page.locator('.dock-item')).toHaveCount(4);
+		await expect(page.locator('a.dock-item')).toHaveCount(4);
 		await expect(page.locator('.dock-item.is-active')).toHaveAttribute('aria-label', 'Trivia');
 	});
 
@@ -51,5 +51,31 @@ test.describe('shell', () => {
 		const light = await background();
 		await page.emulateMedia({ colorScheme: 'dark' });
 		expect(await background()).not.toBe(light);
+	});
+});
+
+test.describe('themes', () => {
+	test('theme=cyber applies and is remembered on the device', async ({ open, page }) => {
+		await open('g=home&theme=cyber');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
+		await open('g=trivia&q=Next');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
+	});
+
+	test('the sidebar toggle switches theme without changing the game', async ({ open, page }) => {
+		await open('g=trivia&q=Stay+put&p=Joe:100');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await page.getByRole('button', { name: 'Switch to Cyber theme' }).click();
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
+		await expect(page.getByRole('button', { name: 'Switch to Tesla theme' })).toBeVisible();
+		await expect(page.locator('h1')).toHaveText('Stay put');
+		await expect(page.locator('.chip')).toHaveText(['Joe100']);
+		await page.reload();
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
+	});
+
+	test('unknown theme falls back to tesla', async ({ open, page }) => {
+		await open('g=home&theme=nope');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
 	});
 });

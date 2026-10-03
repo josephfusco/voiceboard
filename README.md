@@ -19,6 +19,15 @@ Every link below is one screen, exactly as an assistant would open it:
 - [Final Jeopardy with wagers](https://voiceboard.wpengine.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400)
 - [Dead heat](https://voiceboard.wpengine.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300)
 - [Six-player finale with confetti](https://voiceboard.wpengine.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti)
+- [Cyber theme: neon Jeopardy board](https://voiceboard.wpengine.com/board/?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber)
+- [Cyber theme: final answer, 10 seconds](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Sci-Fi&q=What+year+does+Blade+Runner+take+place%3F&c=2019|2049|2077|2001&timer=10&p=Neo:300,Trinity:400&theme=cyber)
+- [Guess the national anthem's country](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Around+the+World&q=Which+country+has+a+national+anthem+with+no+official+lyrics%3F&c=Spain|Brazil|Japan|Canada&p=Mia:0,Leo:0)
+- [Road trip: which state is this?](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Road+Trip&q=Which+state+is+home+to+the+Grand+Canyon%3F&c=Utah|Nevada|Arizona|Colorado&timer=15)
+- [Emoji food rebus](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Emoji+Food&q=🌭+🔥+⚾&c=Ballpark+frank|Campfire+cookout|Chili+dog|Corn+dog)
+- [Dad joke round](https://voiceboard.wpengine.com/board/?g=trivia&st=reveal&t=Dad+Jokes&q=Why+don't+skeletons+fight+each+other%3F&a=They+don't+have+the+guts&r=Dad&add=Dad:100)
+- [Category board: 70s, 80s, 90s, 00s](https://voiceboard.wpengine.com/board/?g=jeopardy&st=board&cats=70s|80s|90s|00s&v=100|200|300|400|500&p=Mom:0,Dad:0,Kids:0)
+- [Movie quotes, Daily Double, mid-countdown](https://voiceboard.wpengine.com/board/?g=jeopardy&st=clue&cats=Movie+Quotes|Space|Food|Sports&at=A5&q=%22I'll+be+back%22&dd=1&timer=8&p=Mom:600,Dad:400)
+- [Kids win: confetti](https://voiceboard.wpengine.com/board/?g=trivia&st=end&t=Animal+Trivia&p=Mia:700,Leo:500,Mom:300&fx=confetti)
 - [Hall of Fame](https://voiceboard.wpengine.com/board/?g=hall): winners of games finished in your browser
 - [Assistant instructions](https://voiceboard.wpengine.com/llms.txt): what a voice assistant reads to learn the format
 
@@ -50,6 +59,7 @@ Every app:
 | `reset` | `1` clears the remembered roster | `1` |
 | `timer` | Countdown seconds (max 600) | `15` |
 | `fx` | Effects | `confetti` |
+| `theme` | `tesla` or `cyber`, remembered on the device | `cyber` |
 
 **Trivia** (`st` = `ask`, `reveal`, `score`, `end`): `q` question, `c` choices split by `|`, `a` answer (`B`, `2`, or the text), `r` who got it or `none`, `n`/`of` progress.
 

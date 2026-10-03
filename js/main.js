@@ -24,7 +24,8 @@ state.t ||= app.title;
 state.app = app;
 const screen = app.pick(state);
 
-document.getElementById('dock').replaceChildren(...dock(app).flat());
+document.documentElement.dataset.theme = state.theme;
+document.getElementById('dock').replaceChildren(...dock(app, state.theme).flat());
 
 const board = document.getElementById('board');
 board.className = `board app-${app.name} state-${screen}`;

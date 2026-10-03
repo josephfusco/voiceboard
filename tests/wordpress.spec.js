@@ -31,3 +31,14 @@ test.describe('wordpress plugin', () => {
 		await expect(page.locator('.choice')).toHaveText(['AParis', 'BRome']);
 	});
 });
+
+test.describe('wordpress plugin: home redirect leaves WordPress URLs alone', () => {
+	test.skip(({ boardPath }) => boardPath === '/', 'needs the WordPress plugin');
+
+	for (const query of ['p=1', 's=hello', 'page_id=2']) {
+		test(`/?${query} is not redirected`, async ({ request }) => {
+			const response = await request.get(`/?${query}`, { maxRedirects: 0 });
+			expect(response.headers().location ?? '').not.toContain('/board/');
+		});
+	}
+});

@@ -57,6 +57,9 @@ jobs:
           echo "${{ vars.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Sync
         run: rsync -az --delete -e "ssh -i ~/.ssh/deploy" dist/voiceboard/ "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ vars.DEPLOY_PATH }}"
+      - name: Sync site theme
+        if: vars.THEME_DEPLOY_PATH != ''
+        run: rsync -az --delete -e "ssh -i ~/.ssh/deploy" site-theme/ "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ vars.THEME_DEPLOY_PATH }}"
       - name: Post-deploy
         if: vars.POST_DEPLOY_COMMAND != ''
         run: ssh -i ~/.ssh/deploy "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}" "${{ vars.POST_DEPLOY_COMMAND }}"

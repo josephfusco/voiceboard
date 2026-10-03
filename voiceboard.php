@@ -78,7 +78,7 @@ add_action(
  */
 add_action(
 	'parse_request',
-	static function () {
+	static function ( WP $wp ) {
 		$home    = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 		$request = trim( (string) wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
 		$route   = static fn ( string $path ): string => trim( "$home/$path", '/' );
@@ -106,7 +106,13 @@ add_action(
 				exit;
 
 			case $route( '' ):
-				if ( ! apply_filters( 'voiceboard_redirect_home', true ) ) {
+				// Leave WordPress's own home URLs alone (?p=123, ?s=, ?preview=…). The board
+				// reuses p= and w= for players and wagers, which are never numeric.
+				$wp_params = array_filter(
+					array_intersect( array_keys( $_GET ), $wp->public_query_vars ), // phpcs:ignore WordPress.Security.NonceVerification
+					static fn ( $key ) => ! in_array( $key, array( 'p', 'w' ), true ) || is_numeric( $_GET[ $key ] ) // phpcs:ignore WordPress.Security.NonceVerification
+				);
+				if ( $wp_params || ! apply_filters( 'voiceboard_redirect_home', true ) ) {
 					return;
 				}
 				// Keep any board params ("open example.com/?g=trivia…" still works). Encode what
