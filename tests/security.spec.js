@@ -31,3 +31,14 @@ test.describe('security (plugin)', () => {
 		expect((await request.get('/wp-json/wp/v2/users')).status()).toBe(404);
 	});
 });
+
+test.describe('sessions skip plain browsing', () => {
+	test.skip(({ boardPath }) => boardPath === '/', 'needs the WordPress plugin');
+
+	test('a home visit without a code creates no session', async ({ request, boardPath }) => {
+		const car = `browse${Date.now()}`;
+		const response = await post(request, { car, query: 'g=home', state: { app: 'home', screen: 'home' } });
+		expect(await response.json()).toEqual({ session: null });
+		expect((await request.get(`${boardPath}session/car-${car}`)).status()).toBe(404);
+	});
+});

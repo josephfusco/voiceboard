@@ -147,21 +147,30 @@ function voiceboard_ping( WP_REST_Request $request ) {
 		return new WP_Error( 'voiceboard_slow_down', 'Too many pings.', array( 'status' => 429 ) );
 	}
 
-	// A session belongs to the board that started it; other boards can't write into it.
+	$state   = voiceboard_clean_state( (array) $request['state'] );
+	$browser = voiceboard_browser_label();
+	$who     = array( 'session' => $code, 'app' => $state['app'], 'screen' => $state['screen'], 'browser' => $browser );
+
+	// Browsing (home page, sidebar taps) without a session code says nothing about how an assistant
+	// writes URLs, so it only counts toward presence and never creates a session.
+	parse_str( (string) $request['query'], $query );
+	if ( '' === voiceboard_clean_code( $request['code'] ) && ! array_diff( array_keys( $query ), array( 'g', 'theme', 'lang' ) ) ) {
+		voiceboard_presence( $code, $car, $who );
+		return array( 'session' => null );
+	}
+
+	// A session belongs to the board that started it; other boards can't write into it or join its room.
 	$session = voiceboard_session( $code );
 	$owner   = $session ? get_post_meta( $session->ID, '_voiceboard_car', true ) : '';
 	if ( $owner && $owner !== $car ) {
 		return new WP_Error( 'voiceboard_not_yours', 'This session belongs to another board. Use a new code.', array( 'status' => 403 ) );
 	}
-	if ( ! $session && ! $request['beat'] && voiceboard_rate_limited( 'new:' . voiceboard_client(), VOICEBOARD_NEW_PER_HOUR, HOUR_IN_SECONDS ) ) {
-		return new WP_Error( 'voiceboard_slow_down', 'Too many new sessions.', array( 'status' => 429 ) );
-	}
-
-	$state   = voiceboard_clean_state( (array) $request['state'] );
-	$browser = voiceboard_browser_label();
-	voiceboard_presence( $code, $car, array( 'session' => $code, 'app' => $state['app'], 'screen' => $state['screen'], 'browser' => $browser ) );
+	voiceboard_presence( $code, $car, $who );
 	if ( $request['beat'] ) {
 		return array( 'session' => $code );
+	}
+	if ( ! $session && voiceboard_rate_limited( 'new:' . voiceboard_client(), VOICEBOARD_NEW_PER_HOUR, HOUR_IN_SECONDS ) ) {
+		return new WP_Error( 'voiceboard_slow_down', 'Too many new sessions.', array( 'status' => 429 ) );
 	}
 
 	if ( ! $session ) {
