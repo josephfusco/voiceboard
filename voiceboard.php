@@ -65,7 +65,8 @@ add_action(
 		header( 'Cache-Control: public, max-age=300' );
 
 		// One source of truth: index.html, with a <base> so its relative asset paths resolve to the plugin.
-		$base = sprintf( '<base href="%s">', esc_url( plugins_url( '/', __FILE__ ) ) );
+		// Path-only, so assets load from whatever host served the page (no cross-origin module requests).
+		$base = sprintf( '<base href="%s">', esc_url( wp_make_link_relative( plugins_url( '/', __FILE__ ) ) ) );
 		echo str_replace( '<head>', "<head>\n\t$base", file_get_contents( __DIR__ . '/index.html' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 		exit;
 	}
