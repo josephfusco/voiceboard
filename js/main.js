@@ -3,6 +3,7 @@ import { apps, effects } from './registry.js';
 import { common, readParams } from './params.js';
 import { sync } from './store.js';
 import { dock } from './dock.js';
+import { dir, lang, t } from './i18n.js';
 
 // Registration order is sidebar order.
 import './games/trivia.js';
@@ -24,7 +25,9 @@ state.t ||= app.title;
 state.app = app;
 const screen = app.pick(state);
 
+Object.assign(document.documentElement, { lang, dir });
 document.documentElement.dataset.theme = state.theme;
+document.getElementById('dock').setAttribute('aria-label', t('apps'));
 document.getElementById('dock').replaceChildren(...dock(app, state.theme).flat());
 
 const board = document.getElementById('board');

@@ -29,7 +29,7 @@ export const players = (v) => v.split(',').map((entry) => {
 
 // Params every app shares. add= and reset= adjust the remembered roster (see store.js).
 export const common = {
-	g: lower, st: lower, t: text, n: int, of: int, fx: names, theme: lower,
+	g: lower, st: lower, t: text, n: int, of: int, fx: names, theme: lower, lang: lower,
 	p: players, add: players, reset: flag,
 };
 

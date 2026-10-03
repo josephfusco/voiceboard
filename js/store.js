@@ -50,5 +50,7 @@ export const sync = (state, { app, search }) => {
 	return { ...state, p: data.players, history: data.history, theme: THEMES.includes(state.theme) ? state.theme : data.theme ?? THEMES[0] };
 };
 
-// Touch-only setting; never part of game state.
-export const saveTheme = (theme) => save({ ...load(), theme });
+// Device preferences (theme, language); never part of game state.
+export const loadPreference = (key) => load()[key];
+export const savePreference = (key, value) => save({ ...load(), [key]: value });
+export const saveTheme = (theme) => savePreference('theme', theme);

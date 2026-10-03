@@ -2,6 +2,7 @@
 import { apps } from '../registry.js';
 import { h } from '../dom.js';
 import { flag, int, list, players, text } from '../params.js';
+import { num, t } from '../i18n.js';
 import { answerCard, header, scoreStrip, sharedScreens, verdict } from '../screens.js';
 
 const COLUMNS = 'ABCDEF';
@@ -23,7 +24,7 @@ const boardScreen = (state) => {
 			const spot = { col, row };
 			const used = u.some((x) => same(x, spot));
 			return h('div', `card grid-cell${used ? ' is-used' : ''}${same(at, spot) ? ' is-current' : ''}`,
-				!used && `$${value}`);
+				!used && t('value', { n: num(value) }));
 		})));
 	grid.style.setProperty('--cols', cats.length);
 
@@ -32,17 +33,17 @@ const boardScreen = (state) => {
 
 const clueScreen = ({ reveal = false, final = false } = {}) => (state) => {
 	const { cats, v, at, q, a, r, dd, w } = state;
-	const label = final ? 'Final round' : at && [cats[at.col], v[at.row] && `$${v[at.row]}`].filter(Boolean).join(' · ');
+	const label = final ? t('finalRound') : at && [cats[at.col], v[at.row] && t('value', { n: num(v[at.row]) })].filter(Boolean).join(' · ');
 	const shown = reveal || (final && a);
 
 	return [
 		header(state, label),
 		h('section', 'stage clue',
-			dd && !shown && h('p', 'eyebrow', 'Daily Double'),
+			dd && !shown && h('p', 'eyebrow', t('dailyDouble')),
 			h('h1', 'question', q),
 			shown && a && answerCard(a),
 			shown && verdict(r),
-			final && shown && w.length > 0 && h('p', 'muted wagers', w.map(({ name, score }) => `${name} wagered ${score}`).join(' · '))),
+			final && shown && w.length > 0 && h('p', 'muted wagers', w.map(({ name, score }) => t('wagered', { name, n: num(score) })).join(' · '))),
 		scoreStrip(state),
 	];
 };
@@ -56,9 +57,9 @@ const screens = {
 };
 
 apps.register('categories', {
-	title: 'Categories',
-	description: 'Pick a category and a value. Answers in the form of a question.',
-	phrase: 'host Jeopardy',
+	title: t('categories.title'),
+	description: t('categories.description'),
+	phrase: t('categories.phrase'),
 	icon: ['M4 4h16v16H4z', 'M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16'],
 	params: {
 		cats: (v) => list(v).slice(0, COLUMNS.length),

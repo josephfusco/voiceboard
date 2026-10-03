@@ -174,7 +174,7 @@ a.card { transition: transform 0.1s; }
 	gap: 1.4vw;
 	padding: 3vh 2vw;
 	font-size: clamp(1.4rem, 4vh, 3rem);
-	text-align: left;
+	text-align: start;
 	transition: opacity 0.3s, background 0.3s;
 }
 .choice .muted { min-width: 1.2em; font-size: 0.75em; font-weight: 600; }
@@ -365,7 +365,7 @@ a.card { transition: transform 0.1s; }
 }
 [data-theme="cyber"] .chip { --chamfer: 8px; background: #15181c; }
 [data-theme="cyber"] .dock-item { --chamfer: 10px; }
-[data-theme="cyber"] #dock { box-shadow: inset -1px 0 0 #1f2328; }
+[data-theme="cyber"] #dock { border-inline-end: 1px solid #1f2328; }
 
 [data-theme="cyber"] .bar,
 [data-theme="cyber"] .grid-cat,

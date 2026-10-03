@@ -1,20 +1,21 @@
 // Building blocks and screens any game can reuse.
 import { h } from './dom.js';
+import { num, t } from './i18n.js';
 
-const progress = ({ n, of }) => n > 0 && `Question ${n}${of > 0 ? ` of ${of}` : ''}`;
+const progress = ({ n, of }) => n > 0 && (of > 0 ? t('questionOf', { n: num(n), of: num(of) }) : t('question', { n: num(n) }));
 
 export const header = (state, label = progress(state)) => h('header', 'bar',
 	h('span', 'bar-title', state.t),
 	label && h('span', null, label));
 
 export const scoreStrip = ({ p }) => p.length > 0 && h('footer', 'strip',
-	p.map(({ name, score }) => h('span', 'chip', h('span', 'muted', name), score)));
+	p.map(({ name, score }) => h('span', 'chip', h('span', 'muted', name), num(score))));
 
 // What to tell the assistant to start an app, using this site's own address.
-export const say = (app) => `Open ${location.host} and ${app.phrase}`;
+export const say = (app) => t('open', { host: location.host, phrase: app.phrase });
 
 // r=Sam -> "Sam got it!", r=none -> "Nobody got it".
-export const verdict = (r) => r && h('div', 'verdict', r.toLowerCase() === 'none' ? 'Nobody got it' : `${r} got it!`);
+export const verdict = (r) => r && h('div', 'verdict', r.toLowerCase() === 'none' ? t('nobody') : t('gotIt', { name: r }));
 
 export const answerCard = (answer) => h('div', 'card choice is-correct', answer);
 
@@ -22,8 +23,8 @@ const scoreboard = (final) => (state) => {
 	const sorted = [...state.p].sort((a, b) => b.score - a.score);
 	const top = sorted[0]?.score;
 	const leaders = sorted.filter((p) => p.score === top);
-	let heading = 'Scoreboard';
-	if (final) heading = !leaders.length ? 'Game over' : leaders.length > 1 ? "It's a tie!" : `${leaders[0].name} wins!`;
+	let heading = t('scoreboard');
+	if (final) heading = !leaders.length ? t('gameOver') : leaders.length > 1 ? t('tie') : t('wins', { name: leaders[0].name });
 
 	return [
 		header(state, null),
@@ -31,12 +32,12 @@ const scoreboard = (final) => (state) => {
 			h('h1', 'question', heading),
 			h('ol', `scores count-${sorted.length}`, sorted.map(({ name, score }) =>
 				h('li', `card score-row${final && score === top ? ' is-leader' : ''}`,
-					h('span', null, name), h('span', 'score-value', score))))),
+					h('span', null, name), h('span', 'score-value', num(score)))))),
 	];
 };
 
-const idle = ({ t, app }) => [
-	h('section', 'stage', h('h1', 'question', t), h('p', 'muted', app.phrase ? `Say “${say(app)}”` : 'Ask your assistant to start a game')),
+const idle = ({ t: title, app }) => [
+	h('section', 'stage', h('h1', 'question', title), h('p', 'muted', app.phrase ? t('say', { phrase: say(app) }) : t('askAssistant'))),
 ];
 
 export const sharedScreens = { score: scoreboard(false), end: scoreboard(true), idle };

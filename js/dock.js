@@ -2,11 +2,12 @@
 import { apps } from './registry.js';
 import { appLink, h, icon } from './dom.js';
 import { THEMES, saveTheme } from './store.js';
+import { lang, t } from './i18n.js';
 
 const clock = () => {
 	const node = h('time', 'dock-clock');
 	const tick = () => {
-		node.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/i, '');
+		node.textContent = new Date().toLocaleTimeString(lang, { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/i, '');
 	};
 	tick();
 	setInterval(tick, 10_000);
@@ -27,7 +28,7 @@ const themeToggle = (theme) => {
 	const show = (current) => {
 		const next = nextTheme(current);
 		button.replaceChildren(icon(THEME_ICONS[next]));
-		button.setAttribute('aria-label', `Switch to ${next[0].toUpperCase()}${next.slice(1)} theme`);
+		button.setAttribute('aria-label', t('switchTheme', { theme: next[0].toUpperCase() + next.slice(1) }));
 	};
 	button.addEventListener('click', () => {
 		const next = nextTheme(document.documentElement.dataset.theme);

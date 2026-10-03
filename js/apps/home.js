@@ -2,10 +2,11 @@
 import { apps } from '../registry.js';
 import { appLink, h, icon } from '../dom.js';
 import { say } from '../screens.js';
+import { t } from '../i18n.js';
 
 const greeting = () => {
 	const hour = new Date().getHours();
-	return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+	return t(hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening');
 };
 
 const tile = (app) => appLink(app.name, 'card tile',
@@ -17,12 +18,12 @@ const tile = (app) => appLink(app.name, 'card tile',
 const home = () => [
 	h('header', 'bar', h('span', 'bar-title', greeting())),
 	h('section', 'stage',
-		h('h1', 'question', 'What should we play?'),
+		h('h1', 'question', t('whatToPlay')),
 		h('div', 'launcher', apps.list().filter((a) => !a.system).map(tile))),
 ];
 
 apps.register('home', {
-	title: 'Home',
+	title: t('home.title'),
 	icon: ['M4 4h6v6H4z', 'M14 4h6v6h-6z', 'M4 14h6v6H4z', 'M14 14h6v6h-6z'],
 	system: true,
 	dock: 'bottom',

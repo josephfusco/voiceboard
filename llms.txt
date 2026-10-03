@@ -14,7 +14,7 @@ Board URL: {board}
 
 ## Every game
 
-- g: the game, trivia or jeopardy
+- g: the game, trivia or jeopardy (g=home shows the game picker, g=hall the recent winners)
 - st: the screen (listed under each game)
 - t: title or category, e.g. t=Space
 - p: set up to 6 players with scores, e.g. p=Joe:0,Sam:0
@@ -22,6 +22,8 @@ Board URL: {board}
 - reset=1: clear the remembered players
 - timer: seconds for an on-screen countdown, e.g. timer=15
 - fx=confetti: celebrate, e.g. on the final screen
+- theme: tesla (default, follows light/dark) or cyber; remembered on the device
+- lang: language for the board's own labels, matching the conversation, e.g. lang=es or lang=ar (right-to-left is automatic). Write questions, answers, and names in that language too. Supported: en, es, fr, de, pt, ja, zh, ar, he; others fall back to English labels.
 
 ## Trivia (g=trivia)
 
@@ -49,7 +51,7 @@ Screens: board, clue, reveal, final, end.
 - q: the clue; a: the correct response, only on reveal; r: who got it
 - dd=1: mark a daily double
 - w: final round wagers, e.g. w=Joe:500,Sam:1200
-- Values default to 200, 400, 600, 800, 1000.
+- v: custom clue values, e.g. v=100|200|300|400|500 (default 200 to 1000)
 
 Example:
 

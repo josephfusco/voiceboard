@@ -35,7 +35,7 @@ test.describe('categories (jeopardy)', () => {
 	test('final reveal lists wagers', async ({ open }) => {
 		const page = await open({ g: 'jeopardy', st: 'final', q: 'Final clue', a: 'What is Mars?', w: 'Joe:500,Sam:1200' });
 		await expect(page.locator('.bar')).toContainText('Final round');
-		await expect(page.locator('.wagers')).toHaveText('Joe wagered 500 · Sam wagered 1200');
+		await expect(page.locator('.wagers')).toHaveText('Joe wagered 500 · Sam wagered 1,200');
 	});
 
 	test('negative scores are kept', async ({ open }) => {
