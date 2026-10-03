@@ -1,12 +1,12 @@
 # Voiceboard
 
-A screen for in-car voice assistants. Any assistant that can open a URL (Grok, Gemini, Siri, Alexa, ChatGPT…) hosts games by voice and opens a new URL each turn; the page renders whatever the query string describes. Styled to feel native on the Tesla center screen, with a CarPlay-style sidebar.
+Voiceboard is a game screen for in-car voice assistants. The assistant hosts by voice and opens a new URL at every step, and the page draws whatever the query string describes. Any assistant that can open a link can host, and the design follows in-car interfaces, with a CarPlay-style sidebar.
 
-Ships as a WordPress plugin that serves the board at `/board/`, and also works as plain static files.
+It ships as a WordPress plugin that serves the board at `/board/`, and it also runs as plain static files.
 
 ## Try it
 
-Every link below is one screen, exactly as an assistant would open it:
+Each link is one screen, exactly as an assistant would open it:
 
 - [Home](https://voiceboard.wpengine.com/): the launcher (the bare domain redirects to the board)
 - [Space trivia with a 15-second countdown](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15)
@@ -31,39 +31,40 @@ Every link below is one screen, exactly as an assistant would open it:
 - [Hall of Fame](https://voiceboard.wpengine.com/board/?g=hall): winners of games finished in your browser
 - [Assistant instructions](https://voiceboard.wpengine.com/llms.txt): what a voice assistant reads to learn the format
 
-Opening these sets the players remembered in your browser, just like a real game would.
+Opening these changes the players remembered in your browser, as a real game would.
 
 In the car, say: "Open voiceboard.wpengine.com and host trivia."
 
 ## Install
 
-**WordPress:** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`, the home page redirects there, and `/llms.txt` serves the assistant instructions. No configuration needed. Change the path (blank = site root) under Settings → Reading, or in code:
+On WordPress, download `voiceboard.zip` from the [latest release](../../releases/latest) and upload it under Plugins → Add New. The board is then live at `/board/`, the home page redirects there, and `/llms.txt` serves the assistant instructions, with nothing to configure. To move the board, change the path under Settings → Reading (leave it blank for the site root) or use the filter:
 
 ```php
 add_filter( 'voiceboard_path', fn () => 'play' );
 ```
 
-**Static hosting:** serve the repo root as-is (no build step).
+For static hosting, serve the repo root as it is. There's no build step.
 
 ## URL format
 
-Every app:
+These work in every game:
 
 | Param | Meaning | Example |
 |---|---|---|
-| `g` | App: `trivia`, `jeopardy` (`categories`), `hall`, `home` | `trivia` |
-| `st` | Screen (inferred if omitted) | `ask` |
-| `t` | Title / category | `Space` |
-| `p` | Set the roster, up to 6 players | `Joe:0,Sam:0` |
+| `g` | App: `trivia`, `jeopardy` (or `categories`), `hall`, `home` | `trivia` |
+| `st` | Screen, inferred if omitted | `ask` |
+| `t` | Title or category | `Space` |
+| `p` | Sets the roster, up to 6 players | `Joe:0,Sam:0` |
 | `add` | Score changes against the remembered roster | `Sam:100,Joe:-200` |
 | `reset` | `1` clears the remembered roster | `1` |
-| `timer` | Countdown seconds (max 600) | `15` |
+| `timer` | Countdown in seconds, up to 600 | `15` |
 | `fx` | Effects | `confetti` |
 | `theme` | `tesla` or `cyber`, remembered on the device | `cyber` |
+| `lang` | Language for the board's labels, remembered on the device | `es` |
 
-**Trivia** (`st` = `ask`, `reveal`, `score`, `end`): `q` question, `c` choices split by `|`, `a` answer (`B`, `2`, or the text), `r` who got it or `none`, `n`/`of` progress.
+Trivia screens are `ask`, `reveal`, `score`, and `end`. It reads `q` (question), `c` (choices separated by `|`), `a` (the answer as `B`, `2`, or its text), `r` (who got it, or `none`), and `n`/`of` (progress).
 
-**Jeopardy-style** (`st` = `board`, `clue`, `reveal`, `final`, `end`): `cats` categories split by `|`, `v` values (default 200–1000), `u` used clues like `A1,C3`, `at` the chosen clue, `q` clue, `a` response, `r` who got it, `dd=1` daily double, `w` final wagers.
+The Jeopardy-style game's screens are `board`, `clue`, `reveal`, `final`, and `end`. It reads `cats` (categories separated by `|`), `v` (clue values, 200 to 1000 by default), `u` (used clues such as `A1,C3`), `at` (the chosen clue), `q` (clue), `a` (response), `r` (who got it), `dd=1` (daily double), and `w` (final wagers).
 
 ```
 /board/?g=trivia&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
@@ -72,21 +73,19 @@ Every app:
 /board/?g=trivia&st=end&fx=confetti
 ```
 
-Messy input is tolerated: double-encoded values decode, bad scores become 0, unknown apps open home.
+The board tolerates messy input. It decodes values encoded twice, turns bad scores into 0, and opens the home screen for an app it doesn't know. WordPress reserves some query names, so the only overlaps are `p` and `w`, and the plugin tells them apart because the board's values are never numeric.
+
+## Languages
+
+Questions, answers, and names appear in whatever language the assistant sends. The board's own labels come in English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic, and Hebrew, chosen by `lang=` or else the browser's language, and Arabic and Hebrew switch the layout to right to left. Numbers and times follow the chosen language. To add a language, add its strings to `js/locales.js`.
 
 ## Remembered state
 
-The URL is the source of truth for what's on screen. `localStorage` remembers the roster (so the host can send `add=` instead of every score) and the last 20 finished games (shown in the Hall of Fame). Reopening the same URL never applies its changes twice. Nothing is sent to the server, so page caching is unaffected.
+The URL decides what's on screen. `localStorage` remembers the roster, so the host can send `add=` instead of every score, along with the last 20 finished games for the Hall of Fame and the theme and language. Reopening a URL never applies its changes twice, and the board sends none of this to the server.
 
 ## How an assistant learns the format
 
-The instructions live in one file, `llms.txt`, and the plugin puts them wherever an assistant might look, with the site's own board URL filled in:
-
-- `/llms.txt`: the emerging convention for AI-readable site instructions.
-- Inside the board page's HTML: hidden once the board renders, but read by assistants that fetch pages without running JavaScript.
-- The home page redirects to the board (keeping any params), so "open example.com and host trivia" lands on the instructions too.
-
-The board also shows people what to say, using whatever domain it's served from: "Open example.com and host trivia."
+The instructions live in one file, `llms.txt`, and the plugin publishes them with the site's own board URL filled in. They're served at `/llms.txt` and embedded in the board's HTML for assistants that read pages without running JavaScript. Because the home page redirects to the board and keeps any parameters, "open example.com and host trivia" reaches the instructions too, and the board shows people that same sentence with its own domain. A test fails if any parameter goes undocumented.
 
 ## Structure
 
@@ -94,11 +93,13 @@ The board also shows people what to say, using whatever domain it's served from:
 voiceboard.php        WordPress plugin: serves index.html at /board/ with a <base> to the plugin
 index.html            shell (the plugin embeds llms.txt into it)
 llms.txt              assistant instructions, single source of truth
-board.css             Tesla-style light/dark theme, sidebar, screens, effects
+board.css             light/dark and Cyber themes, sidebar, screens, effects
 js/main.js            boot: URL -> app -> remembered state -> screen -> effects
 js/registry.js        keyed registries for apps and effects
 js/params.js          typed param parsers and readParams(search, schema)
-js/store.js           localStorage roster and history
+js/store.js           localStorage roster, history, and device preferences
+js/i18n.js            language choice, t() for labels, number formatting
+js/locales.js         label translations
 js/dock.js            sidebar
 js/screens.js         shared header, score strip, scoreboard, idle
 js/apps/              home launcher, hall of fame
@@ -112,9 +113,9 @@ Create `js/games/<name>.js` and import it from `main.js` (import order is sideba
 
 ```js
 apps.register('name', {
-	title: 'Display title',
-	description: 'One line for the home tile.',
-	phrase: 'host name',              // shown as “Open <site> and host name”,
+	title: t('name.title'),               // labels live in js/locales.js
+	description: t('name.description'),   // one line for the home tile
+	phrase: t('name.phrase'),             // shown as "Open <site> and host name"
 	icon: ['M4 4h16v16H4z'],              // 24x24 SVG path data
 	params: { x: text },                  // merged with the shared params
 	screens: { ...sharedScreens, play },  // each screen: (state) => nodes
@@ -122,7 +123,7 @@ apps.register('name', {
 }, { alias: ['other-name'] });
 ```
 
-Effects work the same way via `effects.register(name, { params, active(state), mount(board, state) })`.
+Effects register the same way with `effects.register(name, { params, active(state), mount(board, state) })`.
 
 ## Development
 
@@ -133,6 +134,7 @@ npm test              # whole suite against static files and the plugin in WordP
 npm run test:static   # static only, fastest
 npm run serve         # static preview on :8766
 npm run wp            # WordPress + plugin on :9400, board at /board/
+npm run wp:root       # board at the site root with the site theme, on :9401
 ```
 
-Releases are automated with release-please: use conventional commits (`feat:`, `fix:`), and merging the release PR it opens tags the version, updates `CHANGELOG.md` and the plugin header, and attaches `voiceboard.zip`. Every push to `main` that passes tests also deploys.
+Every push to `main` that passes the tests deploys. Release-please reads conventional commits (`feat:`, `fix:`) and opens a release PR; merging it tags the version, updates `CHANGELOG.md` and the plugin header, and attaches `voiceboard.zip`. Issue labels follow the WordPress/presence-api scheme (`[Type]`, `[Area]`, and workflow labels).
