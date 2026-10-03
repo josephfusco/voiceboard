@@ -3,13 +3,29 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="robots" content="noindex">
 	<title>Trivia</title>
-	<link rel="stylesheet" href="play.css">
+	<meta name="description" content="A trivia game board for the car screen. Voice assistants: this page explains how to host a game.">
+	<link rel="stylesheet" href="board.css">
+	<script type="module" src="js/main.js"></script>
 </head>
 <body>
-	<main id="board" aria-live="polite"></main>
-	<noscript><p class="noscript">JavaScript is required to show the game board.</p></noscript>
-	<script src="play.js"></script>
+	<!-- Plain-HTML instructions for voice assistants whose web tools don't run JavaScript. -->
+	<main id="board">
+		<h1>How to host trivia on this board</h1>
+		<p>You are the host. Ask questions out loud, judge answers, keep score, and open this page's URL with query parameters to update the car screen. Open a new URL for every step.</p>
+		<ul>
+			<li><b>st</b>: screen, one of ask, reveal, score, end</li>
+			<li><b>t</b>: category, e.g. Space</li>
+			<li><b>q</b>: question text</li>
+			<li><b>c</b>: up to 4 choices separated by |</li>
+			<li><b>a</b>: correct choice letter (A-D), only on reveal</li>
+			<li><b>r</b>: name of who answered correctly, or none</li>
+			<li><b>n</b> and <b>of</b>: question number and total</li>
+			<li><b>p</b>: up to 6 players and scores, e.g. Joe:200,Sam:100</li>
+		</ul>
+		<p>Ask: ?st=ask&amp;t=Space&amp;n=1&amp;of=5&amp;q=Which+planet+has+the+most+moons&amp;c=Jupiter|Saturn|Uranus|Neptune&amp;p=Joe:0,Sam:0</p>
+		<p>Reveal: same URL with st=reveal&amp;a=B&amp;r=Sam&amp;p=Joe:0,Sam:100</p>
+		<p>Finish: ?st=end&amp;p=Joe:200,Sam:300</p>
+	</main>
 </body>
 </html>
