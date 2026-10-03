@@ -139,11 +139,11 @@ add_action(
 				// Full instructions for assistants that read the page without running JavaScript.
 				$html = preg_replace( '#<main id="board">.*?</main>#s', '<main id="board"><pre>' . esc_html( voiceboard_instructions() ) . '</pre></main>', $html );
 
-				// Static shell (state lives in the query string), so it caches well. The CSP allows the inline import map by hash.
+				// Static shell (state lives in the query string), so it caches. Kept short so a deploy shows up within a minute.
 				status_header( 200 );
 				header( 'Content-Type: text/html; charset=utf-8' );
-				header( 'Cache-Control: public, max-age=300' );
-				voiceboard_board_headers( "'sha256-" . base64_encode( hash( 'sha256', $import_map, true ) ) . "'" );
+				header( 'Cache-Control: public, max-age=60' );
+				voiceboard_board_headers();
 				echo $html; // phpcs:ignore WordPress.Security.EscapeOutput
 				exit;
 

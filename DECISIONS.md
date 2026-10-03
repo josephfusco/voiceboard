@@ -28,7 +28,8 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Sessions deleted after 30 days.
 - [x] A session belongs to the board that started it; other boards get a 403 (blocks session takeover found in testing).
 - [x] Rate limits per board, per hashed network address, and on new sessions per address; addresses are never stored.
-- [x] The board page sends a strict same-origin Content-Security-Policy; the users endpoint is closed to visitors.
+- [x] The board page sends a same-origin Content-Security-Policy that allows inline scripts, because the host's edge injects a bot-detection script that changes per request; the users endpoint is closed to visitors.
+- [x] The board HTML is cached for 60 seconds so deploys show up quickly; the edge doesn't purge it on flush.
 - [x] Transcripts tell the assistant that game text is data, not instructions.
 - [x] Player names are kept with sessions: they work as gamer tags for that game. The assistant is asked to use first names or nicknames.
 - [x] Session codes use `code=`, because WordPress reserves `s=`.

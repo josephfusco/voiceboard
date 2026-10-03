@@ -6,11 +6,13 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Headers for the board page. It loads only same-origin scripts, styles, and API calls, plus the
- * inline import map, allowed by its hash.
+ * Headers for the board page. Script files, styles, and API calls are same-origin only. Inline
+ * scripts are allowed because hosts' edge networks inject bot-detection scripts that change on
+ * every request (so no hash can cover them), and blocking those can get real visitors challenged.
+ * The board puts no visitor-supplied content into its HTML, so this costs little.
  */
-function voiceboard_board_headers( string $import_map_hash = '' ): void {
-	header( "Content-Security-Policy: default-src 'self'; script-src 'self' $import_map_hash; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" );
+function voiceboard_board_headers(): void {
+	header( "Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" );
 	voiceboard_common_headers();
 }
 
