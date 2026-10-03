@@ -6,7 +6,7 @@ Ships as a WordPress plugin that serves the board at `/board/`, and also works a
 
 ## Install
 
-**WordPress (WP Engine or anywhere, e.g. voiceboard.wpengine.com):** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`. Change the path (blank = site root) under Settings → Reading, or in code:
+**WordPress:** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`. Change the path (blank = site root) under Settings → Reading, or in code:
 
 ```php
 add_filter( 'voiceboard_path', fn () => 'play' );
