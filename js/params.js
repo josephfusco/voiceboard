@@ -15,18 +15,23 @@ const decode = (value) => {
 export const text = (v) => v;
 export const lower = (v) => v.toLowerCase();
 export const int = (v) => parseInt(v, 10) || 0;
+export const flag = (v) => /^(1|true|yes|y)$/i.test(v);
 export const list = (v) => v.split('|').map((s) => s.trim()).filter(Boolean);
+export const names = (v) => v.toLowerCase().split(/[|,\s]+/).filter(Boolean);
 
 export const MAX_PLAYERS = 6;
 
-// "Joe:200,Sam:100" -> [{ name: 'Joe', score: 200 }, ...]
+// "Joe:200,Sam:-100" -> [{ name: 'Joe', score: 200 }, { name: 'Sam', score: -100 }]
 export const players = (v) => v.split(',').map((entry) => {
 	const [name, score] = entry.split(/:(?=[^:]*$)/);
 	return { name: name.trim(), score: int(score ?? '') };
 }).filter((p) => p.name).slice(0, MAX_PLAYERS);
 
-// Params every game shares.
-export const common = { g: lower, st: lower, t: text, n: int, of: int, p: players };
+// Params every app shares. add= and reset= adjust the remembered roster (see store.js).
+export const common = {
+	g: lower, st: lower, t: text, n: int, of: int, fx: names,
+	p: players, add: players, reset: flag,
+};
 
 export const readParams = (search, schema) => {
 	const params = new URLSearchParams(search);

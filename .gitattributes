@@ -1,0 +1,8 @@
+# Kept out of the plugin zip (git archive / GitHub release downloads).
+/.github export-ignore
+/tests export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/playwright.config.js export-ignore

@@ -3,29 +3,52 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Trivia</title>
-	<meta name="description" content="A trivia game board for the car screen. Voice assistants: this page explains how to host a game.">
+	<title>Voiceboard</title>
+	<meta name="description" content="Voice-hosted games for the car screen. Voice assistants: this page explains how to host them.">
 	<link rel="stylesheet" href="board.css">
 	<script type="module" src="js/main.js"></script>
 </head>
 <body>
+	<nav id="dock" aria-label="Apps"></nav>
 	<!-- Plain-HTML instructions for voice assistants whose web tools don't run JavaScript. -->
 	<main id="board">
-		<h1>How to host trivia on this board</h1>
-		<p>You are the host. Ask questions out loud, judge answers, keep score, and open this page's URL with query parameters to update the car screen. Open a new URL for every step.</p>
+		<h1>How to host games on Voiceboard</h1>
+		<p>You are the host. Talk to the players, judge answers, and open this page's URL with query parameters to update the car screen. Open a new URL for every step. Players are remembered between URLs, so after the first step you only need to send score changes.</p>
+
+		<h2>Every game</h2>
 		<ul>
-			<li><b>st</b>: screen, one of ask, reveal, score, end</li>
-			<li><b>t</b>: category, e.g. Space</li>
-			<li><b>q</b>: question text</li>
-			<li><b>c</b>: up to 4 choices separated by |</li>
-			<li><b>a</b>: correct choice letter (A-D), only on reveal</li>
-			<li><b>r</b>: name of who answered correctly, or none</li>
-			<li><b>n</b> and <b>of</b>: question number and total</li>
-			<li><b>p</b>: up to 6 players and scores, e.g. Joe:200,Sam:100</li>
+			<li><b>g</b>: game, trivia or jeopardy</li>
+			<li><b>st</b>: screen (see each game)</li>
+			<li><b>t</b>: title or category</li>
+			<li><b>p</b>: up to 6 players with scores, sets the roster, e.g. Joe:0,Sam:0</li>
+			<li><b>add</b>: score changes, e.g. Sam:100 or Joe:-200</li>
+			<li><b>timer</b>: seconds for a countdown, e.g. 15</li>
+			<li><b>fx</b>: confetti</li>
 		</ul>
-		<p>Ask: ?st=ask&amp;t=Space&amp;n=1&amp;of=5&amp;q=Which+planet+has+the+most+moons&amp;c=Jupiter|Saturn|Uranus|Neptune&amp;p=Joe:0,Sam:0</p>
-		<p>Reveal: same URL with st=reveal&amp;a=B&amp;r=Sam&amp;p=Joe:0,Sam:100</p>
-		<p>Finish: ?st=end&amp;p=Joe:200,Sam:300</p>
+
+		<h2>Trivia (g=trivia)</h2>
+		<ul>
+			<li><b>st</b>: ask, reveal, score, end</li>
+			<li><b>q</b>: question; <b>c</b>: up to 4 choices separated by |</li>
+			<li><b>a</b>: correct choice letter, only on reveal; <b>r</b>: who got it, or none</li>
+			<li><b>n</b> and <b>of</b>: question number and total</li>
+		</ul>
+		<p>?g=trivia&amp;st=ask&amp;t=Space&amp;n=1&amp;of=5&amp;q=Which+planet+has+the+most+moons&amp;c=Jupiter|Saturn|Uranus|Neptune&amp;p=Joe:0,Sam:0&amp;timer=15</p>
+		<p>?g=trivia&amp;st=reveal&amp;t=Space&amp;n=1&amp;of=5&amp;q=Which+planet+has+the+most+moons&amp;c=Jupiter|Saturn|Uranus|Neptune&amp;a=B&amp;r=Sam&amp;add=Sam:100</p>
+
+		<h2>Jeopardy (g=jeopardy)</h2>
+		<ul>
+			<li><b>st</b>: board, clue, reveal, final, end</li>
+			<li><b>cats</b>: up to 6 categories separated by |</li>
+			<li><b>u</b>: used clues as column letter + row number, e.g. A1,C3</li>
+			<li><b>at</b>: the chosen clue, e.g. B3; <b>dd</b>=1 for a daily double</li>
+			<li><b>q</b>: clue; <b>a</b>: correct response, only on reveal; <b>r</b>: who got it</li>
+			<li><b>w</b>: final round wagers, e.g. Joe:500,Sam:1200</li>
+		</ul>
+		<p>?g=jeopardy&amp;st=board&amp;cats=Space|Rivers|Movies|Food|Sports|Words&amp;u=A1,C3&amp;p=Joe:0,Sam:0</p>
+		<p>?g=jeopardy&amp;st=clue&amp;cats=Space|Rivers|Movies|Food|Sports|Words&amp;at=B3&amp;q=This+river+flows+through+Cairo&amp;timer=10</p>
+
+		<p>Finish any game with st=end&amp;fx=confetti.</p>
 	</main>
 </body>
 </html>

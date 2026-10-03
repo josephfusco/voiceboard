@@ -1,64 +1,99 @@
-# Car Game Board
+# Voiceboard
 
-A static, client-side game board for the Tesla in-car browser. Grok hosts by voice and opens a new URL each turn; the page renders whatever state the query string describes. No backend.
+A screen for in-car voice assistants. Grok (or any assistant that can open a URL) hosts games by voice and opens a new URL each turn; the page renders whatever the query string describes. Styled to feel native on the Tesla center screen, with a CarPlay-style sidebar.
+
+Ships as a WordPress plugin that serves the board at `/board/`, and also works as plain static files.
+
+## Install
+
+**WordPress (WP Engine or anywhere, e.g. voiceboard.wpengine.com):** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`. Change the path (blank = site root) under Settings → Reading, or in code:
+
+```php
+add_filter( 'voiceboard_path', fn () => 'play' );
+```
+
+**Static hosting:** serve the repo root as-is (no build step).
 
 ## URL format
 
-Shared by every game:
+Every app:
 
 | Param | Meaning | Example |
 |---|---|---|
-| `g` | Game (default `trivia`) | `trivia` |
+| `g` | App: `trivia`, `jeopardy` (`categories`), `hall`, `home` | `trivia` |
 | `st` | Screen (inferred if omitted) | `ask` |
 | `t` | Title / category | `Space` |
-| `n` / `of` | Question number / total | `3` / `10` |
-| `p` | Up to 6 players and scores | `Joe:200,Sam:100` |
+| `p` | Set the roster, up to 6 players | `Joe:0,Sam:0` |
+| `add` | Score changes against the remembered roster | `Sam:100,Joe:-200` |
+| `reset` | `1` clears the remembered roster | `1` |
+| `timer` | Countdown seconds (max 600) | `15` |
+| `fx` | Effects | `confetti` |
 
-Trivia (`st` = `ask`, `reveal`, `score`, `end`):
+**Trivia** (`st` = `ask`, `reveal`, `score`, `end`): `q` question, `c` choices split by `|`, `a` answer (`B`, `2`, or the text), `r` who got it or `none`, `n`/`of` progress.
 
-| Param | Meaning | Example |
-|---|---|---|
-| `q` | Question | `Which planet has the most moons?` |
-| `c` | Choices, pipe-separated (up to 6; omit for open-ended) | `Jupiter\|Saturn\|Uranus\|Neptune` |
-| `a` | Answer: `1`-`6`, `A`-`F`, or the text itself | `B` |
-| `r` | Who got it right, or `none` | `Sam` |
+**Jeopardy-style** (`st` = `board`, `clue`, `reveal`, `final`, `end`): `cats` categories split by `|`, `v` values (default 200–1000), `u` used clues like `A1,C3`, `at` the chosen clue, `q` clue, `a` response, `r` who got it, `dd=1` daily double, `w` final wagers.
 
 ```
-/?st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100
-/?st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200
-/?st=end&t=Space&p=Joe:300,Sam:500
+/board/?g=trivia&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
+/board/?g=trivia&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
+/board/?g=jeopardy&st=board&cats=Space|Rivers|Movies|Food|Sports|Words&u=A1,C3
+/board/?g=trivia&st=end&fx=confetti
 ```
 
-Bad input degrades gracefully: double-encoded values are decoded, bad scores become 0, and a missing or unknown `st` is inferred.
+Messy input is tolerated: double-encoded values decode, bad scores become 0, unknown apps open home.
+
+## Remembered state
+
+The URL is the source of truth for what's on screen. `localStorage` remembers the roster (so the host can send `add=` instead of every score) and the last 20 finished games (shown in the Hall of Fame). Reopening the same URL never applies its changes twice. Nothing is sent to the server, so page caching is unaffected.
+
+## How Grok learns the format
+
+`index.html` contains plain-HTML hosting instructions. They're hidden once the board renders, but an assistant that reads the page without running JavaScript sees them, so "open your-site/board and host a trivia game" can work without a prompt.
 
 ## Structure
 
 ```
-index.html          shell + plain-HTML hosting instructions for assistants that don't run JS
-board.css           light/dark styling for the car screen
-js/main.js          boot: read URL -> look up game -> render the screen it picks
-js/registry.js      keyed registry; games register themselves on import
-js/params.js        typed param parsers and readParams(search, schema)
-js/dom.js           h() element builder
-js/screens.js       shared header, score strip, scoreboard, idle screens
-js/games/trivia.js  trivia params, screens, and screen picker
+voiceboard.php        WordPress plugin: serves index.html at /board/ with a <base> to the plugin
+index.html            shell + assistant instructions
+board.css             Tesla-style light/dark theme, sidebar, screens, effects
+js/main.js            boot: URL -> app -> remembered state -> screen -> effects
+js/registry.js        keyed registries for apps and effects
+js/params.js          typed param parsers and readParams(search, schema)
+js/store.js           localStorage roster and history
+js/dock.js            sidebar
+js/screens.js         shared header, score strip, scoreboard, idle
+js/apps/              home launcher, hall of fame
+js/games/             trivia, categories
+js/effects/           confetti, timer
 ```
 
 ### Adding a game
 
-Create `js/games/<name>.js`, register it, and import it from `main.js`:
+Create `js/games/<name>.js` and import it from `main.js` (import order is sidebar order):
 
 ```js
-games.register('name', {
+apps.register('name', {
 	title: 'Display title',
+	description: 'One line for the home tile.',
+	phrase: "Hey Grok, let's play name",
+	icon: ['M4 4h16v16H4z'],              // 24x24 SVG path data
 	params: { x: text },                  // merged with the shared params
 	screens: { ...sharedScreens, play },  // each screen: (state) => nodes
 	pick: (state) => 'play',              // which screen to show
-});
+}, { alias: ['other-name'] });
 ```
 
-## Local preview
+Effects work the same way via `effects.register(name, { params, active(state), mount(board, state) })`.
+
+## Development
 
 ```sh
-php -S 127.0.0.1:8765   # or: npx serve
+npm install
+npx playwright install chromium
+npm test              # whole suite against static files and the plugin in WordPress Playground
+npm run test:static   # static only, fastest
+npm run serve         # static preview on :8766
+npm run wp            # WordPress + plugin on :9400, board at /board/
 ```
+
+Tag `v*` to publish a release with `voiceboard.zip`.
