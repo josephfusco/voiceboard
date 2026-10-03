@@ -1,18 +1,18 @@
 <!-- title: Voiceboard: a game show for the car, built on WordPress -->
 <!-- wp:paragraph -->
-<p>Voice assistants in cars have learned a new trick: they can open a web page. Ask one to open a site and the browser on the center screen loads it. That's all most of them can do with the browser right now. They can't click, scroll, or fill in forms. We wanted to see what you could build if a single URL was the only control you had.</p>
+<p>In-car voice assistants can now open a web page, and for most of them that is the only thing they can do with the browser. Voiceboard is what we built with that single control: games the assistant hosts by voice while the screen keeps score, running as a WordPress plugin on <a href="https://voiceboard.wpengine.com/">voiceboard.wpengine.com</a>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>The result is Voiceboard, a set of games the assistant hosts by voice while the screen keeps score. It runs as a WordPress plugin on <a href="https://voiceboard.wpengine.com/">voiceboard.wpengine.com</a>. Below is how it works and why WordPress turned out to be a good fit, followed by an honest list of what isn't built yet.</p>
+<p>This post covers how it works, the decisions behind it, why WordPress fits, and what isn't built yet.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">The idea: one URL per screen</h2>
+<h2 class="wp-block-heading">One URL per screen</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>The assistant is the host. It asks questions out loud, listens to answers, decides who was right, and keeps the game moving. Whenever the screen should change, it opens a new URL, and the page draws whatever the query string describes. A trivia question looks like this:</p>
+<p>The assistant is the host: it asks the questions, judges the answers, and opens a new URL whenever the screen should change. The page draws whatever the query string describes. A trivia question looks like this:</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:code -->
@@ -22,7 +22,7 @@
 <!-- /wp:code -->
 
 <!-- wp:paragraph -->
-<p>That URL gives you the question, four lettered choices, a progress label, both players' scores, and a 15-second countdown ring that runs down on its own. The reveal is the same URL with <code>st=reveal&amp;a=B&amp;r=Sam</code>, which turns Saturn green and announces who got it. Each link below is one complete screen, exactly as an assistant would open it:</p>
+<p>That one link shows the question, four lettered choices, the progress, both scores, and a 15-second countdown that runs on its own. Swap in <code>st=reveal&amp;a=B&amp;r=Sam</code> and Saturn turns green with Sam's name under it. Each of these is a complete screen, exactly as an assistant would open it:</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:list -->
@@ -35,7 +35,7 @@
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li><a href="https://voiceboard.wpengine.com/board/?g=jeopardy&amp;st=board&amp;cats=Space|Rivers|80s+Movies|Food|Sports|Words&amp;u=A1,C3,F5,B2&amp;at=D4&amp;p=Joe:400,Sam:-200,Ava:1200">A Jeopardy-style board in the middle of a game</a></li>
+<li><a href="https://voiceboard.wpengine.com/board/?g=jeopardy&amp;st=board&amp;cats=Space|Rivers|80s+Movies|Food|Sports|Words&amp;u=A1,C3,F5,B2&amp;at=D4&amp;p=Joe:400,Sam:-200,Ava:1200">A Jeopardy-style board mid-game</a></li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
@@ -47,16 +47,8 @@
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 
-<!-- wp:heading -->
-<h2 class="wp-block-heading">Why the browser is enough</h2>
-<!-- /wp:heading -->
-
 <!-- wp:paragraph -->
-<p>There's no app to install, no account, and no pairing step. Any screen with a browser can be the game board, and any assistant that can open a link can host. The board is a few small JavaScript modules and a stylesheet with no build step. Because every screen is fully described by its URL, a reload never loses anything and a link you share shows exactly what the player saw.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Assistants also write messy URLs, so the page is forgiving on purpose. It decodes values that were encoded twice, accepts an answer as <code>B</code>, <code>2</code>, or <code>Saturn</code>, turns bad scores into zero, and infers the screen when <code>st</code> is missing. An unknown game opens the home screen instead of an error.</p>
+<p>The browser is the whole runtime, so there's nothing to install or pair, and because a URL fully describes its screen, a reload never loses the game. Assistants write messy URLs, so the page forgives them: it decodes values encoded twice, accepts an answer as <code>B</code>, <code>2</code>, or <code>Saturn</code>, and opens the home screen for a game it doesn't know.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -64,35 +56,57 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Nobody should have to read a prompt aloud before a road trip. The rules for hosting live in one file, <a href="https://voiceboard.wpengine.com/llms.txt">llms.txt</a>, and the plugin publishes it wherever an assistant might look. It's served at <code>/llms.txt</code>, which is becoming the usual place for AI-readable site instructions. It's also embedded in the board page's HTML, where it's hidden once the board renders but visible to tools that fetch pages without running JavaScript. In both places the plugin fills in the site's own board URL, using whichever domain the visitor typed.</p>
+<p>Nobody should have to read a prompt aloud before a road trip, so the site explains itself. The hosting rules live in one file, <a href="https://voiceboard.wpengine.com/llms.txt">llms.txt</a>, which the plugin serves at <code>/llms.txt</code> and also embeds in the board's HTML for tools that read pages without running JavaScript, each time with the board URL of whatever domain the visitor typed.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>The home page redirects to the board and keeps any game parameters. So the whole instruction for a person is one sentence: "Open voiceboard.wpengine.com and host trivia." The board shows that sentence on screen too, built from whatever domain it's running on.</p>
+<p>The home page redirects to the board, so the instruction a person gives is a single sentence: "Open voiceboard.wpengine.com and host trivia." The board shows that sentence on screen, too.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">Four places to keep state</h2>
+<h2 class="wp-block-heading">Three design decisions</h2>
+<!-- /wp:heading -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Touch never changes the game</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Deciding where each piece of data lives did most of the design work. There are four stores, and each one exists because the others can't do its job.</p>
+<p>Passengers can tap to browse games, switch between the default and Cyber themes, or go fullscreen, but questions, scores, timers, and effects belong to the assistant, so the screen and the host can never disagree. Tap-to-answer waits until taps have a way back to the assistant.</p>
 <!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Each kind of state has one home</h3>
+<!-- /wp:heading -->
 
 <!-- wp:table -->
 <figure class="wp-block-table"><table><thead><tr><th>Store</th><th>Holds</th><th>Lifetime</th></tr></thead><tbody><tr><td>The URL</td><td>What's on screen right now</td><td>One page view</td></tr><tr><td>localStorage</td><td>Players, scores, theme, a random car ID, recent winners</td><td>Until reset; it never leaves the device</td></tr><tr><td>WordPress</td><td>Session transcripts and a log of the URLs assistants send</td><td>Pruned after 30 days</td></tr><tr><td>Presence</td><td>Which cars are connected right now</td><td>About 150 seconds, refreshed by pings</td></tr></tbody></table></figure>
 <!-- /wp:table -->
 
 <!-- wp:paragraph -->
-<p>For playing, the first two are enough. The URL draws the screen, and localStorage remembers the roster, so after the first question the assistant only sends changes like <code>add=Sam:100</code>. Reopening the same URL never applies a change twice. WordPress storage is for what a single browser can't do: give the assistant a record of the game it can read back, and give us a log of the URLs assistants really send. Presence answers one narrower question, which is who's playing right now.</p>
+<p>The URL and localStorage are enough to play: the device remembers the roster, so after the first question the assistant sends only changes like <code>add=Sam:100</code>, and reopening a URL never applies a change twice. WordPress keeps what one browser can't, a transcript the assistant can read back and a log of what assistants actually send, while Presence answers a single question: who is playing right now.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading -->
-<h2 class="wp-block-heading">Touch and voice have separate jobs</h2>
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Features grow with the assistant</h3>
 <!-- /wp:heading -->
 
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list"><!-- wp:list-item -->
+<li>An assistant that can open a URL gets the full game on screen, which is what in-car assistants can do today.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>One that can also read a URL gets the transcript and never has to keep score in its head.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>One that can call tools over MCP drives the game with structured abilities while the board follows along.</li>
+<!-- /wp:list-item --></ol>
+<!-- /wp:list -->
+
 <!-- wp:paragraph -->
-<p>The screen is a touchscreen, so we had to decide what tapping does. The rule is that touch never changes game state. Passengers can browse games from the sidebar, switch between the light theme and the Cyber theme, or go fullscreen, which browsers only allow after a tap. Questions, answers, scores, timers, and effects belong to the assistant. Scoring follows the host's judgment, and the next URL always wins, so the assistant and the screen can't disagree. Tap-to-answer is planned, but only after there's a way to get those taps back to the assistant.</p>
+<p>No level depends on the one above it.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -100,79 +114,53 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>A car game board isn't a typical WordPress project, yet every server-side piece it needs is something WordPress already provides. Hooks, custom post types, post meta, WP-Cron, and the REST API have run in production for years. Presence and Abilities are newer, and they build on the same structure.</p>
+<p>A car game board is an unusual WordPress project, yet every server-side piece it needs is a WordPress primitive. Most have run in production for years; Presence and Abilities are newer and sit on the same foundations.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li>The plugin handles <code>/board/</code>, <code>/llms.txt</code>, and the home redirect on the <code>parse_request</code> hook, before WordPress runs its main query. Board parameters like <code>p=</code> and <code>w=</code>, which WordPress would normally read as a post ID and a week number, are never misread. There are no rewrite rules to flush.</li>
+<li>Routing happens on <code>parse_request</code>, before the main query, so board parameters such as <code>p=</code> (players) are never mistaken for a post ID and there are no rewrite rules to flush.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Sessions are posts. A game session is a document with a title (its code), a body (the transcript), and metadata (the latest scores and parsing diagnostics). That's exactly what a post is. A <code>voiceboard_session</code> custom post type gets admin list screens, capabilities, export, and the REST API without new tables.</li>
+<li>A game session is a document with a title, a body, and metadata, which is a post, so a <code>voiceboard_session</code> post type gets admin screens, capabilities, export, and REST access without a new table.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>WP-Cron prunes sessions older than 30 days.</li>
+<li>WP-Cron prunes old sessions, and a small REST endpoint receives each page view and serves the transcript.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>The board reports each page view to a small REST endpoint, and an assistant that can read URLs fetches a plain-text transcript of players, scores, and questions already asked.</li>
+<li>The <a href="https://github.com/WordPress/presence-api">Presence API feature plugin</a> stores short-lived entries in its own <code>wp_presence</code> table, so a car that stops pinging simply expires; without the plugin, you lose "who's online" and nothing else.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>The <a href="https://github.com/WordPress/presence-api">Presence API feature plugin</a> keeps short-lived "who's here" entries in its own <code>wp_presence</code> table with a TTL. Each car appears in a session room under a client ID like <code>voiceboard-&lt;carId&gt;</code>, and an entry that isn't refreshed simply expires. Presence is optional; without it you lose "who's online now" and nothing else.</li>
-<!-- /wp:list-item -->
-
-<!-- wp:list-item -->
-<li>The Abilities API has been in core since 6.9, and this site runs 7.1. Registering abilities such as <code>voiceboard/add-score</code> and <code>voiceboard/get-transcript</code>, then exposing them through the MCP Adapter, lets assistants that support tool calling run a game without building URLs.</li>
+<li>The Abilities API, in core since 6.9 (this site runs 7.1), and the MCP Adapter let tool-calling assistants run a game with abilities like <code>voiceboard/add-score</code> instead of URLs.</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
 
 <!-- wp:paragraph -->
-<p>Deploying is ordinary WordPress too. The plugin works the moment it's activated, with one optional setting under Settings → Reading that moves the board to the site root. It runs on a managed WordPress host with page caching. Because every state lives in the query string, the board's HTML is a static shell that caches well.</p>
+<p>Deploying is ordinary WordPress: the plugin works the moment it's activated, and because state lives in the query string, the board's HTML is a static shell that a managed host's page cache serves well.</p>
 <!-- /wp:paragraph -->
-
-<!-- wp:heading -->
-<h2 class="wp-block-heading">Three levels of assistant</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>Assistants differ a lot in what they can do, so the design adds features in layers. Nothing at one level depends on the next.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list {"ordered":true} -->
-<ol class="wp-block-list"><!-- wp:list-item -->
-<li>An assistant that can only open a URL gets the full game on screen. This is what in-car assistants can do today.</li>
-<!-- /wp:list-item -->
-
-<!-- wp:list-item -->
-<li>An assistant that can also read a URL gets the transcript, so it never has to keep a running tally in its head.</li>
-<!-- /wp:list-item -->
-
-<!-- wp:list-item -->
-<li>An assistant that can call tools over MCP gets structured abilities, and the board follows along by polling its session.</li>
-<!-- /wp:list-item --></ol>
-<!-- /wp:list -->
 
 <!-- wp:heading -->
 <h2 class="wp-block-heading">Free games for anyone with a voice and a screen</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Anyone with a voice assistant that can hold a conversation and a screen with a browser now has a game show host and several games at no cost. Grok, Gemini, Siri, Alexa, and ChatGPT are all examples; the board doesn't care which one opens the URL.</p>
+<p>Anyone with an assistant that can hold a conversation and a screen with a browser gets a game show host and several games at no cost, and the board doesn't care which assistant opens the URL.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Playing is hands-free. The assistant reads the questions, so you don't need to read anything beyond a glance at the scores. That opens it up to kids who can't read fluently yet, to older adults who'd rather talk than tap, and to people with limited mobility. The board uses large type, follows the device's light or dark setting, announces changes to screen readers, marks the countdown as a timer, and skips the confetti when reduced motion is turned on.</p>
+<p>Because the assistant reads everything aloud, playing asks for nothing more than a glance at the scores. That includes kids who can't read fluently yet, older adults who would rather talk than tap, and people with limited mobility. The board uses large type, follows the device's light or dark setting, announces changes to screen readers, and skips the confetti when reduced motion is on.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">How we build it</h2>
+<h2 class="wp-block-heading">How it's built and shipped</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>A Playwright suite covers the games, the parsing edge cases, the remembered roster, the effects, and the plugin's routes. It runs twice: once against the static files and once against the plugin inside <a href="https://wordpress.org/playground/">WordPress Playground</a>, a real WordPress install that needs no Docker or database setup. Every push to the main branch runs the suite. Only when it passes are the plugin files synced to the live site and the caches flushed. Release Please turns conventional commit messages into a versioned release with a changelog and a downloadable plugin zip.</p>
+<p>A Playwright suite runs twice on every push, once against the static files and once against the plugin inside <a href="https://wordpress.org/playground/">WordPress Playground</a>, and only a passing run deploys to the live site. Release Please turns conventional commits into versioned releases with a changelog and a plugin zip.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -180,17 +168,21 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Shipped: the URL-driven games (trivia and a Jeopardy-style board), the themes, the timer and confetti effects, the localStorage roster and Hall of Fame, the WordPress plugin, llms.txt, the home redirect, and continuous deployment.</p>
+<p>Shipped: trivia and a Jeopardy-style board, two themes, the timer and confetti, the remembered roster and Hall of Fame, the plugin with llms.txt and the home redirect, and continuous deployment.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Designed but not built yet: sessions and transcripts, the URL log, presence, and the abilities for MCP. We also haven't tested with real assistants in a car. Whether an in-car assistant reads the instructions on its own, how reliably it writes these URLs over a long game, and whether reopening a URL reuses the same browser tab are open questions. The URL log is meant to answer them, and we'll write up what it shows.</p>
+<p>Designed but not built: sessions and transcripts, the URL log, presence, and the MCP abilities.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>After that, we want to add more games (road trip bingo, a drawing game, a blur-to-reveal round), tap-to-answer once taps can reach the assistant, and an abilities-first mode for assistants that speak MCP.</p>
+<p>Not yet tested: a real assistant in a real car. We don't know whether an in-car assistant reads the instructions on its own, how reliably it writes these URLs over a long game, or whether reopening a URL reuses the same tab. The URL log is meant to answer those questions, and we'll write up what it shows.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>The source is on <a href="https://github.com/josephfusco/voiceboard">GitHub</a>. The design is inspired by in-car interfaces; the project isn't affiliated with any carmaker.</p>
+<p>Next come more games (road trip bingo, a drawing game, a blur-to-reveal round), tap-to-answer, and an abilities-first mode for assistants that speak MCP.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The source is on <a href="https://github.com/josephfusco/voiceboard">GitHub</a>. The design is inspired by in-car interfaces, and the project isn't affiliated with any carmaker.</p>
 <!-- /wp:paragraph -->
