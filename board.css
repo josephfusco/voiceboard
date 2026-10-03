@@ -139,7 +139,8 @@ a.card { transition: transform 0.1s; }
 .state-end .question,
 .state-hall .question,
 .clue { text-align: center; }
-.state-idle .muted { margin: 0; font-size: clamp(1.1rem, 3vh, 2rem); }
+.state-idle .muted,
+.next .muted { margin: 0; font-size: clamp(1.1rem, 3vh, 2rem); }
 
 .question {
 	margin: 0;

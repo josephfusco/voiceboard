@@ -11,3 +11,6 @@
 /site-theme export-ignore
 /content export-ignore
 /ARCHITECTURE.md export-ignore
+/docs export-ignore
+/scripts export-ignore
+/DECISIONS.md export-ignore

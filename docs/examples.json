@@ -1,0 +1,107 @@
+[
+	{
+		"title": "Home",
+		"query": ""
+	},
+	{
+		"title": "Space trivia with a 15-second countdown",
+		"query": "?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15"
+	},
+	{
+		"title": "The reveal: Sam got it",
+		"query": "?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200"
+	},
+	{
+		"title": "Next up: Joe, say ready",
+		"query": "?g=trivia&st=next&up=Joe&t=Space&n=4&of=10&p=Joe:200,Sam:300,Ava:100"
+	},
+	{
+		"title": "Spanish: ¿Quién pintó la Mona Lisa?",
+		"query": "?g=trivia&st=ask&lang=es&t=Arte&n=2&of=5&q=¿Quién+pintó+la+Mona+Lisa%3F&c=Leonardo+da+Vinci|Miguel+Ángel|Rafael|Botticelli&up=Lucía&p=Lucía:100,Mateo:200&timer=15"
+	},
+	{
+		"title": "Arabic, right to left",
+		"query": "?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200"
+	},
+	{
+		"title": "Japanese category board",
+		"query": "?g=jeopardy&st=board&lang=ja&cats=宇宙|日本の歴史|アニメ|食べ物&u=A1,C2&at=B3&p=ハル:400,ユキ:200"
+	},
+	{
+		"title": "Name that movie in emoji",
+		"query": "?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20"
+	},
+	{
+		"title": "Open-ended, and nobody got it",
+		"query": "?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300"
+	},
+	{
+		"title": "Kids' round: quick math",
+		"query": "?g=trivia&st=ask&t=Quick+Math&q=7+×+8+%3D+%3F&c=54|56|58|64&p=Mia:2,Leo:3&timer=10"
+	},
+	{
+		"title": "Jeopardy board mid-game",
+		"query": "?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200"
+	},
+	{
+		"title": "Daily Double!",
+		"query": "?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200"
+	},
+	{
+		"title": "Final Jeopardy with wagers",
+		"query": "?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400"
+	},
+	{
+		"title": "Dead heat",
+		"query": "?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300"
+	},
+	{
+		"title": "Six-player finale with confetti",
+		"query": "?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti"
+	},
+	{
+		"title": "Cyber theme: neon Jeopardy board",
+		"query": "?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber"
+	},
+	{
+		"title": "Cyber theme: final answer, 10 seconds",
+		"query": "?g=trivia&st=ask&t=Sci-Fi&q=What+year+does+Blade+Runner+take+place%3F&c=2019|2049|2077|2001&timer=10&p=Neo:300,Trinity:400&theme=cyber"
+	},
+	{
+		"title": "Guess the national anthem's country",
+		"query": "?g=trivia&st=ask&t=Around+the+World&q=Which+country+has+a+national+anthem+with+no+official+lyrics%3F&c=Spain|Brazil|Japan|Canada&p=Mia:0,Leo:0"
+	},
+	{
+		"title": "Road trip: which state is this?",
+		"query": "?g=trivia&st=ask&t=Road+Trip&q=Which+state+is+home+to+the+Grand+Canyon%3F&c=Utah|Nevada|Arizona|Colorado&timer=15"
+	},
+	{
+		"title": "Emoji food rebus",
+		"query": "?g=trivia&st=ask&t=Emoji+Food&q=🌭+🔥+⚾&c=Ballpark+frank|Campfire+cookout|Chili+dog|Corn+dog"
+	},
+	{
+		"title": "Dad joke round",
+		"query": "?g=trivia&st=reveal&t=Dad+Jokes&q=Why+don't+skeletons+fight+each+other%3F&a=They+don't+have+the+guts&r=Dad&add=Dad:100"
+	},
+	{
+		"title": "Category board: 70s, 80s, 90s, 00s",
+		"query": "?g=jeopardy&st=board&cats=70s|80s|90s|00s&v=100|200|300|400|500&p=Mom:0,Dad:0,Kids:0"
+	},
+	{
+		"title": "Movie quotes, Daily Double, mid-countdown",
+		"query": "?g=jeopardy&st=clue&cats=Movie+Quotes|Space|Food|Sports&at=A5&q=%22I'll+be+back%22&dd=1&timer=8&p=Mom:600,Dad:400"
+	},
+	{
+		"title": "Kids win: confetti",
+		"query": "?g=trivia&st=end&t=Animal+Trivia&p=Mia:700,Leo:500,Mom:300&fx=confetti"
+	},
+	{
+		"title": "Hall of Fame",
+		"query": "?g=hall",
+		"seed": [
+			"?g=trivia&st=end&t=Space&p=Sam:500,Joe:300",
+			"?g=jeopardy&st=end&p=Ava:2400,Joe:400",
+			"?g=trivia&st=end&t=Animal+Trivia&p=Mia:700,Leo:500"
+		]
+	}
+]
