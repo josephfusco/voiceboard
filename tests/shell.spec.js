@@ -28,18 +28,20 @@ test.describe('shell', () => {
 		await expect(page.locator('#board')).toHaveClass(/app-home/);
 	});
 
-	test('home tiles open the game idle screen with its voice phrase', async ({ open }) => {
+	test('home tiles show what to say, using this site\'s own address', async ({ open, baseURL }) => {
 		const page = await open();
+		const host = new URL(baseURL).host;
+		await expect(page.locator('.tile-say').first()).toHaveText(`“Open ${host} and host trivia”`);
 		await page.locator('.tile', { hasText: 'Trivia' }).click();
 		await expect(page.locator('#board')).toHaveClass(/state-idle/);
-		await expect(page.getByText("Let's play trivia")).toBeVisible();
+		await expect(page.getByText(`Say “Open ${host} and host trivia”`)).toBeVisible();
 	});
 
-	test('assistant instructions are in the HTML but not shown once rendered', async ({ open, request, boardPath }) => {
+	test('assistant instructions are in the HTML but hidden once rendered', async ({ open, request, boardPath }) => {
 		const html = await (await request.get(boardPath)).text();
-		expect(html).toContain('How to host games on Voiceboard');
+		expect(html).toContain('llms.txt');
 		const page = await open();
-		await expect(page.getByText('How to host games on Voiceboard')).toHaveCount(0);
+		await expect(page.locator('#board pre, #board a[href="llms.txt"]')).toHaveCount(0);
 	});
 
 	test('follows the system light/dark preference', async ({ open, page }) => {

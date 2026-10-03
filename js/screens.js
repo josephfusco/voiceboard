@@ -10,6 +10,9 @@ export const header = (state, label = progress(state)) => h('header', 'bar',
 export const scoreStrip = ({ p }) => p.length > 0 && h('footer', 'strip',
 	p.map(({ name, score }) => h('span', 'chip', h('span', 'muted', name), score)));
 
+// What to tell the assistant to start an app, using this site's own address.
+export const say = (app) => `Open ${location.host} and ${app.phrase}`;
+
 // r=Sam -> "Sam got it!", r=none -> "Nobody got it".
 export const verdict = (r) => r && h('div', 'verdict', r.toLowerCase() === 'none' ? 'Nobody got it' : `${r} got it!`);
 
@@ -33,7 +36,7 @@ const scoreboard = (final) => (state) => {
 };
 
 const idle = ({ t, app }) => [
-	h('section', 'stage', h('h1', 'question', t), h('p', 'muted', app.phrase ? `Say “${app.phrase}” to your assistant` : 'Ask your assistant to start a game')),
+	h('section', 'stage', h('h1', 'question', t), h('p', 'muted', app.phrase ? `Say “${say(app)}”` : 'Ask your assistant to start a game')),
 ];
 
 export const sharedScreens = { score: scoreboard(false), end: scoreboard(true), idle };

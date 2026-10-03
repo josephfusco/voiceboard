@@ -58,7 +58,7 @@ const screens = {
 apps.register('categories', {
 	title: 'Categories',
 	description: 'Pick a category and a value. Answers in the form of a question.',
-	phrase: "Let's play Jeopardy",
+	phrase: 'host Jeopardy',
 	icon: ['M4 4h16v16H4z', 'M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16'],
 	params: {
 		cats: (v) => list(v).slice(0, COLUMNS.length),

@@ -4,9 +4,31 @@ A screen for in-car voice assistants. Any assistant that can open a URL (Grok, G
 
 Ships as a WordPress plugin that serves the board at `/board/`, and also works as plain static files.
 
+## Try it
+
+Every link below is one screen, exactly as an assistant would open it:
+
+- [Home](https://voiceboard.wpengine.com/): the launcher (the bare domain redirects to the board)
+- [Space trivia with a 15-second countdown](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15)
+- [The reveal: Sam got it](https://voiceboard.wpengine.com/board/?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200)
+- [Name that movie in emoji](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20)
+- [Open-ended, and nobody got it](https://voiceboard.wpengine.com/board/?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300)
+- [Kids' round: quick math](https://voiceboard.wpengine.com/board/?g=trivia&st=ask&t=Quick+Math&q=7+×+8+%3D+%3F&c=54|56|58|64&p=Mia:2,Leo:3&timer=10)
+- [Jeopardy board mid-game](https://voiceboard.wpengine.com/board/?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200)
+- [Daily Double!](https://voiceboard.wpengine.com/board/?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200)
+- [Final Jeopardy with wagers](https://voiceboard.wpengine.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400)
+- [Dead heat](https://voiceboard.wpengine.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300)
+- [Six-player finale with confetti](https://voiceboard.wpengine.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti)
+- [Hall of Fame](https://voiceboard.wpengine.com/board/?g=hall): winners of games finished in your browser
+- [Assistant instructions](https://voiceboard.wpengine.com/llms.txt): what a voice assistant reads to learn the format
+
+Opening these sets the players remembered in your browser, just like a real game would.
+
+In the car, say: "Open voiceboard.wpengine.com and host trivia."
+
 ## Install
 
-**WordPress:** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`. Change the path (blank = site root) under Settings → Reading, or in code:
+**WordPress:** download `voiceboard.zip` from the [latest release](../../releases/latest), then Plugins → Add New → Upload. The board is live at `https://your-site/board/`, the home page redirects there, and `/llms.txt` serves the assistant instructions. No configuration needed. Change the path (blank = site root) under Settings → Reading, or in code:
 
 ```php
 add_filter( 'voiceboard_path', fn () => 'play' );
@@ -48,13 +70,20 @@ The URL is the source of truth for what's on screen. `localStorage` remembers th
 
 ## How an assistant learns the format
 
-`index.html` contains plain-HTML hosting instructions. They're hidden once the board renders, but an assistant that reads the page without running JavaScript sees them, so "open your-site/board and host a trivia game" can work without a prompt.
+The instructions live in one file, `llms.txt`, and the plugin puts them wherever an assistant might look, with the site's own board URL filled in:
+
+- `/llms.txt`: the emerging convention for AI-readable site instructions.
+- Inside the board page's HTML: hidden once the board renders, but read by assistants that fetch pages without running JavaScript.
+- The home page redirects to the board (keeping any params), so "open example.com and host trivia" lands on the instructions too.
+
+The board also shows people what to say, using whatever domain it's served from: "Open example.com and host trivia."
 
 ## Structure
 
 ```
 voiceboard.php        WordPress plugin: serves index.html at /board/ with a <base> to the plugin
-index.html            shell + assistant instructions
+index.html            shell (the plugin embeds llms.txt into it)
+llms.txt              assistant instructions, single source of truth
 board.css             Tesla-style light/dark theme, sidebar, screens, effects
 js/main.js            boot: URL -> app -> remembered state -> screen -> effects
 js/registry.js        keyed registries for apps and effects
@@ -75,7 +104,7 @@ Create `js/games/<name>.js` and import it from `main.js` (import order is sideba
 apps.register('name', {
 	title: 'Display title',
 	description: 'One line for the home tile.',
-	phrase: "Let's play name",
+	phrase: 'host name',              // shown as “Open <site> and host name”,
 	icon: ['M4 4h16v16H4z'],              // 24x24 SVG path data
 	params: { x: text },                  // merged with the shared params
 	screens: { ...sharedScreens, play },  // each screen: (state) => nodes

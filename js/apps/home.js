@@ -1,6 +1,7 @@
 // Launcher: every registered game as a tile, with the phrase that starts it.
 import { apps } from '../registry.js';
 import { appLink, h, icon } from '../dom.js';
+import { say } from '../screens.js';
 
 const greeting = () => {
 	const hour = new Date().getHours();
@@ -11,7 +12,7 @@ const tile = (app) => appLink(app.name, 'card tile',
 	icon(app.icon),
 	h('strong', null, app.title),
 	h('span', 'muted', app.description),
-	h('span', 'tile-say', `“${app.phrase}”`));
+	h('span', 'tile-say', `“${say(app)}”`));
 
 const home = () => [
 	h('header', 'bar', h('span', 'bar-title', greeting())),

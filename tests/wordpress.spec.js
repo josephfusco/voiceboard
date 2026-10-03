@@ -1,0 +1,33 @@
+import { test, expect } from './fixtures.js';
+
+// Plugin-only routes: instructions with this site's URL, and the home page redirect.
+test.describe('wordpress plugin', () => {
+	test.skip(({ boardPath }) => boardPath === '/', 'needs the WordPress plugin');
+
+	test('llms.txt is served with the absolute board URL filled in', async ({ request, baseURL }) => {
+		const response = await request.get('/llms.txt');
+		expect(response.headers()['content-type']).toContain('text/plain');
+		const text = await response.text();
+		expect(text).toContain(`Board URL: ${baseURL}/board/`);
+		expect(text).not.toContain('{board}');
+	});
+
+	test('the board page embeds the full instructions for no-JS readers', async ({ request, baseURL }) => {
+		const html = await (await request.get('/board/')).text();
+		expect(html).toContain(`Board URL: ${baseURL}/board/`);
+		expect(html).toContain('g=trivia&amp;st=ask');
+	});
+
+	test('the home page redirects to the board', async ({ page }) => {
+		await page.goto('/');
+		await expect(page).toHaveURL(/\/board\/$/);
+		await expect(page.locator('#board')).toHaveClass(/app-home/);
+	});
+
+	test('the redirect keeps board params, including | and apostrophes', async ({ page }) => {
+		await page.goto("/?g=trivia&q=What's+the+capital%3F&c=Paris|Rome");
+		await expect(page).toHaveURL(/\/board\/\?g=trivia/);
+		await expect(page.locator('h1')).toHaveText("What's the capital?");
+		await expect(page.locator('.choice')).toHaveText(['AParis', 'BRome']);
+	});
+});
