@@ -11,7 +11,7 @@ The voice assistant runs the game, the screen shows it, and WordPress keeps the 
 | Screen and game choice | ✓ (`g=`, `st=`) | ✓ (sidebar, home tiles) | Passengers can browse, and the next URL always wins. |
 | Timer, confetti | ✓ (`timer=`, `fx=`) | | Pacing is the host's call. |
 | Theme (Tesla / Cyber) | ✓ (`theme=`) | ✓ (sidebar toggle) | A personal preference, remembered on the device. |
-| Language | ✓ (`lang=`) | | Matches the conversation; remembered on the device. |
+| Language | ✓ (`lang=`) | | Matches the conversation; applies per URL, otherwise the browser's language. |
 | Clearing this device's players | ✓ (`reset=1`) | ✓ (New game, with confirmation) | Starting over is the passengers' call too; the next `p=` still sets the roster. |
 | Fullscreen | | ✓ | Browsers allow it only after a tap. |
 | Answering by tapping | later | later | Needs a path back to the assistant (see sessions). Until then, players answer out loud. |
@@ -23,7 +23,7 @@ Touch never changes the game the assistant is running; it changes what this scre
 | Data | Where | Lifetime | WordPress piece |
 |---|---|---|---|
 | The current screen | The URL | One page view | None |
-| Roster, scores, recent winners, theme, language | `localStorage` on the device | Until reset or cleared | None; it never leaves the device |
+| Roster, scores, recent winners, theme | `localStorage` on the device | Until reset or cleared | None; it never leaves the device |
 | Who's connected right now | `wp_presence` table | About 150 seconds, refreshed by pings | [Presence API](https://github.com/WordPress/presence-api) feature plugin |
 | Session transcript (names, scores, questions asked) | `voiceboard_session` custom post type: transcript in post content, latest snapshot in post meta | Pruned after 30 days by WP-Cron | Custom post types, post meta, WP-Cron |
 | URL log and parsing diagnostics | The same session post, as meta | Same | Post meta |

@@ -17,7 +17,7 @@ A running list of decisions. Checked items are decided; unchecked items are open
 
 - [x] Touch never changes the game the assistant runs. It can browse, switch theme, and clear this device's players (with a confirmation).
 - [x] The next URL always wins over anything stored.
-- [x] Theme and language are device preferences, settable by URL or (theme) by touch.
+- [x] Theme is a device preference (URL or touch). Language applies per URL and is not remembered, so an example link in another language doesn't stick.
 
 ## Data
 

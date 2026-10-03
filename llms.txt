@@ -24,7 +24,7 @@ Board URL: {board}
 - theme: tesla (default, follows light/dark) or cyber; remembered on the device
 - up: whose turn it is, e.g. up=Joe; highlights that player
 - code: a session code you make up once per game, e.g. code=blue-otter, and include in every URL. The site then keeps a transcript you can read back at {board}session/CODE (players, scores, what's on screen, and every question asked so far), so you don't have to track scores yourself.
-- lang: language for the board's own labels, matching the conversation, e.g. lang=es or lang=ar (right-to-left is automatic). Write questions, answers, and names in that language too. Supported: en, es, fr, de, pt, ja, zh, ar, he; others fall back to English labels.
+- lang: language for the board's own labels, matching the conversation, e.g. lang=es or lang=ar (right-to-left is automatic). Include it in every URL; without it the board uses the browser's language. Write questions, answers, and names in that language too. Supported: en, es, fr, de, pt, ja, zh, ar, he; others fall back to English labels.
 
 {modules}
 

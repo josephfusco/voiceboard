@@ -19,12 +19,10 @@ test.describe('languages', () => {
 		await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 	});
 
-	test('the language is remembered until another lang= arrives', async ({ open, page }) => {
+	test('lang= applies to that URL only; the next page uses the browser language', async ({ open, page }) => {
 		await open('g=home&lang=fr');
 		await expect(page.locator('h1')).toHaveText('À quoi on joue ?');
 		await open('g=home');
-		await expect(page.locator('h1')).toHaveText('À quoi on joue ?');
-		await open('g=home&lang=en');
 		await expect(page.locator('h1')).toHaveText('What should we play?');
 	});
 
@@ -32,7 +30,7 @@ test.describe('languages', () => {
 		await open('g=home&lang=pt-BR');
 		await expect(page.locator('html')).toHaveAttribute('lang', 'pt');
 		await open('g=home&lang=xx');
-		await expect(page.locator('html')).toHaveAttribute('lang', 'pt');
+		await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 	});
 
 	test('without lang=, the browser language is used', async ({ browser, boardPath, baseURL }) => {

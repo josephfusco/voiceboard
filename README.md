@@ -57,7 +57,7 @@ These work in every game:
 | `timer` | Countdown in seconds, up to 600 | `15` |
 | `fx` | Effects | `confetti` |
 | `theme` | `tesla` or `cyber`, remembered on the device | `cyber` |
-| `lang` | Language for the board's labels, remembered on the device | `es` |
+| `lang` | Language for the board's labels on this screen; otherwise the browser's language | `es` |
 | `up` | Whose turn it is; highlights that player | `Joe` |
 | `code` | Session code the host makes up once per game; enables the transcript | `blue-otter` |
 
@@ -80,7 +80,7 @@ Questions, answers, and names appear in whatever language the assistant sends. T
 
 ## Remembered state
 
-The URL decides what's on screen. `localStorage` remembers the roster, so the host can send `add=` instead of every score, along with the last 20 finished games for the Hall of Fame and the theme and language. Reopening a URL never applies its changes twice, and the board sends none of this to the server.
+The URL decides what's on screen. `localStorage` remembers the roster, so the host can send `add=` instead of every score, along with the last 20 finished games for the Hall of Fame and the theme. Reopening a URL never applies its changes twice, and the board sends none of this to the server.
 
 ## Sessions and the URL log
 

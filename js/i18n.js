@@ -1,6 +1,6 @@
-// The board's own labels in the visitor's language: lang= (remembered), then the last choice, then the browser.
+// The board's own labels in the visitor's language: lang= on this URL, else the browser's language.
+// Not remembered, so one link in another language doesn't change every page after it.
 import { LOCALES } from './locales.js';
-import { loadPreference, savePreference } from './store.js';
 
 const RTL = ['ar', 'he', 'fa', 'ur'];
 const supported = (tag) => {
@@ -8,10 +8,7 @@ const supported = (tag) => {
 	return Object.hasOwn(LOCALES, base) ? base : null;
 };
 
-const requested = supported(new URLSearchParams(location.search).get('lang'));
-if (requested) savePreference('lang', requested);
-
-export const lang = requested ?? supported(loadPreference('lang')) ?? supported(navigator.language) ?? 'en';
+export const lang = supported(new URLSearchParams(location.search).get('lang')) ?? supported(navigator.language) ?? 'en';
 export const dir = RTL.includes(lang) ? 'rtl' : 'ltr';
 
 export const t = (key, vars = {}) =>
