@@ -26,6 +26,7 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Sessions are a custom post type (`voiceboard_session`), not a new table.
 - [x] No IP addresses stored; rate limiting uses a short-lived hashed key per car.
 - [x] Sessions deleted after 30 days.
+- [x] Player names are kept with sessions: they work as gamer tags for that game. The assistant is asked to use first names or nicknames.
 - [x] Session codes use `code=`, because WordPress reserves `s=`.
 - [x] Board parameters may overlap WordPress query vars only for `p` and `w` (never numeric on the board). Enforced by a test.
 - [x] Keep URLs under 2,000 characters; the live server rejects about 10,000 and up.

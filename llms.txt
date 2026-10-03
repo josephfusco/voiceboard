@@ -75,5 +75,6 @@ Players are set once with p= at the start; after that send only up= and add=.
 
 - Read each question aloud as you open its URL, and say the scores at every reveal.
 - Keep questions and choices short so they fit the screen.
+- Use first names or nicknames for players; they work like gamer tags for the session.
 - Start a new game with a fresh p= so old scores don't carry over.
 - If you lose track, read {board}session/CODE before the next question.
