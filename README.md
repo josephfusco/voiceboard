@@ -1,6 +1,6 @@
 # Voiceboard
 
-A screen for in-car voice assistants. Grok (or any assistant that can open a URL) hosts games by voice and opens a new URL each turn; the page renders whatever the query string describes. Styled to feel native on the Tesla center screen, with a CarPlay-style sidebar.
+A screen for in-car voice assistants. Any assistant that can open a URL (Grok, Gemini, Siri, Alexa, ChatGPT…) hosts games by voice and opens a new URL each turn; the page renders whatever the query string describes. Styled to feel native on the Tesla center screen, with a CarPlay-style sidebar.
 
 Ships as a WordPress plugin that serves the board at `/board/`, and also works as plain static files.
 
@@ -46,7 +46,7 @@ Messy input is tolerated: double-encoded values decode, bad scores become 0, unk
 
 The URL is the source of truth for what's on screen. `localStorage` remembers the roster (so the host can send `add=` instead of every score) and the last 20 finished games (shown in the Hall of Fame). Reopening the same URL never applies its changes twice. Nothing is sent to the server, so page caching is unaffected.
 
-## How Grok learns the format
+## How an assistant learns the format
 
 `index.html` contains plain-HTML hosting instructions. They're hidden once the board renders, but an assistant that reads the page without running JavaScript sees them, so "open your-site/board and host a trivia game" can work without a prompt.
 
@@ -75,7 +75,7 @@ Create `js/games/<name>.js` and import it from `main.js` (import order is sideba
 apps.register('name', {
 	title: 'Display title',
 	description: 'One line for the home tile.',
-	phrase: "Hey Grok, let's play name",
+	phrase: "Let's play name",
 	icon: ['M4 4h16v16H4z'],              // 24x24 SVG path data
 	params: { x: text },                  // merged with the shared params
 	screens: { ...sharedScreens, play },  // each screen: (state) => nodes

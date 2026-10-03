@@ -32,7 +32,7 @@ test.describe('shell', () => {
 		const page = await open();
 		await page.locator('.tile', { hasText: 'Trivia' }).click();
 		await expect(page.locator('#board')).toHaveClass(/state-idle/);
-		await expect(page.getByText("Hey Grok, let's play trivia")).toBeVisible();
+		await expect(page.getByText("Let's play trivia")).toBeVisible();
 	});
 
 	test('assistant instructions are in the HTML but not shown once rendered', async ({ open, request, boardPath }) => {

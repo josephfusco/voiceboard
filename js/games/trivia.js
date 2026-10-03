@@ -35,7 +35,7 @@ const screens = { ...sharedScreens, ask: questionScreen(false), reveal: question
 apps.register('trivia', {
 	title: 'Trivia',
 	description: 'Multiple choice or open-ended questions on any topic.',
-	phrase: "Hey Grok, let's play trivia",
+	phrase: "Let's play trivia",
 	icon: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', 'M9.5 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.6', 'M12 16.8v.2'],
 	params: { q: text, c: (v) => list(v).slice(0, LETTERS.length), a: text, r: text },
 	screens,

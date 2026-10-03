@@ -33,7 +33,7 @@ const scoreboard = (final) => (state) => {
 };
 
 const idle = ({ t, app }) => [
-	h('section', 'stage', h('h1', 'question', t), h('p', 'muted', app.phrase ? `Say “${app.phrase}”` : 'Ask Grok to start a game')),
+	h('section', 'stage', h('h1', 'question', t), h('p', 'muted', app.phrase ? `Say “${app.phrase}” to your assistant` : 'Ask your assistant to start a game')),
 ];
 
 export const sharedScreens = { score: scoreboard(false), end: scoreboard(true), idle };
