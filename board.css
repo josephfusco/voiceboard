@@ -134,6 +134,7 @@ a.card { transition: transform 0.1s; }
 	gap: 4.5vh;
 }
 .state-idle .stage,
+.next,
 .state-score .question,
 .state-end .question,
 .state-hall .question,
@@ -197,6 +198,10 @@ a.card { transition: transform 0.1s; }
 	justify-content: center;
 	gap: 1vw;
 }
+/* Whose turn it is */
+.chip.is-up { box-shadow: var(--shadow), inset 0 0 0 2px var(--accent); }
+.next .question { font-size: clamp(2.5rem, 11vh, 8rem); font-weight: 600; }
+
 .chip {
 	display: flex;
 	gap: 0.6em;

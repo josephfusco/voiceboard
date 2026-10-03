@@ -8,8 +8,9 @@ export const header = (state, label = progress(state)) => h('header', 'bar',
 	h('span', 'bar-title', state.t),
 	label && h('span', null, label));
 
-export const scoreStrip = ({ p }) => p.length > 0 && h('footer', 'strip',
-	p.map(({ name, score }) => h('span', 'chip', h('span', 'muted', name), num(score))));
+// up=Name highlights whose turn it is.
+export const scoreStrip = ({ p, up = '' }) => p.length > 0 && h('footer', 'strip',
+	p.map(({ name, score }) => h('span', `chip${name.toLowerCase() === up.toLowerCase() ? ' is-up' : ''}`, h('span', 'muted', name), num(score))));
 
 // What to tell the assistant to start an app, using this site's own address.
 export const say = (app) => t('open', { host: location.host, phrase: app.phrase });
@@ -40,4 +41,12 @@ const idle = ({ t: title, app }) => [
 	h('section', 'stage', h('h1', 'question', title), h('p', 'muted', app.phrase ? t('say', { phrase: say(app) }) : t('askAssistant'))),
 ];
 
-export const sharedScreens = { score: scoreboard(false), end: scoreboard(true), idle };
+// st=next&up=Joe: whose turn it is. When they say "ready", the host opens the question with a timer,
+// so the question and the countdown appear together.
+const next = (state) => [
+	header(state),
+	h('section', 'stage next', h('p', 'eyebrow', t('nextUp')), h('h1', 'question', state.up || '…'), h('p', 'muted', t('sayReady'))),
+	scoreStrip(state),
+];
+
+export const sharedScreens = { score: scoreboard(false), end: scoreboard(true), idle, next };

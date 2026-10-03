@@ -4,6 +4,7 @@ import { common, readParams } from './params.js';
 import { sync } from './store.js';
 import { dock } from './dock.js';
 import { dir, lang, t } from './i18n.js';
+import { report } from './report.js';
 
 // Registration order is sidebar order.
 import './games/trivia.js';
@@ -36,3 +37,13 @@ board.replaceChildren(...app.screens[screen](state).filter(Boolean));
 effects.list().filter((e) => e.active(state)).forEach((e) => e.mount(board, state));
 
 document.title = state.q || state.t;
+
+// What the board had to fix or ignore in this URL, for the URL log.
+const diag = [
+	...[...new URLSearchParams(search).keys()].filter((key) => !Object.hasOwn(schema, key)).map((key) => `unknown param: ${key}`),
+	g && !apps.has(g) && `unknown app: ${g}`,
+	state.st && state.st !== screen && `asked for ${state.st}, showed ${screen}`,
+	/%25[\da-f]{2}/i.test(search) && 'double-encoded',
+	search.length > 2000 && `long URL: ${search.length} characters`,
+].filter(Boolean);
+report(state, screen, diag);

@@ -57,4 +57,14 @@ export const saveTheme = (theme) => savePreference('theme', theme);
 
 // Touch "New game": forget this device's players and scores. The Hall of Fame stays,
 // and the current URL is not re-applied because it's already marked as seen.
+// A random ID for this screen, made once and kept on the device. Used only to tell boards apart.
+export const carId = () => {
+	let id = loadPreference('car');
+	if (!id) {
+		id = (crypto.randomUUID?.() ?? String(Math.random()).slice(2)).replace(/-/g, '').slice(0, 16);
+		savePreference('car', id);
+	}
+	return id;
+};
+
 export const clearRoster = () => save({ ...load(), players: [] });

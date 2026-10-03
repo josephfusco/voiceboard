@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from './fixtures.js';
+import { PARAMS } from './params.js';
 
 // Every URL parameter the board reads must be documented for assistants in llms.txt.
-const PARAMS = ['g', 'st', 't', 'p', 'add', 'reset', 'timer', 'fx', 'theme', 'lang', 'q', 'c', 'a', 'r', 'n', 'of', 'cats', 'v', 'u', 'at', 'dd', 'w'];
 
 test('llms.txt documents every parameter', async ({ boardPath }) => {
 	test.skip(boardPath !== '/', 'file check; run once');

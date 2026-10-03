@@ -61,10 +61,12 @@ These work in every game:
 | `fx` | Effects | `confetti` |
 | `theme` | `tesla` or `cyber`, remembered on the device | `cyber` |
 | `lang` | Language for the board's labels, remembered on the device | `es` |
+| `up` | Whose turn it is; highlights that player | `Joe` |
+| `code` | Session code the host makes up once per game; enables the transcript | `blue-otter` |
 
 Trivia screens are `ask`, `reveal`, `score`, and `end`. It reads `q` (question), `c` (choices separated by `|`), `a` (the answer as `B`, `2`, or its text), `r` (who got it, or `none`), and `n`/`of` (progress).
 
-The Jeopardy-style game's screens are `board`, `clue`, `reveal`, `final`, and `end`. It reads `cats` (categories separated by `|`), `v` (clue values, 200 to 1000 by default), `u` (used clues such as `A1,C3`), `at` (the chosen clue), `q` (clue), `a` (response), `r` (who got it), `dd=1` (daily double), and `w` (final wagers).
+The Jeopardy-style game's screens are `board`, `clue`, `reveal`, `final`, and `end`. It reads `cats` (categories separated by `|`), `v` (clue values, 200 to 1000 by default), `u` (used clues such as `A1,C3`), `at` (the chosen clue), `q` (clue), `a` (response), `r` (who got it), `dd` (`1` marks a daily double), and `w` (final wagers).
 
 ```
 /board/?g=trivia&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
@@ -83,6 +85,14 @@ Questions, answers, and names appear in whatever language the assistant sends. T
 
 The URL decides what's on screen. `localStorage` remembers the roster, so the host can send `add=` instead of every score, along with the last 20 finished games for the Hall of Fame and the theme and language. Reopening a URL never applies its changes twice, and the board sends none of this to the server.
 
+## Sessions and the URL log
+
+When the plugin serves the board, each screen is reported to WordPress. With `code=blue-otter` in every URL, the site keeps a session the assistant can read back as plain text at `/board/session/blue-otter`: players, scores, what's on screen, and every question asked so far. Sessions live in a `voiceboard_session` post type under Tools → Voiceboard sessions, where each one also shows a log of the exact URLs the screen received and anything the board had to fix (unknown parameters, double encoding, an unknown screen). Without a code, a board still gets its own session named after its random car ID. Sessions are deleted after 30 days.
+
+If the [Presence API](https://github.com/WordPress/presence-api) plugin is active, each board also appears in a `voiceboard/session/<code>` room and a `voiceboard/cars` room while it's open. Static hosting sends nothing.
+
+The plugin registers three abilities for MCP-capable assistants: `voiceboard/get-instructions`, `voiceboard/build-url`, and `voiceboard/get-transcript`.
+
 ## How an assistant learns the format
 
 The instructions live in one file, `llms.txt`, and the plugin publishes them with the site's own board URL filled in. They're served at `/llms.txt` and embedded in the board's HTML for assistants that read pages without running JavaScript. Because the home page redirects to the board and keeps any parameters, "open example.com and host trivia" reaches the instructions too, and the board shows people that same sentence with its own domain. A test fails if any parameter goes undocumented.
@@ -90,12 +100,16 @@ The instructions live in one file, `llms.txt`, and the plugin publishes them wit
 ## Structure
 
 ```
-voiceboard.php        WordPress plugin: serves index.html at /board/ with a <base> to the plugin
+voiceboard.php        WordPress plugin: routes /board/, /llms.txt, the transcript, and the home redirect
+includes/sessions.php sessions, transcript, URL log, presence, pruning, admin screen
+includes/abilities.php abilities for MCP-capable assistants
 index.html            shell (the plugin embeds llms.txt into it)
 llms.txt              assistant instructions, single source of truth
 board.css             light/dark and Cyber themes, sidebar, screens, effects
 js/main.js            boot: URL -> app -> remembered state -> screen -> effects
 js/registry.js        keyed registries for apps and effects
+js/dom.js             h() element builder, icons, app links
+js/report.js          reports each screen to the plugin (sessions, URL log, presence)
 js/params.js          typed param parsers and readParams(search, schema)
 js/store.js           localStorage roster, history, and device preferences
 js/i18n.js            language choice, t() for labels, number formatting

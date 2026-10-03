@@ -43,7 +43,8 @@ apps.register('trivia', {
 	screens,
 	// Use st when it names a screen; otherwise infer one from what's in the URL.
 	pick: ({ st, q, a, p }) => {
-		if (!q && st !== 'end') return p.length ? 'score' : 'idle';
+		if (st === 'next' || st === 'end') return st;
+		if (!q) return p.length ? 'score' : 'idle';
 		return Object.hasOwn(screens, st) ? st : a ? 'reveal' : 'ask';
 	},
 });

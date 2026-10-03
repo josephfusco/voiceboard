@@ -87,3 +87,26 @@ test.describe('trivia: edge cases', () => {
 		await expect(page.locator('h1')).toHaveText('Game over');
 	});
 });
+
+test.describe('turns', () => {
+	test('st=next names the player, highlights them, and asks for ready', async ({ open, page }) => {
+		await open('g=trivia&st=next&up=Joe&p=Joe:0,Sam:100');
+		await expect(page.locator('.eyebrow')).toHaveText('Next up');
+		await expect(page.locator('h1')).toHaveText('Joe');
+		await expect(page.getByText('Say “ready” to start')).toBeVisible();
+		await expect(page.locator('.chip.is-up')).toHaveText('Joe0');
+		await expect(page.getByRole('timer')).toHaveCount(0);
+	});
+
+	test('the ask screen after ready shows the question and starts the timer together', async ({ open, page }) => {
+		await open('g=trivia&st=ask&up=joe&q=Ready+question&c=A|B&timer=15&p=Joe:0');
+		await expect(page.locator('h1')).toHaveText('Ready question');
+		await expect(page.getByRole('timer')).toHaveText('15');
+		await expect(page.locator('.chip.is-up')).toHaveCount(1);
+	});
+
+	test('next works in Jeopardy and in other languages', async ({ open, page }) => {
+		await open('g=jeopardy&st=next&up=Ana&lang=es&p=Ana:0');
+		await expect(page.locator('.eyebrow')).toHaveText('Siguiente turno');
+	});
+});

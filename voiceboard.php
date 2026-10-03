@@ -13,6 +13,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/includes/sessions.php';
+require_once __DIR__ . '/includes/abilities.php';
+
+register_deactivation_hook( __FILE__, static fn () => wp_clear_scheduled_hook( 'voiceboard_prune' ) );
+
 /**
  * The board's path below the site root ("" = the root itself).
  */
@@ -95,6 +100,16 @@ add_action(
 			}
 		}
 
+		// Plain-text transcript an assistant can read back: /board/session/<code>. Never cached.
+		if ( preg_match( '#^' . preg_quote( $route( voiceboard_path() . '/session' ), '#' ) . '/([a-z0-9-]+)$#', $request, $match ) ) {
+			$session = voiceboard_session( $match[1] );
+			nocache_headers();
+			status_header( $session ? 200 : 404 );
+			header( 'Content-Type: text/plain; charset=utf-8' );
+			echo $session ? voiceboard_transcript( $session ) : "No session with that code yet.\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+			exit;
+		}
+
 		switch ( $request ) {
 			case $route( voiceboard_path() ):
 				// Static shell (state lives in the query string), so it caches well.
@@ -104,7 +119,16 @@ add_action(
 
 				$html = (string) file_get_contents( __DIR__ . '/index.html' );
 				// Path-only <base>, so relative assets load from the plugin on whatever host served the page.
-				$html = str_replace( '<head>', sprintf( "<head>\n\t<base href=\"%s\">", esc_url( wp_make_link_relative( plugins_url( '/', __FILE__ ) ) ) ), $html );
+				// The REST base tells the board where to report screens (sessions, URL log, presence).
+				$html = str_replace(
+					'<head>',
+					sprintf(
+						"<head>\n\t<base href=\"%s\">\n\t<meta name=\"voiceboard-api\" content=\"%s\">",
+						esc_url( wp_make_link_relative( plugins_url( '/', __FILE__ ) ) ),
+						esc_url( wp_make_link_relative( rest_url( 'voiceboard/v1/' ) ) )
+					),
+					$html
+				);
 				// Full instructions for assistants that read the page without running JavaScript.
 				$html = preg_replace( '#<main id="board">.*?</main>#s', '<main id="board"><pre>' . esc_html( voiceboard_instructions() ) . '</pre></main>', $html );
 				echo $html; // phpcs:ignore WordPress.Security.EscapeOutput

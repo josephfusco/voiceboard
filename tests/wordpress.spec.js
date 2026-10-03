@@ -15,7 +15,7 @@ test.describe('wordpress plugin', () => {
 	test('the board page embeds the full instructions for no-JS readers', async ({ request, baseURL }) => {
 		const html = await (await request.get('/board/')).text();
 		expect(html).toContain(`Board URL: ${baseURL}/board/`);
-		expect(html).toContain('g=trivia&amp;st=ask');
+		expect(html).toContain('g=trivia&amp;code=blue-otter&amp;st=ask');
 	});
 
 	test('the home page redirects to the board', async ({ page }) => {

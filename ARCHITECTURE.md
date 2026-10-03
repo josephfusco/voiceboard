@@ -43,7 +43,7 @@ A session is a document with a title (its code), a body (the transcript), and me
 
 Presence is optional; without it, sessions and transcripts still work and only "who's online now" goes away.
 
-Each board will identify itself with a random car ID kept in `localStorage`, labelled by the server from the browser's User-Agent (for example, a Tesla firmware version). No IP addresses are stored.
+Each board identifies itself with a random car ID kept in `localStorage`, labelled by the server from the browser's User-Agent (for example, a Tesla firmware version). No IP addresses are stored.
 
 ## Assistant capability levels
 
@@ -62,7 +62,8 @@ Each level adds to the one before, and nothing at level 1 depends on levels 2 or
 | URL-driven games, themes, effects, `localStorage` roster | Shipped |
 | Board labels in nine languages, right-to-left layout | Shipped |
 | WordPress plugin, `llms.txt`, home redirect, CI deploy | Shipped |
-| Presence API plugin | Active on the site; the Voiceboard integration is designed, not built |
-| Sessions, transcript, log, car ID | Designed |
-| Abilities and MCP | Designed |
+| Sessions, transcript, URL log, car ID, presence | Shipped |
+| Turns (`st=next`, `up=`) | Shipped |
+| Read-only abilities | Shipped; MCP Adapter not yet installed on the live site |
+| Writable abilities with board polling | Designed |
 | Tap-to-answer | Later, after sessions |

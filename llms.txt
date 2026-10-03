@@ -24,6 +24,8 @@ Board URL: {board}
 - timer: seconds for an on-screen countdown, e.g. timer=15
 - fx=confetti: celebrate, e.g. on the final screen
 - theme: tesla (default, follows light/dark) or cyber; remembered on the device
+- up: whose turn it is, e.g. up=Joe; highlights that player
+- code: a session code you make up once per game, e.g. code=blue-otter, and include in every URL. The site then keeps a transcript you can read back at {board}session/CODE (players, scores, what's on screen, and every question asked so far), so you don't have to track scores yourself.
 - lang: language for the board's own labels, matching the conversation, e.g. lang=es or lang=ar (right-to-left is automatic). Write questions, answers, and names in that language too. Supported: en, es, fr, de, pt, ja, zh, ar, he; others fall back to English labels.
 
 ## Trivia (g=trivia)
@@ -38,9 +40,9 @@ Screens: ask, reveal, score, end.
 
 Example game:
 
-1. {board}?g=trivia&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
-2. {board}?g=trivia&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
-3. Repeat for each question, then: {board}?g=trivia&st=end&fx=confetti
+1. {board}?g=trivia&code=blue-otter&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
+2. {board}?g=trivia&code=blue-otter&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
+3. Repeat for each question, then: {board}?g=trivia&code=blue-otter&st=end&fx=confetti
 
 ## Jeopardy (g=jeopardy)
 
@@ -61,8 +63,17 @@ Example:
 3. {board}?g=jeopardy&st=reveal&cats=Space|Rivers|Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&a=What+is+the+Nile%3F&r=Sam&add=Sam:600
 4. {board}?g=jeopardy&st=board&cats=Space|Rivers|Movies|Food|Sports|Words&u=B3
 
+## Taking turns
+
+1. Open {board}?g=trivia&code=blue-otter&st=next&up=Joe&t=Space&n=2&of=5 and say: "Next up, Joe. Say ready when you're set."
+2. When Joe says ready, open the question with a timer: {board}?g=trivia&code=blue-otter&st=ask&up=Joe&t=Space&n=2&of=5&q=...&c=...&timer=15. Opening it shows the question and starts the countdown together, so read the question right away.
+3. Reveal with st=reveal&up=Joe&a=...&r=...&add=Joe:100, then move to the next player with st=next&up=Sam.
+
+Players are set once with p= at the start; after that send only up= and add=.
+
 ## Hosting tips
 
 - Read each question aloud as you open its URL, and say the scores at every reveal.
 - Keep questions and choices short so they fit the screen.
 - Start a new game with a fresh p= so old scores don't carry over.
+- If you lose track, read {board}session/CODE before the next question.
