@@ -6,9 +6,11 @@
 		"test": "playwright test",
 		"test:static": "playwright test --project=static",
 		"serve": "python3 -m http.server 8766 --bind 127.0.0.1",
-		"wp": "wp-playground-cli server --port=9400 --mount=.:/wordpress/wp-content/plugins/voiceboard --blueprint=tests/blueprint.json"
+		"wp": "wp-playground-cli server --port=9400 --mount=.:/wordpress/wp-content/plugins/voiceboard --blueprint=tests/blueprint.json",
+		"wp:root": "wp-playground-cli server --port=9401 --mount=.:/wordpress/wp-content/plugins/voiceboard --mount=./site-theme:/wordpress/wp-content/themes/voiceboard-site --blueprint=tests/blueprint-root.json"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.13.0",
 		"@playwright/test": "^1.63.0",
 		"@wp-playground/cli": "^3.1.56"
 	}

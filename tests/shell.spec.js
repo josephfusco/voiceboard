@@ -79,3 +79,23 @@ test.describe('themes', () => {
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
 	});
 });
+
+test.describe('shell: time and theme details', () => {
+	test('greeting follows the time of day', async ({ open, page }) => {
+		await page.clock.setFixedTime(new Date('2026-10-03T08:00:00'));
+		await open();
+		await expect(page.locator('.bar-title')).toHaveText('Good morning');
+		await page.clock.setFixedTime(new Date('2026-10-03T20:00:00'));
+		await page.reload();
+		await expect(page.locator('.bar-title')).toHaveText('Good evening');
+	});
+
+	test('a theme= URL overrides the saved choice, and the toggle cycles back', async ({ open, page }) => {
+		await open('g=home&theme=cyber');
+		await open('g=home&theme=tesla');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await page.getByRole('button', { name: 'Switch to Cyber theme' }).click();
+		await page.getByRole('button', { name: 'Switch to Tesla theme' }).click();
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+	});
+});

@@ -36,3 +36,27 @@ test.describe('remembered state', () => {
 		await expect(page.getByRole('heading', { name: 'No games yet' })).toBeVisible();
 	});
 });
+
+test.describe('remembered state: resilience', () => {
+	test('reloading the final screen records the game once', async ({ open, page }) => {
+		await open('g=trivia&st=end&p=Joe:1');
+		await page.reload();
+		await open('g=hall');
+		await expect(page.locator('.score-row')).toHaveCount(1);
+	});
+
+	test('corrupted storage is ignored', async ({ open, page }) => {
+		await page.addInitScript(() => localStorage.setItem('voiceboard', '{not json'));
+		await open('g=trivia&q=Still+works&p=Joe:5');
+		await expect(page.locator('.chip')).toHaveText(['Joe5']);
+	});
+
+	test('the board works when storage is unavailable', async ({ open, page }) => {
+		await page.addInitScript(() => {
+			Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });
+		});
+		await open('g=trivia&q=No+storage&p=Joe:5');
+		await expect(page.locator('h1')).toHaveText('No storage');
+		await expect(page.locator('.chip')).toHaveText(['Joe5']);
+	});
+});

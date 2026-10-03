@@ -180,7 +180,7 @@ a.card { transition: transform 0.1s; }
 .choice .muted { min-width: 1.2em; font-size: 0.75em; font-weight: 600; }
 .choice.is-correct { background: var(--correct); color: #fff; }
 .choice.is-correct .muted { color: inherit; opacity: 0.8; }
-.choice.is-dim { opacity: 0.35; }
+.choice.is-dim { opacity: 0.5; }
 .clue .choice { justify-content: center; }
 
 .verdict {

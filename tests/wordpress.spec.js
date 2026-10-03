@@ -42,3 +42,21 @@ test.describe('wordpress plugin: home redirect leaves WordPress URLs alone', () 
 		});
 	}
 });
+
+test.describe('wordpress plugin: the rest of the site is untouched', () => {
+	test.skip(({ boardPath }) => boardPath === '/', 'needs the WordPress plugin');
+
+	test('board HTML is cacheable', async ({ request }) => {
+		const response = await request.get('/board/');
+		expect(response.headers()['cache-control']).toContain('public');
+	});
+
+	test('pages, 404s, REST, and login behave normally', async ({ request }) => {
+		const page = await request.get('/sample-page/');
+		expect(page.status()).toBe(200);
+		expect(await page.text()).not.toContain('id="dock"');
+		expect((await request.get('/no-such-page/')).status()).toBe(404);
+		expect((await request.get('/wp-json/')).status()).toBe(200);
+		expect((await request.get('/wp-login.php')).status()).toBe(200);
+	});
+});

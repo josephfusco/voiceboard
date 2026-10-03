@@ -33,3 +33,17 @@ test.describe('effects', () => {
 		await expect(page.locator('.fx-confetti')).toHaveCount(0);
 	});
 });
+
+test.describe('effects: messy input', () => {
+	test('fx is case-insensitive and accepts lists', async ({ open, page }) => {
+		await open('g=trivia&st=end&p=Joe:1&fx=Sparkles,CONFETTI');
+		await expect(page.locator('.fx-confetti')).toHaveCount(1);
+	});
+
+	test('a non-numeric or zero timer shows nothing', async ({ open, page }) => {
+		await open('g=trivia&q=Hi&timer=soon');
+		await expect(page.getByRole('timer')).toHaveCount(0);
+		await open('g=trivia&q=Hi&timer=0');
+		await expect(page.getByRole('timer')).toHaveCount(0);
+	});
+});

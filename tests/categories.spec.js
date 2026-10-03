@@ -43,3 +43,34 @@ test.describe('categories (jeopardy)', () => {
 		await expect(page.locator('.chip').first()).toHaveText('Joe-400');
 	});
 });
+
+test.describe('categories: edge cases', () => {
+	test('aliases and case: g=board, g=categories, g=JEOPARDY', async ({ open, page }) => {
+		for (const g of ['board', 'categories', 'JEOPARDY']) {
+			await open({ g, cats: 'A|B' });
+			await expect(page.locator('#board')).toHaveClass(/app-categories state-board/);
+		}
+	});
+
+	test('messy input: lowercase cells, junk values, too many categories', async ({ open, page }) => {
+		await open({ g: 'jeopardy', cats: '1|2|3|4|5|6|7', u: 'a1 | c3, z9', at: 'Q1', v: 'abc' });
+		await expect(page.locator('.grid-cat')).toHaveCount(6);
+		await expect(page.locator('.grid-cell.is-used')).toHaveCount(2);
+		await expect(page.locator('.grid-cell.is-current')).toHaveCount(0);
+		await expect(page.locator('.grid-cell').nth(1)).toHaveText('$200');
+	});
+
+	test('st is inferred: clue, reveal, idle', async ({ open, page }) => {
+		await open({ g: 'jeopardy', q: 'Clue' });
+		await expect(page.locator('#board')).toHaveClass(/state-clue/);
+		await open({ g: 'jeopardy', q: 'Clue', a: 'What is X?' });
+		await expect(page.locator('#board')).toHaveClass(/state-reveal/);
+		await open({ g: 'jeopardy', reset: '1' });
+		await expect(page.locator('#board')).toHaveClass(/state-idle/);
+	});
+
+	test('the daily double banner is hidden once revealed', async ({ open, page }) => {
+		await open({ g: 'jeopardy', st: 'reveal', q: 'Clue', a: 'What is X?', dd: '1' });
+		await expect(page.locator('.eyebrow')).toHaveCount(0);
+	});
+});

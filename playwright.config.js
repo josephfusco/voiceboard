@@ -11,12 +11,15 @@ export default defineConfig({
 	reporter: process.env.CI ? 'github' : 'list',
 	projects: [
 		// Plain static hosting: the board lives at the site root.
-		{ name: 'static', use: { ...use, baseURL: 'http://127.0.0.1:8766', boardPath: '/' } },
+		{ name: 'static', testIgnore: /wordpress-root/, use: { ...use, baseURL: 'http://127.0.0.1:8766', boardPath: '/' } },
 		// The same suite through the WordPress plugin at /board/.
-		{ name: 'wordpress', use: { ...use, baseURL: 'http://127.0.0.1:9400', boardPath: '/board/' } },
+		{ name: 'wordpress', testIgnore: /wordpress-root/, use: { ...use, baseURL: 'http://127.0.0.1:9400', boardPath: '/board/' } },
+		// Plugin with the board at the site root and the site theme active.
+		{ name: 'wordpress-root', testMatch: /wordpress-root/, use: { ...use, baseURL: 'http://127.0.0.1:9401', boardPath: '/' } },
 	],
 	webServer: [
 		{ command: 'npm run serve', url: 'http://127.0.0.1:8766', reuseExistingServer: !process.env.CI },
 		{ command: 'npm run wp', url: 'http://127.0.0.1:9400/board/', reuseExistingServer: !process.env.CI, timeout: 240_000 },
+		{ command: 'npm run wp:root', url: 'http://127.0.0.1:9401/llms.txt', reuseExistingServer: !process.env.CI, timeout: 240_000 },
 	],
 });

@@ -14,7 +14,8 @@ const answerIndex = (a, choices) => {
 
 const questionScreen = (reveal) => (state) => {
 	const { q, c, a, r } = state;
-	const correct = reveal && a ? answerIndex(a, c) : -1;
+	const index = reveal && a ? answerIndex(a, c) : -1;
+	const correct = index < c.length ? index : -1;
 	const mark = (i) => (correct < 0 ? '' : i === correct ? ' is-correct' : ' is-dim');
 
 	return [
@@ -23,8 +24,8 @@ const questionScreen = (reveal) => (state) => {
 			h('h1', 'question', q),
 			c.length > 0 && h('ol', `choices count-${c.length}`, c.map((choice, i) =>
 				h('li', `card choice${mark(i)}`, h('span', 'muted', LETTERS[i]), choice))),
-			// Open-ended question: show the answer itself.
-			reveal && !c.length && a && answerCard(a),
+			// Open-ended, or an answer that matches no choice: show the answer itself.
+			reveal && a && correct < 0 && answerCard(a),
 			reveal && verdict(r)),
 		scoreStrip(state),
 	];

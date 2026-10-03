@@ -63,3 +63,27 @@ test.describe('trivia', () => {
 		await expect(page.locator('.is-leader')).toHaveCount(2);
 	});
 });
+
+test.describe('trivia: edge cases', () => {
+	test('an answer outside the choices shows the answer instead of dimming everything', async ({ open, page }) => {
+		await open({ ...QUESTION, st: 'reveal', a: 'E' });
+		await expect(page.locator('.choice.is-dim')).toHaveCount(0);
+		await expect(page.locator('.is-correct')).toHaveText('E');
+		await open({ ...QUESTION, st: 'reveal', a: 'Pluto' });
+		await expect(page.locator('.is-correct')).toHaveText('Pluto');
+	});
+
+	test('choice layouts: 3 stack, up to 6 are lettered, extras dropped', async ({ open, page }) => {
+		await open({ g: 'trivia', q: 'Q', c: 'a|b|c' });
+		await expect(page.locator('.choices')).toHaveClass(/count-3/);
+		await open({ g: 'trivia', q: 'Q', c: '1|2|3|4|5|6|7' });
+		await expect(page.locator('.choice .muted')).toHaveText(['A', 'B', 'C', 'D', 'E', 'F']);
+	});
+
+	test('explicit st=score wins over a question; end with nobody is game over', async ({ open, page }) => {
+		await open({ ...QUESTION, st: 'score' });
+		await expect(page.locator('h1')).toHaveText('Scoreboard');
+		await open('g=trivia&st=end&reset=1');
+		await expect(page.locator('h1')).toHaveText('Game over');
+	});
+});

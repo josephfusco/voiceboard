@@ -83,6 +83,18 @@ add_action(
 		$request = trim( (string) wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
 		$route   = static fn ( string $path ): string => trim( "$home/$path", '/' );
 
+		// Leave WordPress's own home URLs alone (?p=123, ?s=, ?preview=…), even when the board
+		// lives at the root. The board reuses p= and w= for players and wagers, which are never numeric.
+		if ( $route( '' ) === $request ) {
+			$wp_params = array_filter(
+				array_intersect( array_keys( $_GET ), $wp->public_query_vars ), // phpcs:ignore WordPress.Security.NonceVerification
+				static fn ( $key ) => ! in_array( $key, array( 'p', 'w' ), true ) || is_numeric( $_GET[ $key ] ) // phpcs:ignore WordPress.Security.NonceVerification
+			);
+			if ( $wp_params ) {
+				return;
+			}
+		}
+
 		switch ( $request ) {
 			case $route( voiceboard_path() ):
 				// Static shell (state lives in the query string), so it caches well.
@@ -106,13 +118,7 @@ add_action(
 				exit;
 
 			case $route( '' ):
-				// Leave WordPress's own home URLs alone (?p=123, ?s=, ?preview=…). The board
-				// reuses p= and w= for players and wagers, which are never numeric.
-				$wp_params = array_filter(
-					array_intersect( array_keys( $_GET ), $wp->public_query_vars ), // phpcs:ignore WordPress.Security.NonceVerification
-					static fn ( $key ) => ! in_array( $key, array( 'p', 'w' ), true ) || is_numeric( $_GET[ $key ] ) // phpcs:ignore WordPress.Security.NonceVerification
-				);
-				if ( $wp_params || ! apply_filters( 'voiceboard_redirect_home', true ) ) {
+				if ( ! apply_filters( 'voiceboard_redirect_home', true ) ) {
 					return;
 				}
 				// Keep any board params ("open example.com/?g=trivia…" still works). Encode what
