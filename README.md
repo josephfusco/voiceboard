@@ -100,6 +100,7 @@ The instructions live in one file, `llms.txt`, and the plugin publishes them wit
 voiceboard.php        WordPress plugin: routes /board/, /llms.txt, the transcript, and the home redirect
 includes/sessions.php sessions, transcript, URL log, presence, pruning, admin screen
 includes/abilities.php abilities for MCP-capable assistants
+includes/hardening.php security headers, users endpoint closed to visitors
 index.html            shell (the plugin embeds llms.txt into it)
 llms.txt              assistant instructions, single source of truth
 board.css             light/dark and Cyber themes, sidebar, screens, effects

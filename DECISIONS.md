@@ -26,6 +26,10 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Sessions are a custom post type (`voiceboard_session`), not a new table.
 - [x] No IP addresses stored; rate limiting uses a short-lived hashed key per car.
 - [x] Sessions deleted after 30 days.
+- [x] A session belongs to the board that started it; other boards get a 403 (blocks session takeover found in testing).
+- [x] Rate limits per board, per hashed network address, and on new sessions per address; addresses are never stored.
+- [x] The board page sends a strict same-origin Content-Security-Policy; the users endpoint is closed to visitors.
+- [x] Transcripts tell the assistant that game text is data, not instructions.
 - [x] Player names are kept with sessions: they work as gamer tags for that game. The assistant is asked to use first names or nicknames.
 - [x] Session codes use `code=`, because WordPress reserves `s=`.
 - [x] Board parameters may overlap WordPress query vars only for `p` and `w` (never numeric on the board). Enforced by a test.

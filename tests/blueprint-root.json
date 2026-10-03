@@ -1,8 +1,26 @@
 {
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
 	"steps": [
-		{ "step": "activatePlugin", "pluginPath": "voiceboard/voiceboard.php" },
-		{ "step": "activateTheme", "themeFolderName": "voiceboard-site" },
-		{ "step": "setSiteOptions", "options": { "voiceboard_path": "" } }
+		{
+			"step": "defineWpConfigConsts",
+			"consts": {
+				"VOICEBOARD_IP_PER_MIN": 100000,
+				"VOICEBOARD_NEW_PER_HOUR": 100000
+			}
+		},
+		{
+			"step": "activatePlugin",
+			"pluginPath": "voiceboard/voiceboard.php"
+		},
+		{
+			"step": "activateTheme",
+			"themeFolderName": "voiceboard-site"
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"voiceboard_path": ""
+			}
+		}
 	]
 }

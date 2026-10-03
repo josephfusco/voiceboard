@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/includes/sessions.php';
 require_once __DIR__ . '/includes/abilities.php';
+require_once __DIR__ . '/includes/hardening.php';
 
 register_deactivation_hook( __FILE__, static fn () => wp_clear_scheduled_hook( 'voiceboard_prune' ) );
 
@@ -104,6 +105,7 @@ add_action(
 		if ( preg_match( '#^' . preg_quote( $route( voiceboard_path() . '/session' ), '#' ) . '/([a-z0-9-]+)$#', $request, $match ) ) {
 			$session = voiceboard_session( $match[1] );
 			nocache_headers();
+			voiceboard_common_headers();
 			status_header( $session ? 200 : 404 );
 			header( 'Content-Type: text/plain; charset=utf-8' );
 			echo $session ? voiceboard_transcript( $session ) : "No session with that code yet.\n"; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -116,6 +118,7 @@ add_action(
 				status_header( 200 );
 				header( 'Content-Type: text/html; charset=utf-8' );
 				header( 'Cache-Control: public, max-age=300' );
+				voiceboard_board_headers();
 
 				$html = (string) file_get_contents( __DIR__ . '/index.html' );
 				// Path-only <base>, so relative assets load from the plugin on whatever host served the page.
@@ -138,6 +141,7 @@ add_action(
 				status_header( 200 );
 				header( 'Content-Type: text/plain; charset=utf-8' );
 				header( 'Cache-Control: public, max-age=300' );
+				voiceboard_common_headers();
 				echo voiceboard_instructions(); // phpcs:ignore WordPress.Security.EscapeOutput
 				exit;
 
