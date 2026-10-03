@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
 
-const LIVE = 'https://voiceboard.wpengine.com/board/';
+const LIVE = 'https://voiceboardgames.com/board/';
 const PORT = 8767;
 const LOCAL = `http://127.0.0.1:${PORT}/`;
 const root = new URL('../', import.meta.url);

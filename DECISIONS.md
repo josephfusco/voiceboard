@@ -40,6 +40,12 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [ ] Writable abilities (add score, show question) with the board polling its session.
 - [ ] Install the MCP Adapter on the live site.
 
+## Domain
+
+- [x] Primary domain is voiceboardgames.com: the plural matches how people say "board games" and describes a set of games.
+- [x] voiceboardgame.com redirects to it through a Cloudflare redirect rule that keeps the path and query string; the primary stays DNS-only so the host's own edge handles caching and SSL.
+- [ ] Switch the redirect from 302 to 301 once it has run cleanly for a while.
+
 ## Design
 
 - [x] Tesla-like default theme following light/dark; Cyber as the alternate.
