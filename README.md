@@ -137,5 +137,4 @@ Every push to `main` that passes the tests deploys. Release-please reads convent
 
 ## License
 
-Copyright (C) 2026 Joseph M. Fusco III and successors in interest. Voiceboard is free software under the [GNU GPL v3 or later](LICENSE) with additional terms: works based on it keep the "Made by Joe Fusco" credit on the final game screen and the copyright notice in the source, are marked as modified, don't use Joe Fusco's name for promotion, and don't use the Voiceboard name or domains. Commercial licenses on other terms are available. The site's written content and screenshots are all rights reserved.
-
+GPL-3.0-or-later with additional terms. See [LICENSE](LICENSE).
