@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/josephfusco/voiceboard/compare/v0.4.0...v0.5.0) (2026-10-04)
+
+
+### Features
+
+* behave like an app: no pinch or double-tap zoom, no bounce or long-press selection ([8914d99](https://github.com/josephfusco/voiceboard/commit/8914d99ff568e1e0c8430fb0258ab30c67ec6634))
+* spoken chess moves, tap to see moves, and a full-game demo from a voice script ([bf6b0c1](https://github.com/josephfusco/voiceboard/commit/bf6b0c1bc7c6ef8e6936a2528e509ccd4c4287c1))
+
+
+### Bug Fixes
+
+* no scrollbars on load or on any Tesla screen; manifest and theme color ([2cdc2c5](https://github.com/josephfusco/voiceboard/commit/2cdc2c533215042c4f7769e6eeaca52b93dbfea2))
+
 ## [0.4.0](https://github.com/josephfusco/voiceboard/compare/v0.3.0...v0.4.0) (2026-10-04)
 
 
