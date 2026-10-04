@@ -10,6 +10,6 @@
 /.release-please-manifest.json export-ignore
 /site-theme export-ignore
 /content export-ignore
-/ARCHITECTURE.md export-ignore
+/CONTRIBUTING.md export-ignore
 /docs export-ignore
 /scripts export-ignore
