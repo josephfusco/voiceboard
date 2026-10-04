@@ -1,146 +1,45 @@
 # Voiceboard
 
-Voiceboard is a game screen for in-car voice assistants. The assistant hosts by voice and opens a new URL at every step, and the page draws whatever the query string describes. Any assistant that can open a link can host, and the design follows in-car interfaces, with a CarPlay-style sidebar.
-
-It ships as a WordPress plugin that serves the board at `/board/`, and it also runs as plain static files.
-
-## Try it
-
-A whole game of chess, played by voice. Each caption is what someone said; a mock assistant turned it into the next URL. The same script runs as an end-to-end test (`tests/chess-game.spec.js`), and `npm run demo-video` re-records it.
+Game boards for in-car voice assistants. You talk to the assistant, it opens a URL, and the screen shows the game. Trivia, a Jeopardy-style board, and chess so far.
 
 ![A chess game played by voice, from the first move to checkmate](docs/chess-demo.gif)
 
-Each screenshot below is one screen, exactly as an assistant would open it. Click one to open it live.
+In the car, say: "Open voiceboardgames.com and host trivia."
+
+## Examples
+
+Each of these is one URL. Opening them changes the players saved in your browser.
 
 <!-- examples:start -->
 <table>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/"><img src="docs/screenshots/01-home.jpg" alt="Home"></a><br><a href="https://voiceboardgames.com/board/">Home</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15"><img src="docs/screenshots/02-space-trivia-with-a-15-second-countdown.jpg" alt="Space trivia with a 15-second countdown"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15">Space trivia with a 15-second countdown</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200"><img src="docs/screenshots/03-the-reveal-sam-got-it.jpg" alt="The reveal: Sam got it"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200">The reveal: Sam got it</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Joe&t=Space&n=4&of=10&p=Joe:200,Sam:300,Ava:100"><img src="docs/screenshots/04-next-up-joe-say-ready.jpg" alt="Next up: Joe, say ready"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Joe&t=Space&n=4&of=10&p=Joe:200,Sam:300,Ava:100">Next up: Joe, say ready</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&lang=es&t=Arte&n=2&of=5&q=¿Quién+pintó+la+Mona+Lisa%3F&c=Leonardo+da+Vinci|Miguel+Ángel|Rafael|Botticelli&up=Lucía&p=Lucía:100,Mateo:200&timer=15"><img src="docs/screenshots/05-spanish-quien-pinto-la-mona-lisa.jpg" alt="Spanish: ¿Quién pintó la Mona Lisa?"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&lang=es&t=Arte&n=2&of=5&q=¿Quién+pintó+la+Mona+Lisa%3F&c=Leonardo+da+Vinci|Miguel+Ángel|Rafael|Botticelli&up=Lucía&p=Lucía:100,Mateo:200&timer=15">Spanish: ¿Quién pintó la Mona Lisa?</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200"><img src="docs/screenshots/06-arabic-right-to-left.jpg" alt="Arabic, right to left"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200">Arabic, right to left</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&lang=ja&cats=宇宙|日本の歴史|アニメ|食べ物&u=A1,C2&at=B3&p=ハル:400,ユキ:200"><img src="docs/screenshots/07-japanese-category-board.jpg" alt="Japanese category board"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&lang=ja&cats=宇宙|日本の歴史|アニメ|食べ物&u=A1,C2&at=B3&p=ハル:400,ユキ:200">Japanese category board</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20"><img src="docs/screenshots/08-name-that-movie-in-emoji.jpg" alt="Name that movie in emoji"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20">Name that movie in emoji</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300"><img src="docs/screenshots/09-open-ended-and-nobody-got-it.jpg" alt="Open-ended, and nobody got it"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300">Open-ended, and nobody got it</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200"><img src="docs/screenshots/10-jeopardy-board-mid-game.jpg" alt="Jeopardy board mid-game"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200">Jeopardy board mid-game</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200"><img src="docs/screenshots/11-daily-double.jpg" alt="Daily Double!"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200">Daily Double!</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400"><img src="docs/screenshots/12-final-jeopardy-with-wagers.jpg" alt="Final Jeopardy with wagers"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400">Final Jeopardy with wagers</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300"><img src="docs/screenshots/13-dead-heat.jpg" alt="Dead heat"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300">Dead heat</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti"><img src="docs/screenshots/14-six-player-finale-with-confetti.jpg" alt="Six-player finale with confetti"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti">Six-player finale with confetti</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber"><img src="docs/screenshots/15-cyber-theme-neon-jeopardy-board.jpg" alt="Cyber theme: neon Jeopardy board"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber">Cyber theme: neon Jeopardy board</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6"><img src="docs/screenshots/16-chess-by-voice-the-board-checks-every-move.jpg" alt="Chess by voice: the board checks every move"></a><br><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6">Chess by voice: the board checks every move</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Qh5+Nc6+Bc4+Nf6+Qxf7"><img src="docs/screenshots/17-scholar-s-mate-checkmate.jpg" alt="Scholar's mate: checkmate"></a><br><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Qh5+Nc6+Bc4+Nf6+Qxf7">Scholar's mate: checkmate</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6"><img src="docs/screenshots/18-cyber-chess-from-black-s-side.jpg" alt="Cyber chess from Black's side"></a><br><a href="https://voiceboardgames.com/board/?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6">Cyber chess from Black's side</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=home&theme=cyber"><img src="docs/screenshots/19-home-in-the-cyber-theme.jpg" alt="Home in the Cyber theme"></a><br><a href="https://voiceboardgames.com/board/?g=home&theme=cyber">Home in the Cyber theme</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Night+Sky&n=2&of=8&q=Which+star+is+closest+to+Earth%3F&c=Sirius|The+Sun|Proxima+Centauri|Polaris&p=Joe:100,Sam:200&timer=15"><img src="docs/screenshots/20-dark-mode-night-drive-trivia.jpg" alt="Dark mode: night drive trivia"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Night+Sky&n=2&of=8&q=Which+star+is+closest+to+Earth%3F&c=Sirius|The+Sun|Proxima+Centauri|Polaris&p=Joe:100,Sam:200&timer=15">Dark mode: night drive trivia</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Trinity&t=Hackers&n=6&of=12&p=Neo:500,Trinity:400,Morpheus:300,Tank:200,Dozer:100,Switch:0&theme=cyber"><img src="docs/screenshots/21-cyber-next-up-with-six-players.jpg" alt="Cyber: next up with six players"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Trinity&t=Hackers&n=6&of=12&p=Neo:500,Trinity:400,Morpheus:300,Tank:200,Dozer:100,Switch:0&theme=cyber">Cyber: next up with six players</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&lang=he&t=טריוויה&p=נועה:500,יונתן:300,מאיה:400&fx=confetti"><img src="docs/screenshots/22-hebrew-finale-right-to-left.jpg" alt="Hebrew finale, right to left"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&lang=he&t=טריוויה&p=נועה:500,יונתן:300,מאיה:400&fx=confetti">Hebrew finale, right to left</a></td></tr>
-<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&lang=fr&t=Finale&q=Ce+monument+parisien+mesure+330+m%C3%A8tres&a=Qu%27est-ce+que+la+tour+Eiffel+%3F&r=Camille&w=Camille:800,Louis:400&p=Camille:2400,Louis:1600"><img src="docs/screenshots/23-french-final-jeopardy.jpg" alt="French Final Jeopardy"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&lang=fr&t=Finale&q=Ce+monument+parisien+mesure+330+m%C3%A8tres&a=Qu%27est-ce+que+la+tour+Eiffel+%3F&r=Camille&w=Camille:800,Louis:400&p=Camille:2400,Louis:1600">French Final Jeopardy</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200"><img src="docs/screenshots/24-german-open-ended-reveal.jpg" alt="German open-ended reveal"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200">German open-ended reveal</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/"><img src="docs/screenshots/01-home-screen.jpg" alt="Home screen"></a><br><a href="https://voiceboardgames.com/board/">Home screen</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15"><img src="docs/screenshots/02-trivia-question-with-a-countdown.jpg" alt="Trivia question with a countdown"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15">Trivia question with a countdown</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200"><img src="docs/screenshots/03-sam-gets-it-right.jpg" alt="Sam gets it right"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&p=Joe:200,Sam:200">Sam gets it right</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Joe&t=Space&n=4&of=10&p=Joe:200,Sam:300,Ava:100"><img src="docs/screenshots/04-next-up-is-joe.jpg" alt="Next up is Joe"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Joe&t=Space&n=4&of=10&p=Joe:200,Sam:300,Ava:100">Next up is Joe</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&lang=es&t=Arte&n=2&of=5&q=¿Quién+pintó+la+Mona+Lisa%3F&c=Leonardo+da+Vinci|Miguel+Ángel|Rafael|Botticelli&up=Lucía&p=Lucía:100,Mateo:200&timer=15"><img src="docs/screenshots/05-trivia-in-spanish.jpg" alt="Trivia in Spanish"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&lang=es&t=Arte&n=2&of=5&q=¿Quién+pintó+la+Mona+Lisa%3F&c=Leonardo+da+Vinci|Miguel+Ángel|Rafael|Botticelli&up=Lucía&p=Lucía:100,Mateo:200&timer=15">Trivia in Spanish</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200"><img src="docs/screenshots/06-arabic-laid-out-right-to-left.jpg" alt="Arabic, laid out right to left"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200">Arabic, laid out right to left</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&lang=ja&cats=宇宙|日本の歴史|アニメ|食べ物&u=A1,C2&at=B3&p=ハル:400,ユキ:200"><img src="docs/screenshots/07-category-board-in-japanese.jpg" alt="Category board in Japanese"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&lang=ja&cats=宇宙|日本の歴史|アニメ|食べ物&u=A1,C2&at=B3&p=ハル:400,ユキ:200">Category board in Japanese</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20"><img src="docs/screenshots/08-name-the-movie-from-emoji.jpg" alt="Name the movie from emoji"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Emoji+Movies&q=🦁👑&c=The+Lion+King|Madagascar|Zootopia|Tarzan&timer=20">Name the movie from emoji</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300"><img src="docs/screenshots/09-nobody-got-this-one.jpg" alt="Nobody got this one"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300">Nobody got this one</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200"><img src="docs/screenshots/10-category-board-mid-game.jpg" alt="Category board mid-game"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200">Category board mid-game</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200"><img src="docs/screenshots/11-daily-double.jpg" alt="Daily Double"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200">Daily Double</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400"><img src="docs/screenshots/12-final-round-with-wagers.jpg" alt="Final round with wagers"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&t=Final+Jeopardy&q=This+planet+has+the+tallest+volcano+in+the+solar+system&a=What+is+Mars%3F&r=Ava&w=Joe:400,Ava:1200&p=Joe:0,Ava:2400">Final round with wagers</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300"><img src="docs/screenshots/13-a-tie.jpg" alt="A tie"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Road+Trip+Trivia&p=Joe:500,Sam:500,Ava:300">A tie</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti"><img src="docs/screenshots/14-six-players-and-confetti.jpg" alt="Six players and confetti"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti">Six players and confetti</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber"><img src="docs/screenshots/15-category-board-in-the-cyber-theme.jpg" alt="Category board in the Cyber theme"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber">Category board in the Cyber theme</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6"><img src="docs/screenshots/16-chess-a-few-moves-in.jpg" alt="Chess, a few moves in"></a><br><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6">Chess, a few moves in</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Qh5+Nc6+Bc4+Nf6+Qxf7"><img src="docs/screenshots/17-scholar-s-mate.jpg" alt="Scholar's mate"></a><br><a href="https://voiceboardgames.com/board/?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Qh5+Nc6+Bc4+Nf6+Qxf7">Scholar's mate</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6"><img src="docs/screenshots/18-chess-from-black-s-side-cyber-theme.jpg" alt="Chess from Black's side, Cyber theme"></a><br><a href="https://voiceboardgames.com/board/?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6">Chess from Black's side, Cyber theme</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=home&theme=cyber"><img src="docs/screenshots/19-home-screen-cyber-theme.jpg" alt="Home screen, Cyber theme"></a><br><a href="https://voiceboardgames.com/board/?g=home&theme=cyber">Home screen, Cyber theme</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Night+Sky&n=2&of=8&q=Which+star+is+closest+to+Earth%3F&c=Sirius|The+Sun|Proxima+Centauri|Polaris&p=Joe:100,Sam:200&timer=15"><img src="docs/screenshots/20-trivia-in-dark-mode.jpg" alt="Trivia in dark mode"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=ask&t=Night+Sky&n=2&of=8&q=Which+star+is+closest+to+Earth%3F&c=Sirius|The+Sun|Proxima+Centauri|Polaris&p=Joe:100,Sam:200&timer=15">Trivia in dark mode</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Trinity&t=Hackers&n=6&of=12&p=Neo:500,Trinity:400,Morpheus:300,Tank:200,Dozer:100,Switch:0&theme=cyber"><img src="docs/screenshots/21-six-players-cyber-theme.jpg" alt="Six players, Cyber theme"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=next&up=Trinity&t=Hackers&n=6&of=12&p=Neo:500,Trinity:400,Morpheus:300,Tank:200,Dozer:100,Switch:0&theme=cyber">Six players, Cyber theme</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=end&lang=he&t=טריוויה&p=נועה:500,יונתן:300,מאיה:400&fx=confetti"><img src="docs/screenshots/22-final-scores-in-hebrew.jpg" alt="Final scores in Hebrew"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=end&lang=he&t=טריוויה&p=נועה:500,יונתן:300,מאיה:400&fx=confetti">Final scores in Hebrew</a></td></tr>
+<tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&lang=fr&t=Finale&q=Ce+monument+parisien+mesure+330+m%C3%A8tres&a=Qu%27est-ce+que+la+tour+Eiffel+%3F&r=Camille&w=Camille:800,Louis:400&p=Camille:2400,Louis:1600"><img src="docs/screenshots/23-final-round-in-french.jpg" alt="Final round in French"></a><br><a href="https://voiceboardgames.com/board/?g=jeopardy&st=final&lang=fr&t=Finale&q=Ce+monument+parisien+mesure+330+m%C3%A8tres&a=Qu%27est-ce+que+la+tour+Eiffel+%3F&r=Camille&w=Camille:800,Louis:400&p=Camille:2400,Louis:1600">Final round in French</a></td><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200"><img src="docs/screenshots/24-open-ended-answer-in-german.jpg" alt="Open-ended answer in German"></a><br><a href="https://voiceboardgames.com/board/?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200">Open-ended answer in German</a></td></tr>
 <tr><td width="50%" valign="top"><a href="https://voiceboardgames.com/board/?g=hall"><img src="docs/screenshots/25-hall-of-fame.jpg" alt="Hall of Fame"></a><br><a href="https://voiceboardgames.com/board/?g=hall">Hall of Fame</a></td><td></td></tr>
 </table>
 <!-- examples:end -->
 
-The [assistant instructions](https://voiceboardgames.com/llms.txt) are what a voice assistant reads to learn the format. Opening these links changes the players remembered in your browser, as a real game would.
-
-In the car, say: "Open voiceboardgames.com and host trivia."
-
-The examples live in `docs/examples.json`; `npm run screenshots` retakes every image and rebuilds this gallery.
-
 ## Install
 
-On WordPress, download `voiceboard.zip` from the [latest release](../../releases/latest) and upload it under Plugins → Add New. The board is then live at `/board/`, the home page redirects there, and `/llms.txt` serves the assistant instructions, with nothing to configure. To move the board, change the path under Settings → Reading (leave it blank for the site root) or use the filter:
+Download `voiceboard.zip` from the [latest release](../../releases/latest) and upload it in WordPress under Plugins → Add New. The board lives at `/board/` and the home page redirects to it.
 
-```php
-add_filter( 'voiceboard_path', fn () => 'play' );
-```
+Board labels come in English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic, and Hebrew.
 
-For static hosting, serve the repo root as it is. There's no build step.
+## Docs
 
-## URL format
-
-These work in every game:
-
-| Param | Meaning | Example |
-|---|---|---|
-| `g` | App: `trivia`, `jeopardy` (or `categories`), `chess`, `hall`, `home` | `trivia` |
-| `st` | Screen, inferred if omitted | `ask` |
-| `t` | Title or category | `Space` |
-| `p` | Sets the roster, up to 6 players | `Joe:0,Sam:0` |
-| `add` | Score changes against the remembered roster | `Sam:100,Joe:-200` |
-| `reset` | `1` clears the remembered roster | `1` |
-| `timer` | Countdown in seconds, up to 600 | `15` |
-| `fx` | Effects | `confetti` |
-| `theme` | `tesla` or `cyber`, remembered on the device | `cyber` |
-| `lang` | Language for the board's labels on this screen; otherwise the browser's language | `es` |
-| `up` | Whose turn it is; highlights that player | `Joe` |
-| `code` | Session code the host makes up once per game; enables the transcript | `blue-otter` |
-
-Trivia screens are `ask`, `reveal`, `score`, and `end`. It reads `q` (question), `c` (choices separated by `|`), `a` (the answer as `B`, `2`, or its text), `r` (who got it, or `none`), and `n`/`of` (progress).
-
-The Jeopardy-style game's screens are `board`, `clue`, `reveal`, `final`, and `end`. It reads `cats` (categories separated by `|`), `v` (clue values, 200 to 1000 by default), `u` (used clues such as `A1,C3`), `at` (the chosen clue), `q` (clue), `a` (response), `r` (who got it), `dd` (`1` marks a daily double), and `w` (final wagers).
-
-Chess reads `mv` (every move so far, separated by spaces, in standard notation or as squares like `e2e4`) and `side` (`b` shows Black's view). The board replays the moves with real rules, marks an illegal move, and puts the position and legal moves in the session transcript for the assistant.
-
-```
-/board/?g=trivia&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
-/board/?g=trivia&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
-/board/?g=jeopardy&st=board&cats=Space|Rivers|Movies|Food|Sports|Words&u=A1,C3
-/board/?g=trivia&st=end&fx=confetti
-```
-
-The board tolerates messy input. It decodes values encoded twice, turns bad scores into 0, and opens the home screen for an app it doesn't know. WordPress reserves some query names, so the only overlaps are `p` and `w`, and the plugin tells them apart because the board's values are never numeric.
-
-## Languages
-
-Questions, answers, and names appear in whatever language the assistant sends. The board's own labels come in English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic, and Hebrew, chosen by `lang=` or else the browser's language, and Arabic and Hebrew switch the layout to right to left. Numbers and times follow the chosen language. To add a language, add its strings to `js/locales.js`.
-
-## Remembered state
-
-The URL decides what's on screen. `localStorage` remembers the roster, so the host can send `add=` instead of every score, along with the last 20 finished games for the Hall of Fame and the theme. Reopening a URL never applies its changes twice, and the board sends none of this to the server.
-
-## Sessions and the URL log
-
-When the plugin serves the board, each screen is reported to WordPress. With `code=blue-otter` in every URL, the site keeps a session the assistant can read back as plain text at `/board/session/blue-otter`: players, scores, what's on screen, and every question asked so far. Sessions live in a `voiceboard_session` post type under Tools → Voiceboard sessions, where each one also shows a log of the exact URLs the screen received and anything the board had to fix (unknown parameters, double encoding, an unknown screen). Without a code, a board that's playing a game still gets its own session named after its random car ID; plain browsing (the home page, sidebar taps) stores nothing. Sessions are deleted after 30 days.
-
-If the [Presence API](https://github.com/WordPress/presence-api) plugin is active, each board also appears in a `voiceboard/session/<code>` room and a `voiceboard/cars` room while it's open. Static hosting sends nothing.
-
-The plugin registers three abilities for MCP-capable assistants: `voiceboard/get-instructions`, `voiceboard/build-url`, and `voiceboard/get-transcript`.
-
-## How an assistant learns the format
-
-The instructions live in one file, `llms.txt`, and the plugin publishes them with the site's own board URL filled in. They're served at `/llms.txt` and embedded in the board's HTML for assistants that read pages without running JavaScript. Because the home page redirects to the board and keeps any parameters, "open example.com and host trivia" reaches the instructions too, and the board shows people that same sentence with its own domain. A test fails if any parameter goes undocumented.
-
-## Structure
-
-```
-voiceboard.php           core plugin: board, routes, settings, module loading
-includes/modules.php     module registry, import map, bundled module loader
-includes/screens.php     screen reports: /voiceboard/v1/ping and bye, validation, rate limits, hooks
-includes/hardening.php   security headers on Voiceboard's responses
-index.html               board shell (the plugin fills in modules and embeds llms.txt)
-llms.txt                 core assistant instructions; each module adds its own section
-board.css                light/dark and Cyber themes, sidebar, screens, effects
-manifest.webmanifest     web app manifest (name, colors, fullscreen); icon.svg is its icon
-js/voiceboard.js         the public API modules import as 'voiceboard'
-js/main.js               boot: URL -> modules -> app -> remembered state -> screen -> effects -> report
-js/registry.js           keyed registries for apps and effects
-js/params.js             typed param parsers and readParams(search, schema)
-js/dom.js                h() element builder, icons, app links
-js/screens.js            shared header, score strip, scoreboard, idle and next screens
-js/store.js              localStorage roster, history, device preferences, car ID
-js/i18n.js               language choice, t() for labels, addStrings() for modules
-js/locales.js            core label translations
-js/dock.js               sidebar
-js/report.js             reports each screen to the plugin
-js/apps/                 built-in Home and Hall of Fame
-plugins/                 modules: each folder is a plugin (see plugins/README.md)
-```
-
-Every game, effect, and server feature lives in `plugins/` and is built only on the public JavaScript API and the core's PHP hooks. [plugins/README.md](plugins/README.md) explains how to write one and lists every hook.
-
-## Development
-
-```sh
-npm install
-npx playwright install chromium
-npm test              # whole suite against static files and the plugin in WordPress Playground
-npm run test:static   # static only, fastest
-npm run serve         # static preview on :8766
-npm run wp            # WordPress + plugin on :9400, board at /board/
-npm run wp:root       # board at the site root with the site theme, on :9401
-```
-
-Every push to `main` that passes the tests deploys. Release-please reads conventional commits (`feat:`, `fix:`) and opens a release PR; merging it tags the version, updates `CHANGELOG.md` and the plugin header, and attaches `voiceboard.zip`. Issue labels follow the WordPress/presence-api scheme (`[Type]`, `[Area]`, and workflow labels).
+- [llms.txt](llms.txt) is the URL format. It's written for assistants, and it's the full parameter reference.
+- [plugins/README.md](plugins/README.md) explains how to add a game.
+- [CONTRIBUTING.md](CONTRIBUTING.md) covers the code layout, tests, and releases.
+- [DECISIONS.md](DECISIONS.md) is the decision log.
 
 ## License
 
