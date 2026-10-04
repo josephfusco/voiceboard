@@ -34,12 +34,18 @@
 .coord.file { bottom: 0.2em; right: 0.35em; }
 
 .chess-layout { display: flex; align-items: center; justify-content: center; gap: 3vw; }
-.chess-side { display: flex; flex-direction: column; gap: 2.4vh; min-width: 20vw; }
+.chess-side { display: flex; flex-direction: column; gap: 2.4vh; width: 24vw; }
 .chess-status { margin: 0; font-size: clamp(1.4rem, 4.2vh, 3rem); font-weight: 600; }
 .chess-illegal { margin: 0; color: var(--danger); font-size: clamp(1rem, 2.6vh, 1.6rem); font-weight: 600; }
 .chess-moves { margin: 0; color: var(--muted); font-size: clamp(1rem, 2.4vh, 1.5rem); font-variant-numeric: tabular-nums; }
 .chess-player { display: flex; align-items: center; gap: 0.6em; font-size: clamp(1.1rem, 3vh, 2rem); }
-.chess-player.is-turn { color: var(--accent); font-weight: 600; }
+.chess-player.is-turn { color: var(--accent); font-weight: 600; font-size: clamp(1.4rem, 4vh, 2.6rem); }
+.chess-player.is-turn .dot { box-shadow: 0 0 0 3px var(--accent); }
+
+/* Tap-to-see moves (touch only) */
+.sq.selected { box-shadow: inset 0 0 0 4px var(--accent); }
+.sq.target::before { content: ""; position: absolute; z-index: 2; width: 28%; aspect-ratio: 1; border-radius: 50%; background: color-mix(in srgb, var(--accent) 70%, transparent); }
+.sq.capture::before { content: ""; position: absolute; z-index: 2; inset: 6%; border-radius: 50%; box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--accent) 75%, transparent); }
 .dot { width: 0.8em; height: 0.8em; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--muted); }
 .dot.w { background: #fff; }
 .dot.b { background: #15171a; }

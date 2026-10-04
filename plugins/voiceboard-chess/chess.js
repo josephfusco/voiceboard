@@ -25,7 +25,32 @@ addStrings({
 const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const PIECE = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
 
-const moveList = (v) => v.split(/[\s,]+/).filter(Boolean).slice(0, 600);
+// Moves are separated by commas, or by spaces when every word is already a move ("e4 e5 Nf3").
+// Anything else is one spoken move ("knight to f3").
+const NOTATION = /^([KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](=[QRBN])?|O-O(-O)?|[a-h][1-8][a-h][1-8][qrbn]?)[+#]?$/;
+const moveList = (v) => {
+	const words = v.split(/\s+/).filter(Boolean);
+	const list = v.includes(',') ? v.split(',') : words.every((word) => NOTATION.test(word)) ? words : [v];
+	return list.map((s) => s.trim()).filter(Boolean).slice(0, 600);
+};
+
+const PIECES_SPOKEN = { king: 'k', queen: 'q', rook: 'r', bishop: 'b', knight: 'n', horse: 'n', pawn: 'p' };
+
+// Turns a spoken move ("knight takes e5", "castle queenside", "pawn to e8 promote to knight") into standard
+// notation by matching it against the legal moves. Ambiguous or impossible moves come back unchanged and fail.
+const fromSpeech = (text, game) => {
+	const words = text.toLowerCase().replace(/checkmate|check|[!?+#]/g, ' ');
+	if (/castl/.test(words)) return /queen|long/.test(words) ? 'O-O-O' : 'O-O';
+	const squares = words.match(/[a-h][1-8]/g) ?? [];
+	const piece = Object.entries(PIECES_SPOKEN).find(([word]) => new RegExp(`\\b${word}\\b`).test(words.replace(/promot\w*.*/, '')))?.[1];
+	const promotion = PIECES_SPOKEN[words.match(/promot\w*\s*(?:to\s*)?(queen|rook|bishop|knight)/)?.[1]];
+	const candidates = game.moves({ verbose: true }).filter((m) =>
+		m.to === squares.at(-1)
+		&& (!piece || m.piece === piece)
+		&& (squares.length < 2 || m.from === squares[0])
+		&& (!m.promotion || m.promotion === (promotion ?? 'q')));
+	return candidates.length === 1 ? candidates[0].san : text;
+};
 
 // Replays the moves, stopping at the first one that isn't legal.
 const replay = (moves) => {
@@ -34,7 +59,11 @@ const replay = (moves) => {
 		try {
 			game.move(move);
 		} catch {
-			return { game, illegal: move, at: i + 1 };
+			try {
+				game.move(fromSpeech(move, game));
+			} catch {
+				return { game, illegal: move, at: i + 1 };
+			}
 		}
 	}
 	return { game };
@@ -66,10 +95,25 @@ const boardView = ({ chess: { game }, side }) => {
 			piece && h('span', `piece ${piece.color}`, GLYPH[piece.type]),
 			c === 0 && h('span', 'coord rank', square[1]),
 			r === 7 && h('span', 'coord file', square[0]));
+		cell.dataset.square = square;
 		cell.setAttribute('role', 'gridcell');
 		cell.setAttribute('aria-label', piece ? `${square}: ${piece.color === 'w' ? 'white' : 'black'} ${PIECE[piece.type]}` : `${square}: empty`);
 		grid.append(cell);
 	}));
+
+	// Touch only: tap a piece of the side to move to see where it can go. One piece at a time; tap again to clear.
+	// It never changes the game.
+	grid.addEventListener('click', (event) => {
+		const cell = event.target.closest('.sq');
+		const selected = grid.querySelector('.sq.selected')?.dataset.square;
+		grid.querySelectorAll('.selected, .target, .capture').forEach((el) => el.classList.remove('selected', 'target', 'capture'));
+		const piece = cell && game.get(cell.dataset.square);
+		if (!piece || cell.dataset.square === selected || piece.color !== game.turn() || game.isGameOver()) return;
+		cell.classList.add('selected');
+		for (const move of game.moves({ square: cell.dataset.square, verbose: true })) {
+			grid.querySelector(`[data-square="${move.to}"]`).classList.add(move.captured ? 'capture' : 'target');
+		}
+	});
 	return grid;
 };
 

@@ -49,3 +49,22 @@ test('chess puts the position and legal moves in the transcript', async ({ page,
 	expect(text).toContain('Board: Chess. Position (FEN): rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq');
 	expect(text).toContain('Legal moves:');
 });
+
+test.describe('chess: tap to see moves', () => {
+	test('one piece at a time, only for the side to move, and it changes nothing', async ({ open, page }) => {
+		await open('g=chess&p=Joe:0,Sam:0');
+		const cell = (square) => page.locator(`[data-square="${square}"]`);
+		await cell('e2').click();
+		await expect(page.locator('.sq.target')).toHaveCount(2);
+		await expect(cell('e4')).toHaveClass(/target/);
+		await cell('g1').click();
+		await expect(page.locator('.sq.selected')).toHaveCount(1);
+		await expect(page.locator('.sq.target')).toHaveCount(2);
+		await expect(cell('f3')).toHaveClass(/target/);
+		await cell('g1').click();
+		await expect(page.locator('.sq.target')).toHaveCount(0);
+		await cell('e7').click();
+		await expect(page.locator('.sq.selected')).toHaveCount(0);
+		await expect(page).toHaveURL(/g=chess&p=Joe:0,Sam:0$/);
+	});
+});

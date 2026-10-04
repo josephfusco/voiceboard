@@ -6,7 +6,11 @@ It ships as a WordPress plugin that serves the board at `/board/`, and it also r
 
 ## Try it
 
-Each screenshot is one screen, exactly as an assistant would open it. Click one to open it live.
+A whole game of chess, played by voice. Each caption is what someone said; a mock assistant turned it into the next URL. The same script runs as an end-to-end test (`tests/chess-game.spec.js`), and `npm run demo-video` re-records it.
+
+![A chess game played by voice, from the first move to checkmate](docs/chess-demo.gif)
+
+Each screenshot below is one screen, exactly as an assistant would open it. Click one to open it live.
 
 <!-- examples:start -->
 <table>
