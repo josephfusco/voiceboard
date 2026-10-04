@@ -49,3 +49,9 @@
 .dot { width: 0.8em; height: 0.8em; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--muted); }
 .dot.w { background: #fff; }
 .dot.b { background: #15171a; }
+
+@media (orientation: portrait) {
+	.chess-layout { flex-direction: column; gap: 3vh; }
+	.chess-board { width: min(84vw, 62vh); }
+	.chess-side { width: auto; align-items: center; text-align: center; }
+}

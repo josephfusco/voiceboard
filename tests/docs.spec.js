@@ -21,7 +21,7 @@ test.describe('README stays in sync', () => {
 	test('lists every source file or folder', () => {
 		const root = new URL('../', import.meta.url);
 		const entries = [
-			...['voiceboard.php', 'index.html', 'llms.txt', 'board.css'],
+			...['voiceboard.php', 'index.html', 'llms.txt', 'board.css', 'manifest.webmanifest', 'icon.svg'],
 			...readdirSync(new URL('js/', root), { withFileTypes: true }).map((e) => `js/${e.name}${e.isDirectory() ? '/' : ''}`),
 			...readdirSync(new URL('includes/', root)).map((name) => `includes/${name}`),
 			'plugins/',

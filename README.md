@@ -52,7 +52,7 @@ These work in every game:
 
 | Param | Meaning | Example |
 |---|---|---|
-| `g` | App: `trivia`, `jeopardy` (or `categories`), `hall`, `home` | `trivia` |
+| `g` | App: `trivia`, `jeopardy` (or `categories`), `chess`, `hall`, `home` | `trivia` |
 | `st` | Screen, inferred if omitted | `ask` |
 | `t` | Title or category | `Space` |
 | `p` | Sets the roster, up to 6 players | `Joe:0,Sam:0` |
@@ -90,7 +90,7 @@ The URL decides what's on screen. `localStorage` remembers the roster, so the ho
 
 ## Sessions and the URL log
 
-When the plugin serves the board, each screen is reported to WordPress. With `code=blue-otter` in every URL, the site keeps a session the assistant can read back as plain text at `/board/session/blue-otter`: players, scores, what's on screen, and every question asked so far. Sessions live in a `voiceboard_session` post type under Tools → Voiceboard sessions, where each one also shows a log of the exact URLs the screen received and anything the board had to fix (unknown parameters, double encoding, an unknown screen). Without a code, a board still gets its own session named after its random car ID. Sessions are deleted after 30 days.
+When the plugin serves the board, each screen is reported to WordPress. With `code=blue-otter` in every URL, the site keeps a session the assistant can read back as plain text at `/board/session/blue-otter`: players, scores, what's on screen, and every question asked so far. Sessions live in a `voiceboard_session` post type under Tools → Voiceboard sessions, where each one also shows a log of the exact URLs the screen received and anything the board had to fix (unknown parameters, double encoding, an unknown screen). Without a code, a board that's playing a game still gets its own session named after its random car ID; plain browsing (the home page, sidebar taps) stores nothing. Sessions are deleted after 30 days.
 
 If the [Presence API](https://github.com/WordPress/presence-api) plugin is active, each board also appears in a `voiceboard/session/<code>` room and a `voiceboard/cars` room while it's open. Static hosting sends nothing.
 
@@ -110,6 +110,7 @@ includes/hardening.php   security headers on Voiceboard's responses
 index.html               board shell (the plugin fills in modules and embeds llms.txt)
 llms.txt                 core assistant instructions; each module adds its own section
 board.css                light/dark and Cyber themes, sidebar, screens, effects
+manifest.webmanifest     web app manifest (name, colors, fullscreen); icon.svg is its icon
 js/voiceboard.js         the public API modules import as 'voiceboard'
 js/main.js               boot: URL -> modules -> app -> remembered state -> screen -> effects -> report
 js/registry.js           keyed registries for apps and effects

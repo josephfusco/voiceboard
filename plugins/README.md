@@ -6,6 +6,7 @@ Everything beyond the core board is a module: each game, the effects, sessions, 
 |---|---|
 | `voiceboard-trivia` | A game: screens, params, translated labels, llms instructions |
 | `voiceboard-jeopardy` | A game with its own param parsers and aliases (`g=jeopardy`, `g=board`) |
+| `voiceboard-chess` | A game with a bundled library, its own stylesheet, a touch interaction, and a `state.note` summary for the transcript |
 | `voiceboard-effects` | Effects that layer onto any screen (`timer=`, `fx=confetti`) |
 | `voiceboard-sessions` | Server side: vetoing and storing screen reports, adding a route, admin screens, an ability |
 | `voiceboard-presence` | Reacting to reports and to a board closing |

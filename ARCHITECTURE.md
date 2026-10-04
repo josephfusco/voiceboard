@@ -13,6 +13,7 @@ The voice assistant runs the game, the screen shows it, and WordPress keeps the 
 | Theme (Tesla / Cyber) | ✓ (`theme=`) | ✓ (sidebar toggle) | A personal preference, remembered on the device. |
 | Language | ✓ (`lang=`) | | Matches the conversation; applies per URL, otherwise the browser's language. |
 | Clearing this device's players | ✓ (`reset=1`) | ✓ (New game, with confirmation) | Starting over is the passengers' call too; the next `p=` still sets the roster. |
+| Seeing a chess piece's moves | | ✓ (tap a piece, one at a time) | A hint for passengers; it shows moves without making one. |
 | Fullscreen | | ✓ | Browsers allow it only after a tap. |
 | Answering by tapping | later | later | Needs a path back to the assistant (see sessions). Until then, players answer out loud. |
 
@@ -64,6 +65,8 @@ Each level adds to the one before, and nothing at level 1 depends on levels 2 or
 | WordPress plugin, `llms.txt`, home redirect, CI deploy | Shipped |
 | Sessions, transcript, URL log, car ID, presence | Shipped |
 | Turns (`st=next`, `up=`) | Shipped |
+| Chess, with spoken moves and the position in the transcript | Shipped |
+| Modules: every game, effect, and server feature is a plugin in `plugins/` | Shipped |
 | Read-only abilities | Shipped; MCP Adapter not yet installed on the live site |
 | Writable abilities with board polling | Designed |
 | Tap-to-answer | Later, after sessions |

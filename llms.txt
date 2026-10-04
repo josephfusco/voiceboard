@@ -15,7 +15,7 @@ Board URL: {board}
 
 ## Every game
 
-- g: the game, trivia or jeopardy (g=home shows the game picker, g=hall the recent winners)
+- g: the game: trivia, jeopardy, or chess (g=home shows the game picker, g=hall the recent winners)
 - st: the screen (listed under each game)
 - t: title or category, e.g. t=Space
 - p: set up to 6 players with scores, e.g. p=Joe:0,Sam:0
