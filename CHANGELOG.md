@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/josephfusco/voiceboard/compare/v0.3.0...v0.4.0) (2026-10-04)
+
+
+### Features
+
+* chess by voice, and version stamps that bust year-long asset caching ([5f4d563](https://github.com/josephfusco/voiceboard/commit/5f4d563df6fb55aa0c691d594c212a4a14f19a61))
+
 ## [0.3.0](https://github.com/josephfusco/voiceboard/compare/v0.2.0...v0.3.0) (2026-10-04)
 
 
