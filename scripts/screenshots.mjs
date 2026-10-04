@@ -30,7 +30,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	try {
 		for (const [i, example] of examples.entries()) {
 			// A fresh device per example; half-scale keeps the images light (960x600 of a 1920x1200 screen).
-			const context = await browser.newContext({ viewport: { width: 1920, height: 1200 }, deviceScaleFactor: 0.5, locale: 'en-US' });
+			const context = await browser.newContext({ viewport: { width: 1920, height: 1200 }, deviceScaleFactor: 0.5, locale: 'en-US', colorScheme: example.colorScheme ?? 'light' });
 			const page = await context.newPage();
 			await page.clock.setFixedTime(new Date('2026-10-03T10:30:00'));
 			for (const seed of example.seed ?? []) await page.goto(LOCAL + seed);

@@ -36,10 +36,6 @@
 		"query": "?g=trivia&st=reveal&t=History&q=Who+was+the+first+person+in+space%3F&a=Yuri+Gagarin&r=none&p=Joe:300,Sam:300"
 	},
 	{
-		"title": "Kids' round: quick math",
-		"query": "?g=trivia&st=ask&t=Quick+Math&q=7+×+8+%3D+%3F&c=54|56|58|64&p=Mia:2,Leo:3&timer=10"
-	},
-	{
 		"title": "Jeopardy board mid-game",
 		"query": "?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200"
 	},
@@ -64,38 +60,6 @@
 		"query": "?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber"
 	},
 	{
-		"title": "Cyber theme: final answer, 10 seconds",
-		"query": "?g=trivia&st=ask&t=Sci-Fi&q=What+year+does+Blade+Runner+take+place%3F&c=2019|2049|2077|2001&timer=10&p=Neo:300,Trinity:400&theme=cyber"
-	},
-	{
-		"title": "Guess the national anthem's country",
-		"query": "?g=trivia&st=ask&t=Around+the+World&q=Which+country+has+a+national+anthem+with+no+official+lyrics%3F&c=Spain|Brazil|Japan|Canada&p=Mia:0,Leo:0"
-	},
-	{
-		"title": "Road trip: which state is this?",
-		"query": "?g=trivia&st=ask&t=Road+Trip&q=Which+state+is+home+to+the+Grand+Canyon%3F&c=Utah|Nevada|Arizona|Colorado&timer=15"
-	},
-	{
-		"title": "Emoji food rebus",
-		"query": "?g=trivia&st=ask&t=Emoji+Food&q=🌭+🔥+⚾&c=Ballpark+frank|Campfire+cookout|Chili+dog|Corn+dog"
-	},
-	{
-		"title": "Dad joke round",
-		"query": "?g=trivia&st=reveal&t=Dad+Jokes&q=Why+don't+skeletons+fight+each+other%3F&a=They+don't+have+the+guts&r=Dad&add=Dad:100"
-	},
-	{
-		"title": "Category board: 70s, 80s, 90s, 00s",
-		"query": "?g=jeopardy&st=board&cats=70s|80s|90s|00s&v=100|200|300|400|500&p=Mom:0,Dad:0,Kids:0"
-	},
-	{
-		"title": "Movie quotes, Daily Double, mid-countdown",
-		"query": "?g=jeopardy&st=clue&cats=Movie+Quotes|Space|Food|Sports&at=A5&q=%22I'll+be+back%22&dd=1&timer=8&p=Mom:600,Dad:400"
-	},
-	{
-		"title": "Kids win: confetti",
-		"query": "?g=trivia&st=end&t=Animal+Trivia&p=Mia:700,Leo:500,Mom:300&fx=confetti"
-	},
-	{
 		"title": "Chess by voice: the board checks every move",
 		"query": "?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6"
 	},
@@ -106,6 +70,31 @@
 	{
 		"title": "Cyber chess from Black's side",
 		"query": "?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6"
+	},
+	{
+		"title": "Home in the Cyber theme",
+		"query": "?g=home&theme=cyber"
+	},
+	{
+		"title": "Dark mode: night drive trivia",
+		"query": "?g=trivia&st=ask&t=Night+Sky&n=2&of=8&q=Which+star+is+closest+to+Earth%3F&c=Sirius|The+Sun|Proxima+Centauri|Polaris&p=Joe:100,Sam:200&timer=15",
+		"colorScheme": "dark"
+	},
+	{
+		"title": "Cyber: next up with six players",
+		"query": "?g=trivia&st=next&up=Trinity&t=Hackers&n=6&of=12&p=Neo:500,Trinity:400,Morpheus:300,Tank:200,Dozer:100,Switch:0&theme=cyber"
+	},
+	{
+		"title": "Hebrew finale, right to left",
+		"query": "?g=trivia&st=end&lang=he&t=טריוויה&p=נועה:500,יונתן:300,מאיה:400&fx=confetti"
+	},
+	{
+		"title": "French Final Jeopardy",
+		"query": "?g=jeopardy&st=final&lang=fr&t=Finale&q=Ce+monument+parisien+mesure+330+m%C3%A8tres&a=Qu%27est-ce+que+la+tour+Eiffel+%3F&r=Camille&w=Camille:800,Louis:400&p=Camille:2400,Louis:1600"
+	},
+	{
+		"title": "German open-ended reveal",
+		"query": "?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200"
 	},
 	{
 		"title": "Hall of Fame",
