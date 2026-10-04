@@ -97,6 +97,14 @@
 		"query": "?g=trivia&st=reveal&lang=de&t=Geschichte&q=Wer+erfand+den+Buchdruck+mit+beweglichen+Lettern%3F&a=Johannes+Gutenberg&r=Lena&p=Lena:300,Max:200"
 	},
 	{
+		"title": "Adventure scene with the party",
+		"query": "?g=adventure&code=readme&ch=Joe:fighter:12/12,Sam:rogue:6/10,Ava:wizard:8/8&inv=Joe:sword|torch;Sam:lockpicks|rope;Ava:spellbook&loc=The+Old+Mill&see=a+locked+chest|cobwebs|a+sleeping+goblin&ex=door|ladder+up"
+	},
+	{
+		"title": "Sam rolls to pick the lock",
+		"query": "?g=adventure&code=readme&ch=Joe:fighter:12/12,Sam:rogue:6/10,Ava:wizard:8/8&inv=Joe:sword|torch;Sam:lockpicks|rope;Ava:spellbook&loc=The+Old+Mill&roll=d20%2B3&for=Sam&vs=12&rn=1"
+	},
+	{
 		"title": "Hall of Fame",
 		"query": "?g=hall",
 		"seed": [

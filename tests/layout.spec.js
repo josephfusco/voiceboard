@@ -9,6 +9,8 @@ const SCREENS = {
 	finale: 'g=trivia&st=end&p=A:1,B:2,C:3,D:4,E:5,F:6',
 	chess: 'g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6',
 	next: 'g=trivia&st=next&up=Joe&p=Joe:0,Sam:0',
+	adventure: 'g=adventure&ch=A:fighter,B:rogue:4/10,C:wizard,D:cleric,E:ranger,F:fighter&inv=A:sword|torch|rope&loc=The+Old+Mill&see=a+chest|cobwebs&ex=door|ladder',
+	roll: 'g=adventure&ch=A:fighter,B:rogue&roll=2d6%2B3&for=B&vs=12&code=layout&rn=1',
 };
 
 for (const [label, [width, height]] of Object.entries(SIZES)) {

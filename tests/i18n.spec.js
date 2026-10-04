@@ -45,7 +45,7 @@ test.describe('languages', () => {
 	for (const lang of ['ar', 'ja']) {
 		test(`the home screen renders in ${lang} without errors`, async ({ open, page }) => {
 			await open(`g=home&lang=${lang}`);
-			await expect(page.locator('.tile')).toHaveCount(3);
+			await expect(page.locator('.tile')).toHaveCount(4);
 		});
 	}
 });

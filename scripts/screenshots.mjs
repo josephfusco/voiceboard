@@ -36,7 +36,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 			for (const seed of example.seed ?? []) await page.goto(LOCAL + seed);
 			await page.goto(LOCAL + example.query);
 			await page.waitForSelector('#board.board');
-			await page.waitForTimeout(example.query.includes('fx=confetti') ? 1200 : 400);
+			await page.waitForTimeout(example.query.includes('fx=confetti') ? 1200 : example.query.includes('roll=') ? 900 : 400);
 			await page.screenshot({ path: new URL(image(example, i), root).pathname, type: 'jpeg', quality: 82 });
 			await context.close();
 			console.log(`✓ ${example.title}`);
