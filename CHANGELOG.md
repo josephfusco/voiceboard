@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0](https://github.com/josephfusco/voiceboard/compare/v0.2.0...v0.3.0) (2026-10-04)
+
+
+### Features
+
+* final-screen credit and GPL-3.0-or-later with attribution terms ([c984720](https://github.com/josephfusco/voiceboard/commit/c9847204c8ee04ae36d4691b39bea5a17448c839))
+* pluggable core with every feature as a module in plugins/ ([696e64a](https://github.com/josephfusco/voiceboard/commit/696e64aad9ffae55d12a8874cb59354b68fb30db))
+* sessions, transcript, URL log, presence, abilities, and turn-taking ([e930078](https://github.com/josephfusco/voiceboard/commit/e9300785acf72a7b8b13e8957cfaa2f3acdb1f86))
+
+
+### Bug Fixes
+
+* allow the host edge's injected bot-detection script; cache board HTML for 60s ([80112ab](https://github.com/josephfusco/voiceboard/commit/80112abc8244a6a59c774edb4e46e32a16142de6))
+* block session takeover and session flooding; add security headers ([461c39a](https://github.com/josephfusco/voiceboard/commit/461c39ae1043ad1fa6a11794a3122912dcee1ab5))
+* language applies per URL instead of sticking to the device ([3164cf8](https://github.com/josephfusco/voiceboard/commit/3164cf81c005f7b9cfed6c8a0bbf7ea4807919fe))
+* plain browsing never creates sessions; check ownership before presence ([7e55ccd](https://github.com/josephfusco/voiceboard/commit/7e55ccde0de721e46e196464113ccc3e2024091c))
+
 ## [0.2.0](https://github.com/josephfusco/voiceboard/compare/v0.1.0...v0.2.0) (2026-10-03)
 
 
