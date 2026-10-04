@@ -1,6 +1,6 @@
 # Voiceboard
 
-Game boards for in-car voice assistants. You talk to the assistant, it opens a URL, and the screen shows the game. Trivia, a Jeopardy-style board, and chess so far.
+Voiceboard turns a car's screen into a game board that your voice assistant runs. You ask the assistant to host a game, and it updates the screen by opening links. There's trivia, a Jeopardy-style board, and chess.
 
 ![A chess game played by voice, from the first move to checkmate](docs/chess-demo.gif)
 
@@ -8,7 +8,7 @@ In the car, say: "Open voiceboardgames.com and host trivia."
 
 ## Examples
 
-Each of these is one URL. Opening them changes the players saved in your browser.
+Each picture links to the live screen. Opening one updates the players saved in your browser.
 
 <!-- examples:start -->
 <table>
@@ -30,13 +30,13 @@ Each of these is one URL. Opening them changes the players saved in your browser
 
 ## Install
 
-Download `voiceboard.zip` from the [latest release](../../releases/latest) and upload it in WordPress under Plugins → Add New. The board lives at `/board/` and the home page redirects to it.
+Voiceboard is a WordPress plugin. Download `voiceboard.zip` from the [latest release](../../releases/latest), then upload it under Plugins → Add New. The board appears at `/board/`, and your home page sends visitors there.
 
-Board labels come in English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic, and Hebrew.
+The board's labels are available in English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic, and Hebrew.
 
 ## Docs
 
-- [llms.txt](llms.txt) is the URL format. It's written for assistants, and it's the full parameter reference.
+- [llms.txt](llms.txt) describes every URL parameter. Assistants read it to learn the games.
 - [plugins/README.md](plugins/README.md) explains how to add a game.
 - [CONTRIBUTING.md](CONTRIBUTING.md) covers the code layout, tests, and releases.
 - [DECISIONS.md](DECISIONS.md) is the decision log.

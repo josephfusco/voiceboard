@@ -40,8 +40,8 @@ npm run wp:root       # board at the site root with the site theme, on :9401
 
 ## Examples and screenshots
 
-The README gallery comes from `docs/examples.json`. After changing it, run `npm run screenshots`. `npm run demo-video` re-records the chess GIF from `tests/scripts/chess-game.js`.
+The README gallery is built from `docs/examples.json`. After you change that file, run `npm run screenshots`. To re-record the chess GIF, run `npm run demo-video`.
 
 ## Releases
 
-Pushes to `main` that pass the tests deploy. Use conventional commits (`feat:`, `fix:`); release-please turns them into a release PR.
+Every push to `main` runs the tests, and a passing run deploys the site. Start commit messages with `feat:` or `fix:` so release-please can build the next release.
