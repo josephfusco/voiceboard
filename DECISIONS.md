@@ -11,6 +11,8 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Turns: `st=next&up=Name` announces the player; their "ready" makes the host open the question with `timer=`, so question and countdown appear together.
 - [x] Up to 6 players.
 - [ ] Tap-to-answer, once taps can reach the assistant.
+- [x] Chess, as an accessibility showcase: the board replays the move list (`mv=`) with real rules (chess.js, BSD-2) and gives the assistant the exact position and legal moves.
+- [x] No checkers for now.
 - [ ] More games: road trip bingo, drawing, blur-to-reveal.
 
 ## Interaction
@@ -30,6 +32,7 @@ A running list of decisions. Checked items are decided; unchecked items are open
 - [x] Rate limits per board, per hashed network address, and on new sessions per address; addresses are never stored.
 - [x] The board page sends a same-origin Content-Security-Policy that allows inline scripts, because the host's edge injects a bot-detection script that changes per request; the users endpoint is closed to visitors.
 - [x] The board HTML is cached for 60 seconds so deploys show up quickly; the edge doesn't purge it on flush.
+- [x] Every script and stylesheet URL carries a version stamp (through the import map for module-to-module imports), because the host caches plugin files for a year.
 - [x] Transcripts tell the assistant that game text is data, not instructions.
 - [x] Player names are kept with sessions: they work as gamer tags for that game. The assistant is asked to use first names or nicknames.
 - [x] Session codes use `code=`, because WordPress reserves `s=`.

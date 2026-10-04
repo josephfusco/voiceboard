@@ -41,10 +41,31 @@ function voiceboard_modules(): array {
 }
 
 /**
- * The board loads the core runtime and every module script; modules resolve 'voiceboard' through this map.
+ * A version stamp for a plugin file, so browsers fetch fresh copies after each deploy. The host
+ * caches these files for a year, and ES modules import each other by plain URL, so without this
+ * a car could keep running old code long after a deploy.
+ */
+function voiceboard_versioned( string $url ): string {
+	$file = WP_PLUGIN_DIR . '/' . ltrim( (string) preg_replace( '#^.*?/plugins/#', '', (string) wp_parse_url( $url, PHP_URL_PATH ) ), '/' );
+	return wp_make_link_relative( $url ) . ( is_file( $file ) ? '?v=' . filemtime( $file ) : '' );
+}
+
+/**
+ * Modules resolve 'voiceboard' through this map. It also maps every script under the plugin to its
+ * versioned URL, which busts the cache for imports between modules as well.
  */
 function voiceboard_import_map(): string {
-	$imports = apply_filters( 'voiceboard_import_map', array( 'voiceboard' => wp_make_link_relative( plugins_url( 'js/voiceboard.js', VOICEBOARD_FILE ) ) ) );
+	$root    = dirname( VOICEBOARD_FILE );
+	$imports = array( 'voiceboard' => voiceboard_versioned( plugins_url( 'js/voiceboard.js', VOICEBOARD_FILE ) ) );
+	$files   = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $root, FilesystemIterator::SKIP_DOTS ) );
+	foreach ( $files as $file ) {
+		$path = substr( $file->getPathname(), strlen( $root ) + 1 );
+		if ( 'js' === $file->getExtension() && preg_match( '#^(js|plugins)/#', $path ) ) {
+			$url             = plugins_url( $path, VOICEBOARD_FILE );
+			$imports[ wp_make_link_relative( $url ) ] = voiceboard_versioned( $url );
+		}
+	}
+	$imports = apply_filters( 'voiceboard_import_map', $imports );
 	return (string) wp_json_encode( array( 'imports' => $imports ), JSON_UNESCAPED_SLASHES );
 }
 
@@ -52,7 +73,7 @@ function voiceboard_module_scripts(): array {
 	$scripts = array();
 	foreach ( voiceboard_modules() as $module ) {
 		foreach ( (array) $module['scripts'] as $url ) {
-			$scripts[] = wp_make_link_relative( $url );
+			$scripts[] = voiceboard_versioned( $url );
 		}
 	}
 	return $scripts;

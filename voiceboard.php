@@ -129,6 +129,12 @@ add_action(
 				// Every registered module, and the import map they use to reach the core API.
 				$html = preg_replace_callback( '#<script type="importmap">.*?</script>#s', static fn () => "<script type=\"importmap\">$import_map</script>", $html );
 				$html = preg_replace_callback( '#<meta name="voiceboard-modules"[^>]*>#', static fn () => sprintf( '<meta name="voiceboard-modules" content="%s">', esc_attr( implode( ' ', voiceboard_module_scripts() ) ) ), $html );
+				// Versioned entry points; everything they import is versioned through the import map.
+				$html = str_replace(
+					array( 'href="board.css"', 'src="js/main.js"' ),
+					array( 'href="' . esc_attr( voiceboard_versioned( plugins_url( 'board.css', __FILE__ ) ) ) . '"', 'src="' . esc_attr( voiceboard_versioned( plugins_url( 'js/main.js', __FILE__ ) ) ) . '"' ),
+					$html
+				);
 				// Path-only <base>, so relative assets load from the plugin on whatever host served the page.
 				// The REST base tells the board where to report screens (sessions, URL log, presence).
 				$html = str_replace(

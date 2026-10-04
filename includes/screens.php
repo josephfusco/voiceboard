@@ -9,6 +9,7 @@
  *   action voiceboard_leave( $context )                        the board closed (pagehide beacon)
  *
  * $context: car, code, has_code, browsing, beat, state, query, diag, browser.
+ * state.note is a module's plain-text summary for the assistant; apps set state.note in pick().
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -72,6 +73,8 @@ function voiceboard_clean_state( array $state ): array {
 		'a'       => $text( $state['a'] ?? '', 200 ),
 		'r'       => $text( $state['r'] ?? '', 40 ),
 		'up'      => $text( $state['up'] ?? '', 40 ),
+		// A module's plain-text summary for the assistant (chess: the position and legal moves).
+		'note'    => $text( $state['note'] ?? '', 1500 ),
 		'players' => $players,
 	);
 }

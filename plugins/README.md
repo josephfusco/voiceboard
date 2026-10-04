@@ -59,7 +59,7 @@ Add the JS path to `<meta name="voiceboard-modules">` in `index.html` too if it 
 
 | Export | Use |
 |---|---|
-| `apps.register(name, app, { alias })` | Add a game: `title`, `description`, `phrase`, `icon` (SVG paths), `params`, `screens`, `pick(state)` |
+| `apps.register(name, app, { alias })` | Add a game: `title`, `description`, `phrase`, `icon` (SVG paths), `params`, `screens`, `pick(state)`. Set `state.note` in `pick` to give the assistant a plain-text summary in the session transcript. |
 | `effects.register(name, effect)` | Add an effect: `params`, `active(state)`, `mount(board, state)` |
 | `h`, `icon`, `appLink` | Build elements, line icons, and links to other apps |
 | `t`, `num`, `lang`, `dir`, `addStrings` | Translated labels and number formatting |

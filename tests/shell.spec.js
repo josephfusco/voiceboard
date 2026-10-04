@@ -5,7 +5,7 @@ test.describe('shell', () => {
 		const page = await open();
 		await expect(page.locator('#board')).toHaveClass(/app-home/);
 		await expect(page.getByRole('heading', { name: 'What should we play?' })).toBeVisible();
-		await expect(page.locator('.tile strong')).toHaveText(['Trivia', 'Categories']);
+		await expect(page.locator('.tile strong')).toHaveText(['Trivia', 'Categories', 'Chess']);
 	});
 
 	test('unknown game falls back to home', async ({ open }) => {
@@ -16,7 +16,7 @@ test.describe('shell', () => {
 	test('sidebar shows a clock, the apps, and marks the active one', async ({ open }) => {
 		const page = await open('g=trivia');
 		await expect(page.locator('.dock-clock')).toHaveText(/^\d{1,2}:\d{2}$/);
-		await expect(page.locator('a.dock-item')).toHaveCount(4);
+		await expect(page.locator('a.dock-item')).toHaveCount(5);
 		await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
 		await expect(page.locator('.dock-item.is-active')).toHaveAttribute('aria-label', 'Trivia');
 	});

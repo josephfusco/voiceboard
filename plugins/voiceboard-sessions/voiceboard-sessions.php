@@ -172,6 +172,9 @@ function voiceboard_transcript( WP_Post $session ): string {
 	if ( ! empty( $state['up'] ) ) {
 		$lines[] = 'Up next: ' . $state['up'];
 	}
+	if ( ! empty( $state['note'] ) ) {
+		$lines[] = 'Board: ' . $state['note'];
+	}
 	$lines[] = 'On screen: ' . ( $state['screen'] ?? 'nothing' ) . ( empty( $state['q'] ) ? '' : ": {$state['q']}" );
 	$lines[] = '';
 	$lines[] = 'Asked so far:';

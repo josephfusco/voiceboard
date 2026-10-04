@@ -1,0 +1,123 @@
+// Chess by voice. The move list lives in the URL (mv=e4 e5 Nf3), the board replays it with real rules, and the
+// session transcript gives the assistant the exact position and the legal moves, so it never loses track.
+// A Voiceboard module; see plugins/README.md.
+import { addStrings, apps, h, header, sharedScreens, t } from 'voiceboard';
+import { Chess } from './vendor/chess.js';
+
+// Modules can bring their own styles.
+document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: new URL(`./chess.css${new URL(import.meta.url).search}`, import.meta.url).href }));
+
+const L = (title, description, phrase, white, black, toMove, check, mate, stalemate, draw, illegal, moveN) =>
+	({ 'chess.title': title, 'chess.description': description, 'chess.phrase': phrase, 'chess.white': white, 'chess.black': black, 'chess.toMove': toMove, 'chess.check': check, 'chess.mate': mate, 'chess.stalemate': stalemate, 'chess.draw': draw, 'chess.illegal': illegal, 'chess.moveN': moveN });
+addStrings({
+	en: L('Chess', 'Play chess by voice. The board checks every move.', 'host a game of chess', 'White', 'Black', '{side} to move', 'Check!', 'Checkmate. {name} wins!', 'Stalemate', 'Draw', 'Not a legal move: {move}', 'Move {n}'),
+	es: L('Ajedrez', 'Juega al ajedrez por voz. El tablero comprueba cada jugada.', 'presenta una partida de ajedrez', 'Blancas', 'Negras', 'Juegan {side}', '¡Jaque!', 'Jaque mate. ¡{name} gana!', 'Ahogado', 'Tablas', 'Jugada no válida: {move}', 'Jugada {n}'),
+	fr: L('Échecs', "Jouez aux échecs à la voix. L'échiquier vérifie chaque coup.", "anime une partie d'échecs", 'Blancs', 'Noirs', 'Trait aux {side}', 'Échec !', 'Échec et mat. {name} gagne !', 'Pat', 'Nulle', 'Coup illégal : {move}', 'Coup {n}'),
+	de: L('Schach', 'Schach per Stimme spielen. Das Brett prüft jeden Zug.', 'moderiere eine Partie Schach', 'Weiß', 'Schwarz', '{side} am Zug', 'Schach!', 'Schachmatt. {name} gewinnt!', 'Patt', 'Remis', 'Kein gültiger Zug: {move}', 'Zug {n}'),
+	pt: L('Xadrez', 'Jogue xadrez por voz. O tabuleiro confere cada lance.', 'apresente uma partida de xadrez', 'Brancas', 'Pretas', 'Vez das {side}', 'Xeque!', 'Xeque-mate. {name} venceu!', 'Afogamento', 'Empate', 'Lance inválido: {move}', 'Lance {n}'),
+	ja: L('チェス', '声でチェス。盤面がすべての手をチェックします。', 'チェスの対局を進行して', '白', '黒', '{side}の手番', 'チェック！', 'チェックメイト。{name}さんの勝ち！', 'ステイルメイト', '引き分け', '不正な手: {move}', '{n}手目'),
+	zh: L('国际象棋', '用语音下国际象棋，棋盘会检查每一步。', '主持一局国际象棋', '白方', '黑方', '轮到{side}', '将军！', '将死。{name}获胜！', '逼和', '和棋', '不合法的走法：{move}', '第{n}步'),
+	ar: L('شطرنج', 'العب الشطرنج بالصوت. تتحقق الرقعة من كل نقلة.', 'قدّم مباراة شطرنج', 'الأبيض', 'الأسود', 'دور {side}', 'كش!', 'كش مات. فاز {name}!', 'تعادل بالجمود', 'تعادل', 'نقلة غير قانونية: {move}', 'النقلة {n}'),
+	he: L('שחמט', 'משחקים שחמט בקול. הלוח בודק כל מהלך.', 'להנחות משחק שחמט', 'לבן', 'שחור', 'תור: {side}', 'שח!', 'מט. הניצחון של {name}!', 'פט', 'תיקו', 'מהלך לא חוקי: {move}', 'מהלך {n}'),
+});
+
+// Filled glyphs for both sides, colored by CSS, read more clearly at a glance than outlined ones.
+const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+const PIECE = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+
+const moveList = (v) => v.split(/[\s,]+/).filter(Boolean).slice(0, 600);
+
+// Replays the moves, stopping at the first one that isn't legal.
+const replay = (moves) => {
+	const game = new Chess();
+	for (const [i, move] of moves.entries()) {
+		try {
+			game.move(move);
+		} catch {
+			return { game, illegal: move, at: i + 1 };
+		}
+	}
+	return { game };
+};
+
+const sideName = (color) => t(color === 'w' ? 'chess.white' : 'chess.black');
+
+const status = ({ chess: { game }, p }) => {
+	const winner = p[game.turn() === 'w' ? 1 : 0]?.name ?? sideName(game.turn() === 'w' ? 'b' : 'w');
+	if (game.isCheckmate()) return t('chess.mate', { name: winner });
+	if (game.isStalemate()) return t('chess.stalemate');
+	if (game.isDraw()) return t('chess.draw');
+	return game.inCheck() ? t('chess.check') : t('chess.toMove', { side: sideName(game.turn()) });
+};
+
+const boardView = ({ chess: { game }, side }) => {
+	const last = game.history({ verbose: true }).at(-1);
+	const rows = game.board();
+	const order = side === 'b' ? [...rows].reverse().map((row) => [...row].reverse()) : rows;
+	const files = side === 'b' ? 'hgfedcba' : 'abcdefgh';
+	const grid = h('div', 'chess-board');
+	grid.setAttribute('role', 'grid');
+	grid.setAttribute('aria-label', 'Chess board');
+	order.forEach((row, r) => row.forEach((piece, c) => {
+		const square = files[c] + (side === 'b' ? r + 1 : 8 - r);
+		const light = (('abcdefgh'.indexOf(square[0]) + Number(square[1])) % 2) === 1;
+		const check = piece?.type === 'k' && piece.color === game.turn() && game.inCheck();
+		const cell = h('div', `sq ${light ? 'light' : 'dark'}${last && (square === last.from || square === last.to) ? ' last' : ''}${check ? ' check' : ''}`,
+			piece && h('span', `piece ${piece.color}`, GLYPH[piece.type]),
+			c === 0 && h('span', 'coord rank', square[1]),
+			r === 7 && h('span', 'coord file', square[0]));
+		cell.setAttribute('role', 'gridcell');
+		cell.setAttribute('aria-label', piece ? `${square}: ${piece.color === 'w' ? 'white' : 'black'} ${PIECE[piece.type]}` : `${square}: empty`);
+		grid.append(cell);
+	}));
+	return grid;
+};
+
+const play = (state) => {
+	const { game, illegal } = state.chess;
+	const history = game.history();
+	const player = (color, index) => h('div', `chess-player${game.turn() === color && !game.isGameOver() ? ' is-turn' : ''}`,
+		h('span', `dot ${color}`), state.p[index]?.name ?? sideName(color));
+	// The last few moves in standard numbering; a list that starts on Black's move gets "n…".
+	const recent = history.slice(-6).map((san, i, list) => {
+		const ply = history.length - list.length + i;
+		if (ply % 2 === 0) return `${ply / 2 + 1}. ${san}`;
+		return i === 0 ? `${(ply + 1) / 2}… ${san}` : san;
+	}).join(' ');
+
+	return [
+		header(state, history.length ? t('chess.moveN', { n: Math.floor(history.length / 2) + 1 }) : null),
+		h('section', 'stage chess',
+			h('div', 'chess-layout',
+				boardView(state),
+				h('div', 'chess-side',
+					player('b', 1),
+					h('p', 'chess-status', status(state)),
+					illegal && h('p', 'chess-illegal', t('chess.illegal', { move: illegal })),
+					recent && h('p', 'chess-moves', recent),
+					player('w', 0)))),
+	];
+};
+
+const screens = { ...sharedScreens, play };
+
+apps.register('chess', {
+	title: t('chess.title'),
+	description: t('chess.description'),
+	phrase: t('chess.phrase'),
+	icon: ['M12 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4z', 'M10 7.5 9 13h6l-1-5.5', 'M8 13h8l1 4H7z', 'M6 20h12'],
+	params: { mv: moveList, side: (v) => (v.toLowerCase().startsWith('b') ? 'b' : 'w') },
+	screens,
+	pick: (state) => {
+		state.chess = replay(state.mv);
+		const { game, illegal, at } = state.chess;
+		// Plain text for the session transcript, so the assistant always knows the real position.
+		state.note = [
+			`Chess. Position (FEN): ${game.fen()}.`,
+			`${game.turn() === 'w' ? 'White' : 'Black'} to move${game.inCheck() ? ', in check' : ''}.`,
+			game.isGameOver() ? `Game over: ${game.isCheckmate() ? 'checkmate' : 'draw'}.` : `Legal moves: ${game.moves().join(' ')}.`,
+			illegal ? `Move ${at} (${illegal}) is not legal and was ignored, along with any moves after it.` : '',
+		].filter(Boolean).join(' ');
+		return Object.hasOwn(screens, state.st) ? state.st : 'play';
+	},
+});

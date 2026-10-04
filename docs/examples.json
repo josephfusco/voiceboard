@@ -96,6 +96,18 @@
 		"query": "?g=trivia&st=end&t=Animal+Trivia&p=Mia:700,Leo:500,Mom:300&fx=confetti"
 	},
 	{
+		"title": "Chess by voice: the board checks every move",
+		"query": "?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Nf3+Nc6+Bc4+Nf6"
+	},
+	{
+		"title": "Scholar's mate: checkmate",
+		"query": "?g=chess&p=Joe:0,Sam:0&mv=e4+e5+Qh5+Nc6+Bc4+Nf6+Qxf7"
+	},
+	{
+		"title": "Cyber chess from Black's side",
+		"query": "?g=chess&side=b&theme=cyber&p=Neo:0,Trinity:0&mv=d4+d5+c4+e6+Nc3+Nf6"
+	},
+	{
 		"title": "Hall of Fame",
 		"query": "?g=hall",
 		"seed": [

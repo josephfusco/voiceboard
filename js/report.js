@@ -22,7 +22,7 @@ export const report = (state, screen, diag) => {
 		beat,
 		query: location.search.slice(1),
 		diag,
-		state: { app: state.app.name, screen, title: state.t, n: state.n, of: state.of, q: state.q ?? '', a: answerText(state), r: state.r ?? '', up: state.up, players: state.p, lang },
+		state: { app: state.app.name, screen, title: state.t, n: state.n, of: state.of, q: state.q ?? '', a: answerText(state), r: state.r ?? '', up: state.up, note: state.note ?? '', players: state.p, lang },
 	});
 	const send = (beat) => fetch(`${api}ping`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body(beat), keepalive: true }).catch(() => {});
 
