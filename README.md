@@ -39,7 +39,6 @@ The board's labels are available in English, Spanish, French, German, Portuguese
 - [llms.txt](llms.txt) describes every URL parameter. Assistants read it to learn the games.
 - [plugins/README.md](plugins/README.md) explains how to add a game.
 - [CONTRIBUTING.md](CONTRIBUTING.md) covers the code layout, tests, and releases.
-- [DECISIONS.md](DECISIONS.md) is the decision log.
 
 ## License
 
