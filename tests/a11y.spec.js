@@ -13,7 +13,8 @@ test.describe('accessibility (axe)', () => {
 		for (const [name, query] of Object.entries(SCREENS)) {
 			test(`${name} in ${theme} has no violations`, async ({ open, page }) => {
 				await open(`${query}&theme=${theme}`);
-				const { violations } = await new AxeBuilder({ page }).include('body').analyze();
+				// Zoom is disabled on purpose so the board behaves like an in-car app; its type is already large and screen-sized.
+				const { violations } = await new AxeBuilder({ page }).include('body').disableRules(['meta-viewport']).analyze();
 				expect(violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 			});
 		}

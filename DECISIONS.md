@@ -59,6 +59,7 @@ A running list of decisions. Checked items are decided; unchecked items are open
 ## Design
 
 - [x] Every screen fits without scrolling on every Tesla screen (15" Model 3/Y, 17" Model S/X, Cybertruck, portrait S/X) and in a smaller browser window; a test checks each size.
+- [x] Behaves like an app: pinch and double-tap zoom, pull-to-refresh bounce, and long-press selection are off. This trades away browser zoom, which accessibility checkers flag; the board's type is large and sized to each screen instead.
 - [x] Web app manifest and theme color; no service worker, because cached code is exactly what made old builds stick.
 - [x] Tried cross-document view transitions and removed them: Chrome logged errors when the next page's stylesheet arrived late.
 

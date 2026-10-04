@@ -43,6 +43,17 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
+/* Behave like an app: no zooming (also set in the viewport meta), no pull-to-refresh bounce,
+   no text selection on long-press, no tap flash. The type is already sized for each screen. */
+html, body {
+	touch-action: pan-x pan-y;
+	overscroll-behavior: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+}
+
 /* Instructions for voice assistants that read the HTML without running JavaScript. Visually hidden and
    taking no space, so the page never shows scrollbars before the board renders. */
 #board:not(.board) {
