@@ -36,6 +36,12 @@
 .chess-layout { display: flex; align-items: center; justify-content: center; gap: 3vw; }
 .chess-side { display: flex; flex-direction: column; gap: 2.4vh; width: 24vw; }
 .chess-status { margin: 0; font-size: clamp(1.4rem, 4.2vh, 3rem); font-weight: 600; }
+.chess-change { margin: 0; color: var(--accent); font-size: clamp(1rem, 2.6vh, 1.6rem); font-weight: 600; }
+.chess-captured { margin-inline-start: auto; font-size: 0.8em; letter-spacing: -0.1em; }
+.chess-captured.w { color: #fff; -webkit-text-stroke: 1px #1a1c20; }
+.chess-captured.b { color: #15171a; }
+[data-theme="cyber"] .chess-captured.w { color: var(--accent); -webkit-text-stroke: 0; }
+[data-theme="cyber"] .chess-captured.b { color: #e9edf2; }
 .chess-illegal { margin: 0; color: var(--danger); font-size: clamp(1rem, 2.6vh, 1.6rem); font-weight: 600; }
 .chess-moves { margin: 0; color: var(--muted); font-size: clamp(1rem, 2.4vh, 1.5rem); font-variant-numeric: tabular-nums; }
 .chess-player { display: flex; align-items: center; gap: 0.6em; font-size: clamp(1.1rem, 3vh, 2rem); }

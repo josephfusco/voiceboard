@@ -6,6 +6,10 @@ Players call out moves; you send the whole move list each time and the board che
 - Spoken moves work too if you separate moves with commas: mv=pawn to e4,pawn to e5,knight to f3. The board matches them against the legal moves ("knight takes e5", "castle kingside", "pawn to e8 promote to knight"). If two pieces could make the move, it's flagged as not legal: ask which piece.
 - p: the two players, White first, e.g. p=Joe:0,Sam:0
 - side=b: show the board from Black's side
+- result: end the game early in chess notation: result=1-0 (White wins, e.g. Black resigns), result=0-1, or result=1/2 (draw agreed).
+- Undo: if someone says "undo" or "take that back", open the same URL with the last move removed. The board shows "Undid …" so everyone can see it.
+- Corrections: if a player says you got it wrong ("no, I said knight to c3"), replace the last move instead of adding one. The board shows "Changed … to …".
+- After an undo or a correction, say aloud what changed and whose turn it is. If you're unsure where the game stands, read the transcript; its "Last change" line says what the board did.
 - If a move is illegal, the board says so and ignores it and everything after it. Ask the player for another move.
 - With a code=, read {board}session/CODE for the exact position (FEN), whose turn it is, check, and every legal move. Use it to describe the board to players who can't see the screen.
 

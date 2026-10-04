@@ -29,3 +29,23 @@ test('spoken moves that two pieces could make are flagged', async ({ open, page 
 	await open('g=chess&mv=pawn to d4,pawn to d5,knight to f3,knight to f6,knight to d2,pawn to e6,knight to f3');
 	await expect(page.locator('.chess-illegal')).toHaveText('Not a legal move: knight to d2');
 });
+
+test('the assistant mishears a move, the player corrects it, then takes one back', async ({ open, page }) => {
+	const assistant = mockAssistant(`fix-${Date.now()}`, { mishear: { 'Knight to c3': 'knight to a3' } });
+	const say = (speaker, says) => open(assistant({ speaker, says }).slice(1));
+
+	await say('Driver', 'Host chess for Joe and Sam');
+	await say('Joe', 'Pawn to e4');
+	await say('Sam', 'Pawn to e5');
+	await say('Joe', 'Knight to c3');
+	await expect(page.getByRole('gridcell', { name: 'a3: white knight' })).toBeVisible();
+
+	await say('Joe', 'No, I said knight to c3');
+	await expect(page.locator('.chess-change')).toHaveText('Changed Na3 to Nc3');
+	await expect(page.getByRole('gridcell', { name: 'c3: white knight' })).toBeVisible();
+
+	await say('Sam', 'Pawn to d6');
+	await say('Sam', 'Undo');
+	await expect(page.locator('.chess-change')).toHaveText('Undid d6');
+	await expect(page.locator('.chess-status')).toHaveText('Black to move');
+});

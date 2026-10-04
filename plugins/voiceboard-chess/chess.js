@@ -21,6 +21,19 @@ addStrings({
 	he: L('שחמט', 'משחקים שחמט בקול. הלוח בודק כל מהלך.', 'להנחות משחק שחמט', 'לבן', 'שחור', 'תור: {side}', 'שח!', 'מט. הניצחון של {name}!', 'פט', 'תיקו', 'מהלך לא חוקי: {move}', 'מהלך {n}'),
 });
 
+// Undo, corrections, and game endings.
+addStrings({
+	en: { 'chess.undid': "Undid {moves}", 'chess.changed': "Changed {from} to {to}", 'chess.wins': "{name} wins!", 'chess.drawAgreed': "Draw agreed" },
+	es: { 'chess.undid': "Deshecho: {moves}", 'chess.changed': "Cambiado {from} por {to}", 'chess.wins': "¡{name} gana!", 'chess.drawAgreed': "Tablas acordadas" },
+	fr: { 'chess.undid': "Annulé : {moves}", 'chess.changed': "{from} remplacé par {to}", 'chess.wins': "{name} gagne !", 'chess.drawAgreed': "Nulle par accord" },
+	de: { 'chess.undid': "Rückgängig: {moves}", 'chess.changed': "{from} geändert zu {to}", 'chess.wins': "{name} gewinnt!", 'chess.drawAgreed': "Remis vereinbart" },
+	pt: { 'chess.undid': "Desfeito: {moves}", 'chess.changed': "{from} trocado por {to}", 'chess.wins': "{name} venceu!", 'chess.drawAgreed': "Empate acordado" },
+	ja: { 'chess.undid': "取り消し: {moves}", 'chess.changed': "{from} を {to} に変更", 'chess.wins': "{name}さんの勝ち！", 'chess.drawAgreed': "合意により引き分け" },
+	zh: { 'chess.undid': "已撤销：{moves}", 'chess.changed': "已将{from}改为{to}", 'chess.wins': "{name}获胜！", 'chess.drawAgreed': "双方同意和棋" },
+	ar: { 'chess.undid': "تم التراجع عن {moves}", 'chess.changed': "تم تغيير {from} إلى {to}", 'chess.wins': "فاز {name}!", 'chess.drawAgreed': "تعادل بالاتفاق" },
+	he: { 'chess.undid': "בוטל: {moves}", 'chess.changed': "{from} הוחלף ב{to}", 'chess.wins': "הניצחון של {name}!", 'chess.drawAgreed': "תיקו בהסכמה" },
+});
+
 // Filled glyphs for both sides, colored by CSS, read more clearly at a glance than outlined ones.
 const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const PIECE = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
@@ -69,10 +82,38 @@ const replay = (moves) => {
 	return { game };
 };
 
+// What changed since the last screen in this tab: an undo (moves removed) or a correction (the last
+// moves replaced). Plain additions are just moves. A big jump backward is a new game, not an undo.
+const lastChange = (code, moves) => {
+	const key = `voiceboard-chess:${code || 'local'}`;
+	let before = [];
+	try {
+		before = JSON.parse(sessionStorage.getItem(key)) ?? [];
+		sessionStorage.setItem(key, JSON.stringify(moves));
+	} catch {
+		return null;
+	}
+	let same = 0;
+	while (same < before.length && same < moves.length && before[same] === moves[same]) same++;
+	const removed = before.slice(same);
+	return removed.length && removed.length <= 3 ? { removed, added: moves.slice(same) } : null;
+};
+
 const sideName = (color) => t(color === 'w' ? 'chess.white' : 'chess.black');
 
-const status = ({ chess: { game }, p }) => {
-	const winner = p[game.turn() === 'w' ? 1 : 0]?.name ?? sideName(game.turn() === 'w' ? 'b' : 'w');
+const player = (p, color) => p[color === 'w' ? 0 : 1]?.name ?? sideName(color);
+
+// result= uses chess notation: 1-0 (White wins, e.g. Black resigned), 0-1, or 1/2 (draw agreed).
+const result = (v) => {
+	const value = v.replace(/\s/g, '').toLowerCase();
+	if (value === '1-0' || value === '0-1') return value;
+	return /^(1\/2|½|draw)/.test(value) ? 'draw' : '';
+};
+
+const status = ({ chess: { game }, p, result: outcome }) => {
+	if (outcome === 'draw') return t('chess.drawAgreed');
+	if (outcome) return t('chess.wins', { name: player(p, outcome === '1-0' ? 'w' : 'b') });
+	const winner = player(p, game.turn() === 'w' ? 'b' : 'w');
 	if (game.isCheckmate()) return t('chess.mate', { name: winner });
 	if (game.isStalemate()) return t('chess.stalemate');
 	if (game.isDraw()) return t('chess.draw');
@@ -118,10 +159,14 @@ const boardView = ({ chess: { game }, side }) => {
 };
 
 const play = (state) => {
-	const { game, illegal } = state.chess;
+	const { game, illegal, change } = state.chess;
 	const history = game.history();
-	const player = (color, index) => h('div', `chess-player${game.turn() === color && !game.isGameOver() ? ' is-turn' : ''}`,
-		h('span', `dot ${color}`), state.p[index]?.name ?? sideName(color));
+	const over = game.isGameOver() || Boolean(state.result);
+	// Pieces each side has taken, shown beside that player.
+	const captured = (color) => game.history({ verbose: true }).filter((m) => m.color === color && m.captured).map((m) => GLYPH[m.captured]).join('');
+	const playerRow = (color) => h('div', `chess-player${game.turn() === color && !over ? ' is-turn' : ''}`,
+		h('span', `dot ${color}`), player(state.p, color),
+		captured(color) && h('span', `chess-captured ${color === 'w' ? 'b' : 'w'}`, captured(color)));
 	// The last few moves in standard numbering; a list that starts on Black's move gets "n…".
 	const recent = history.slice(-6).map((san, i, list) => {
 		const ply = history.length - list.length + i;
@@ -135,11 +180,14 @@ const play = (state) => {
 			h('div', 'chess-layout',
 				boardView(state),
 				h('div', 'chess-side',
-					player('b', 1),
+					playerRow('b'),
+					change && h('p', 'chess-change', change.added.length
+						? t('chess.changed', { from: change.removed.join(' '), to: change.added.join(' ') })
+						: t('chess.undid', { moves: change.removed.join(' ') })),
 					h('p', 'chess-status', status(state)),
 					illegal && h('p', 'chess-illegal', t('chess.illegal', { move: illegal })),
 					recent && h('p', 'chess-moves', recent),
-					player('w', 0)))),
+					playerRow('w')))),
 	];
 };
 
@@ -150,16 +198,20 @@ apps.register('chess', {
 	description: t('chess.description'),
 	phrase: t('chess.phrase'),
 	icon: ['M12 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4z', 'M10 7.5 9 13h6l-1-5.5', 'M8 13h8l1 4H7z', 'M6 20h12'],
-	params: { mv: moveList, side: (v) => (v.toLowerCase().startsWith('b') ? 'b' : 'w') },
+	params: { mv: moveList, side: (v) => (v.toLowerCase().startsWith('b') ? 'b' : 'w'), result },
 	screens,
 	pick: (state) => {
 		state.chess = replay(state.mv);
 		const { game, illegal, at } = state.chess;
+		state.chess.change = lastChange(state.code, game.history());
+		const { change } = state.chess;
 		// Plain text for the session transcript, so the assistant always knows the real position.
 		state.note = [
 			`Chess. Position (FEN): ${game.fen()}.`,
 			`${game.turn() === 'w' ? 'White' : 'Black'} to move${game.inCheck() ? ', in check' : ''}.`,
-			game.isGameOver() ? `Game over: ${game.isCheckmate() ? 'checkmate' : 'draw'}.` : `Legal moves: ${game.moves().join(' ')}.`,
+			change && `Last change: ${change.added.length ? `${change.removed.join(' ')} replaced with ${change.added.join(' ')}` : `undid ${change.removed.join(' ')}`}.`,
+			state.result ? `Result: ${state.result === 'draw' ? 'draw agreed' : `${state.result === '1-0' ? 'White' : 'Black'} wins`}.`
+				: game.isGameOver() ? `Game over: ${game.isCheckmate() ? 'checkmate' : 'draw'}.` : `Legal moves: ${game.moves().join(' ')}.`,
 			illegal ? `Move ${at} (${illegal}) is not legal and was ignored, along with any moves after it.` : '',
 		].filter(Boolean).join(' ');
 		return Object.hasOwn(screens, state.st) ? state.st : 'play';

@@ -68,3 +68,48 @@ test.describe('chess: tap to see moves', () => {
 		await expect(page).toHaveURL(/g=chess&p=Joe:0,Sam:0$/);
 	});
 });
+
+test.describe('chess: undo, corrections, and endings', () => {
+	test('dropping the last move shows an undo', async ({ open, page }) => {
+		await open('g=chess&code=undo-test&mv=e4+e5+Nf3');
+		await open('g=chess&code=undo-test&mv=e4+e5');
+		await expect(page.locator('.chess-change')).toHaveText('Undid Nf3');
+		await expect(page.getByRole('gridcell', { name: 'g1: white knight' })).toBeVisible();
+	});
+
+	test('replacing a misheard move shows the correction', async ({ open, page }) => {
+		await open('g=chess&code=fix-test&mv=e4+e5+Nf3');
+		await open('g=chess&code=fix-test&mv=e4+e5+Nc3');
+		await expect(page.locator('.chess-change')).toHaveText('Changed Nf3 to Nc3');
+	});
+
+	test('a normal move or a new game shows no change banner', async ({ open, page }) => {
+		await open('g=chess&code=new-test&mv=e4+e5+Nf3+Nc6+Bb5');
+		await open('g=chess&code=new-test&mv=e4+e5+Nf3+Nc6+Bb5+a6');
+		await expect(page.locator('.chess-change')).toHaveCount(0);
+		await open('g=chess&code=new-test');
+		await expect(page.locator('.chess-change')).toHaveCount(0);
+	});
+
+	test('resigning and agreed draws end the game', async ({ open, page }) => {
+		await open('g=chess&p=Joe:0,Sam:0&mv=e4+e5&result=0-1');
+		await expect(page.locator('.chess-status')).toHaveText('Sam wins!');
+		await expect(page.locator('.chess-player.is-turn')).toHaveCount(0);
+		await open('g=chess&p=Joe:0,Sam:0&mv=e4+e5&result=1/2');
+		await expect(page.locator('.chess-status')).toHaveText('Draw agreed');
+	});
+
+	test('captured pieces show beside the player who took them', async ({ open, page }) => {
+		await open('g=chess&p=Joe:0,Sam:0&mv=e4+d5+exd5');
+		await expect(page.locator('.chess-captured')).toHaveText('♟');
+	});
+});
+
+test('the transcript reports an undo to the assistant', async ({ page, boardPath, request }) => {
+	test.skip(boardPath === '/', 'needs the WordPress plugin');
+	const code = `undo-${Date.now()}`;
+	const ping = () => page.waitForResponse((r) => r.url().includes('/voiceboard/v1/ping'));
+	await Promise.all([ping(), page.goto(`${boardPath}?g=chess&code=${code}&mv=e4+e5+Nf3`)]);
+	await Promise.all([ping(), page.goto(`${boardPath}?g=chess&code=${code}&mv=e4+e5`)]);
+	expect(await (await request.get(`${boardPath}session/${code}`)).text()).toContain('Last change: undid Nf3.');
+});

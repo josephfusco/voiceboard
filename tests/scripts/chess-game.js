@@ -22,13 +22,20 @@ export const VOICE_SCRIPT = [
  * then appends each spoken move to the move list and opens the new URL. It passes spoken moves through
  * as-is (comma-separated) to exercise the board's speech helper.
  */
-export const mockAssistant = (code = 'demo-chess') => {
+export const mockAssistant = (code = 'demo-chess', { mishear = {} } = {}) => {
 	const moves = [];
 	let players = '';
 	return ({ speaker, says }) => {
 		const setup = says.match(/host chess for (\w+) and (\w+)/i);
+		const correction = says.match(/^no,? i said (.+)/i);
 		if (setup) {
 			players = `${setup[1]}:0,${setup[2]}:0`;
+		} else if (/^(undo|take that back)/i.test(says)) {
+			moves.pop();
+		} else if (correction) {
+			moves[moves.length - 1] = correction[1].replace(/[.!,]/g, '').trim();
+		} else if (mishear[says]) {
+			moves.push(mishear[says]); // the assistant heard it wrong
 		} else {
 			moves.push(says.split(/[.!]/)[0].replace(/,/g, '').trim()); // commas separate moves
 		}
