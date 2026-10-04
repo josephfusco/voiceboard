@@ -155,6 +155,10 @@
 <p>The assistant reads everything aloud, so playing takes no more than a glance at the scores, which opens it to kids who can't read fluently yet, older adults who would rather talk than tap, and people with limited mobility. On screen, the type is large, the colors follow the device's light or dark setting, the countdown is marked as a timer for screen readers, and confetti stays off when reduced motion is on.</p>
 <!-- /wp:paragraph -->
 
+<!-- wp:paragraph -->
+<p>Chess shows how far this goes. Players say their moves; the board replays the whole game with real chess rules, refuses illegal moves, and hands the assistant the exact position and every legal move. A player who can't see the screen can ask what's on the board and get a correct answer, because the board, not the assistant's memory, keeps the game.</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:heading -->
 <h2 class="wp-block-heading">How it's built and shipped</h2>
 <!-- /wp:heading -->
@@ -168,15 +172,15 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Shipped: trivia, a Jeopardy-style board, two themes, labels in nine languages with right-to-left layout, the timer and confetti, the remembered roster and Hall of Fame, and the plugin with llms.txt, the home redirect, and continuous deployment.</p>
+<p>Shipped: trivia, a Jeopardy-style board, and chess; two themes; labels in nine languages with right-to-left layout; turns, the timer, and confetti; the remembered roster and Hall of Fame; and the plugin with llms.txt, the home redirect, and continuous deployment. Every screen fits every Tesla display, from the 15-inch Model 3 to the Cybertruck and the older portrait Model S, without scrolling.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Also shipped: sessions with a transcript the assistant can read back, a log of every URL each screen received, connected-board presence, turn-taking, and read-only abilities. Designed but not built: abilities that change the game, with the board following along.</p>
+<p>Also shipped: sessions with a transcript the assistant can read back, a log of every URL each screen received, connected-board presence, and read-only abilities. Every game, effect, and server feature is now its own plugin built on the core's hooks, so a new game is a folder, not a fork. Designed but not built: abilities that change the game, with the board following along.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Not yet tested: a real assistant in a real car. Whether an in-car assistant reads the instructions on its own, how reliably it writes URLs over a long game, and whether reopening a URL reuses the tab are open questions; the URL log is built to answer them, and we'll publish what it shows.</p>
+<p>Still open: how reliably an in-car assistant writes these URLs over a long game. The first drives showed the board couldn't tell us what the car actually received, which is why the URL log exists; it now records every screen and anything the board had to fix, and we'll publish what it shows.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
