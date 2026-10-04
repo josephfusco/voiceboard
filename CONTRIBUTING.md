@@ -25,7 +25,6 @@ js/report.js             reports each screen to the plugin
 js/apps/                 built-in Home and Hall of Fame
 plugins/                 modules: each folder is a plugin (see plugins/README.md)
 site-theme/              the WordPress site's child theme, deployed with the plugin
-content/                 source for the site's About and Privacy Policy pages
 tests/                   Playwright tests and WordPress Playground blueprints
 scripts/                 screenshot and demo video recorders
 docs/                    README gallery images, examples list, demo GIF

@@ -48,6 +48,6 @@ try {
 
 const video = join(dir, readdirSync(dir).find((f) => f.endsWith('.webm')));
 const gif = join(root, 'docs/chess-demo.gif');
-execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', video, '-vf', 'fps=8,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=4', gif]);
+execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', video, '-vf', 'fps=6,scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=48:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle', gif]);
 rmSync(dir, { recursive: true, force: true });
 console.log(`Wrote ${gif}`);

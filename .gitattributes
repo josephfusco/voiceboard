@@ -9,7 +9,7 @@
 /release-please-config.json export-ignore
 /.release-please-manifest.json export-ignore
 /site-theme export-ignore
-/content export-ignore
 /CONTRIBUTING.md export-ignore
 /docs export-ignore
 /scripts export-ignore
+/README.md export-ignore
