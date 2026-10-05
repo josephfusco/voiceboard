@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0](https://github.com/josephfusco/voiceboard/compare/v0.5.0...v0.6.0) (2026-10-05)
+
+
+### Features
+
+* adventure module with characters, scene cards, and board-rolled dice ([4f44127](https://github.com/josephfusco/voiceboard/commit/4f44127a4fe8f5903136cba3c518ebd865a70126))
+* auto-advance, recap page with QR code, and emailing the recap ([2ced19c](https://github.com/josephfusco/voiceboard/commit/2ced19c6347cc2d5a83644b4e34508e4b3abdf7c))
+* chess undo, corrections, resign and draw results, captured pieces ([77f9f6a](https://github.com/josephfusco/voiceboard/commit/77f9f6a8d8c6bf53a8feb7ab4a3b6710c3f7c422))
+* home fits every screen, chess fills the screen, every module tests itself ([676d2fe](https://github.com/josephfusco/voiceboard/commit/676d2fe69a7d683f7e5af7fc172421fc6a4ffc5c))
+
 ## [0.5.0](https://github.com/josephfusco/voiceboard/compare/v0.4.0...v0.5.0) (2026-10-04)
 
 
