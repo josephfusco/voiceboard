@@ -47,3 +47,32 @@ test.describe('effects: messy input', () => {
 		await expect(page.getByRole('timer')).toHaveCount(0);
 	});
 });
+
+test.describe('auto-advance', () => {
+	test('auto=reveal shows the answer when the timer ends', async ({ open, page }) => {
+		await page.clock.install();
+		await open('g=trivia&st=ask&q=Which+planet%3F&c=Mars|Saturn&a=B&timer=5&auto=reveal&p=Joe:0');
+		await expect(page.locator('.fx-auto')).toHaveCount(1);
+		await page.clock.runFor(5_100);
+		await expect(page).toHaveURL(/st=reveal/);
+		await expect(page.locator('.choice.is-correct')).toHaveText('BSaturn');
+	});
+
+	test('auto=next hands the turn to the next player and never repeats score changes', async ({ open, page }) => {
+		await page.clock.install();
+		await open('g=trivia&q=One&p=Joe:0,Sam:0');
+		await open('g=trivia&st=reveal&q=One&c=A|B&a=A&r=Joe&add=Joe:100&up=Joe&auto=next&after=3');
+		await page.clock.runFor(3_100);
+		await expect(page).toHaveURL(/st=next&up=Sam|up=Sam.*st=next|st=next.*up=Sam/);
+		await expect(page.locator('h1')).toHaveText('Sam');
+		await expect(page.locator('.chip')).toHaveText(['Joe100', 'Sam0']);
+		expect(page.url()).not.toContain('add=');
+	});
+
+	test('auto=score shows the scoreboard', async ({ open, page }) => {
+		await page.clock.install();
+		await open('g=trivia&st=reveal&q=One&c=A|B&a=A&p=Joe:5&auto=score&after=2');
+		await page.clock.runFor(2_100);
+		await expect(page.locator('h1')).toHaveText('Scoreboard');
+	});
+});

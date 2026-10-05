@@ -2,6 +2,11 @@
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
 	"steps": [
 		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/test-mail.php",
+			"data": "<?php\n// Test sites: pretend every email sends.\nadd_filter( 'pre_wp_mail', '__return_true' );\n"
+		},
+		{
 			"step": "defineWpConfigConsts",
 			"consts": {
 				"VOICEBOARD_IP_PER_MIN": 100000,

@@ -1,6 +1,7 @@
 // Building blocks and screens any game can reuse.
 import { h } from './dom.js';
 import { num, t } from './i18n.js';
+import qrcode from './vendor/qrcode.js';
 
 const progress = ({ n, of }) => n > 0 && (of > 0 ? t('questionOf', { n: num(n), of: num(of) }) : t('question', { n: num(n) }));
 
@@ -27,6 +28,17 @@ const credit = () => {
 	return link;
 };
 
+// On the final screen of a recorded game (a session code, served by WordPress), a QR code opens the recap on a phone.
+const recap = ({ code }) => {
+	if (!code || !document.querySelector('meta[name="voiceboard-api"]')) return null;
+	const qr = qrcode(0, 'M');
+	qr.addData(`${location.origin}${location.pathname.replace(/\/?$/, '/')}journey/${code}`);
+	qr.make();
+	const image = h('img', 'recap-qr');
+	Object.assign(image, { src: qr.createDataURL(5, 2), alt: t('recapScan') });
+	return h('figure', 'recap', image, h('figcaption', 'muted', t('recapScan')));
+};
+
 const scoreboard = (final) => (state) => {
 	const sorted = [...state.p].sort((a, b) => b.score - a.score);
 	const top = sorted[0]?.score;
@@ -41,6 +53,7 @@ const scoreboard = (final) => (state) => {
 			h('ol', `scores count-${sorted.length}`, sorted.map(({ name, score }) =>
 				h('li', `card score-row${final && score === top ? ' is-leader' : ''}`,
 					h('span', null, name), h('span', 'score-value', num(score)))))),
+		final && recap(state),
 		final && credit(),
 	];
 };

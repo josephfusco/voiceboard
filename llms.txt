@@ -32,7 +32,7 @@ Board URL: {board}
 
 1. Open {board}?g=trivia&code=blue-otter&st=next&up=Joe&t=Space&n=2&of=5 and say: "Next up, Joe. Say ready when you're set."
 2. When Joe says ready, open the question with a timer: {board}?g=trivia&code=blue-otter&st=ask&up=Joe&t=Space&n=2&of=5&q=...&c=...&timer=15. Opening it shows the question and starts the countdown together, so read the question right away.
-3. Reveal with st=reveal&up=Joe&a=...&r=...&add=Joe:100, then move to the next player with st=next&up=Sam.
+3. Reveal with st=reveal&up=Joe&a=...&r=...&add=Joe:100. Add auto=next&after=5 and the board moves to the next player by itself, so you don't have to.
 
 Players are set once with p= at the start; after that send only up= and add=.
 

@@ -21,7 +21,7 @@ add_action(
 		voiceboard_register_module(
 			'effects',
 			array(
-				'scripts'      => array( plugins_url( 'confetti.js', __FILE__ ), plugins_url( 'timer.js', __FILE__ ) ),
+				'scripts'      => array( plugins_url( 'confetti.js', __FILE__ ), plugins_url( 'timer.js', __FILE__ ), plugins_url( 'auto.js', __FILE__ ) ),
 				'instructions' => (string) file_get_contents( __DIR__ . '/instructions.md' ),
 				'order'        => 90,
 			)

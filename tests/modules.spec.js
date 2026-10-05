@@ -30,7 +30,7 @@ test('the WordPress board loads every module in order', async ({ request, boardP
 	test.skip(boardPath !== '/board/', 'plugin only');
 	const html = await (await request.get(boardPath)).text();
 	const list = html.match(/name="voiceboard-modules" content="([^"]*)"/)[1].split(' ').map((url) => url.split('/plugins/').pop().split('?')[0]);
-	expect(list).toEqual(['voiceboard-trivia/trivia.js', 'voiceboard-jeopardy/jeopardy.js', 'voiceboard-chess/chess.js', 'voiceboard-adventure/adventure.js', 'voiceboard-effects/confetti.js', 'voiceboard-effects/timer.js']);
+	expect(list).toEqual(['voiceboard-trivia/trivia.js', 'voiceboard-jeopardy/jeopardy.js', 'voiceboard-chess/chess.js', 'voiceboard-adventure/adventure.js', 'voiceboard-effects/confetti.js', 'voiceboard-effects/timer.js', 'voiceboard-effects/auto.js']);
 	expect(html).toMatch(/"voiceboard":"\/wp-content\/plugins\/voiceboard\/js\/voiceboard\.js\?v=\d+"/);
 });
 

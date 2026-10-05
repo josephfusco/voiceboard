@@ -470,3 +470,20 @@ a.card { transition: transform 0.1s; }
 	.grid-cell { height: 9vh; font-size: clamp(1rem, 3.4vw, 2.4rem); }
 	.grid-cat { font-size: clamp(0.8rem, 2vw, 1.3rem); }
 }
+
+/* auto= progress: a thin bar along the bottom that fills until the board moves on */
+.fx-auto {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	height: 4px;
+	background: var(--accent);
+	transform-origin: left;
+	animation: fx-auto var(--duration) linear forwards;
+}
+[dir="rtl"] .fx-auto { transform-origin: right; }
+@keyframes fx-auto { from { transform: scaleX(0); } }
+
+/* Recap QR on the final screen */
+.recap { position: absolute; inset-inline-end: 3vw; bottom: 3vh; display: grid; justify-items: center; gap: 0.6vh; margin: 0; font-size: clamp(0.75rem, 1.6vh, 1rem); }
+.recap-qr { width: clamp(6rem, 16vh, 11rem); aspect-ratio: 1; border-radius: 10px; background: #fff; image-rendering: pixelated; }

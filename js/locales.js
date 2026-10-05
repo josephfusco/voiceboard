@@ -12,6 +12,7 @@ export const LOCALES = {
 		newGame: "New game", clearTitle: "Clear players and scores?", clearBody: "This removes the names and scores saved on this screen. The Hall of Fame stays.", cancel: "Cancel", clear: "Clear",
 		nextUp: "Next up", sayReady: "Say “ready” to start",
 		madeBy: "Made by {name}",
+		recapScan: "Scan for the game recap",
 						'hall.title': 'Hall of Fame', 'home.title': 'Home',
 	},
 	es: {
@@ -25,6 +26,7 @@ export const LOCALES = {
 		newGame: "Nueva partida", clearTitle: "¿Borrar jugadores y puntuaciones?", clearBody: "Se eliminarán los nombres y puntuaciones guardados en esta pantalla. El salón de la fama se conserva.", cancel: "Cancelar", clear: "Borrar",
 		nextUp: "Siguiente turno", sayReady: "Di «listo» para empezar",
 		madeBy: "Hecho por {name}",
+		recapScan: "Escanea para ver el resumen",
 						'hall.title': 'Salón de la fama', 'home.title': 'Inicio',
 	},
 	fr: {
@@ -38,6 +40,7 @@ export const LOCALES = {
 		newGame: "Nouvelle partie", clearTitle: "Effacer les joueurs et les scores ?", clearBody: "Les noms et scores enregistrés sur cet écran seront supprimés. Le palmarès est conservé.", cancel: "Annuler", clear: "Effacer",
 		nextUp: "Au tour de", sayReady: "Dites « prêt » pour commencer",
 		madeBy: "Créé par {name}",
+		recapScan: "Scannez pour le récapitulatif",
 						'hall.title': 'Palmarès', 'home.title': 'Accueil',
 	},
 	de: {
@@ -51,6 +54,7 @@ export const LOCALES = {
 		newGame: "Neues Spiel", clearTitle: "Spieler und Punkte löschen?", clearBody: "Die auf diesem Bildschirm gespeicherten Namen und Punkte werden entfernt. Die Ruhmeshalle bleibt erhalten.", cancel: "Abbrechen", clear: "Löschen",
 		nextUp: "Als Nächstes", sayReady: "Sag „bereit“ zum Starten",
 		madeBy: "Gemacht von {name}",
+		recapScan: "Scannen für die Zusammenfassung",
 						'hall.title': 'Ruhmeshalle', 'home.title': 'Start',
 	},
 	pt: {
@@ -64,6 +68,7 @@ export const LOCALES = {
 		newGame: "Novo jogo", clearTitle: "Apagar jogadores e pontuações?", clearBody: "Os nomes e pontuações salvos nesta tela serão removidos. O hall da fama é mantido.", cancel: "Cancelar", clear: "Apagar",
 		nextUp: "Próximo", sayReady: "Diga “pronto” para começar",
 		madeBy: "Feito por {name}",
+		recapScan: "Escaneie para ver o resumo",
 						'hall.title': 'Hall da fama', 'home.title': 'Início',
 	},
 	ja: {
@@ -77,6 +82,7 @@ export const LOCALES = {
 		newGame: "新しいゲーム", clearTitle: "プレイヤーとスコアを消去しますか？", clearBody: "この画面に保存された名前とスコアを削除します。殿堂の記録は残ります。", cancel: "キャンセル", clear: "消去",
 		nextUp: "次は", sayReady: "「準備OK」と言ったらスタート",
 		madeBy: "制作: {name}",
+		recapScan: "スキャンしてゲームの記録を見る",
 						'hall.title': '殿堂', 'home.title': 'ホーム',
 	},
 	zh: {
@@ -90,6 +96,7 @@ export const LOCALES = {
 		newGame: "新游戏", clearTitle: "清除玩家和分数？", clearBody: "这会删除此屏幕上保存的名字和分数。名人堂记录会保留。", cancel: "取消", clear: "清除",
 		nextUp: "下一位", sayReady: "说“准备好了”开始",
 		madeBy: "制作：{name}",
+		recapScan: "扫码查看游戏回顾",
 						'hall.title': '名人堂', 'home.title': '主页',
 	},
 	ar: {
@@ -103,6 +110,7 @@ export const LOCALES = {
 		newGame: "لعبة جديدة", clearTitle: "مسح اللاعبين والنتائج؟", clearBody: "سيؤدي هذا إلى حذف الأسماء والنتائج المحفوظة على هذه الشاشة. تبقى قاعة المشاهير كما هي.", cancel: "إلغاء", clear: "مسح",
 		nextUp: "التالي", sayReady: "قل «جاهز» للبدء",
 		madeBy: "صنعه {name}",
+		recapScan: "امسح لمشاهدة ملخص اللعبة",
 						'hall.title': 'قاعة المشاهير', 'home.title': 'الرئيسية',
 	},
 	he: {
@@ -116,6 +124,7 @@ export const LOCALES = {
 		newGame: "משחק חדש", clearTitle: "למחוק שחקנים וניקוד?", clearBody: "השמות והניקוד שנשמרו במסך הזה יימחקו. היכל התהילה יישאר.", cancel: "ביטול", clear: "מחיקה",
 		nextUp: "הבא בתור", sayReady: "אמרו \"מוכן\" כדי להתחיל",
 		madeBy: "נוצר על ידי {name}",
+		recapScan: "סרקו לסיכום המשחק",
 						'hall.title': 'היכל התהילה', 'home.title': 'בית',
 	},
 };

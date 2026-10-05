@@ -118,6 +118,7 @@ add_action(
 			'browser' => $context['browser'],
 			'query'   => $context['query'],
 			'diag'    => $context['diag'],
+			'summary' => voiceboard_summary( $state ),
 		);
 		update_post_meta( $session->ID, '_voiceboard_log', array_slice( $log, -VOICEBOARD_LOG_LIMIT ) );
 
@@ -137,6 +138,19 @@ add_action(
 add_filter(
 	'voiceboard_routes',
 	static function ( array $routes ): array {
+		$routes['journey/([a-z0-9-]+)'] = static function ( array $match ) {
+			$session = voiceboard_session( $match[1] );
+			nocache_headers();
+			if ( ! $session ) {
+				status_header( 404 );
+				header( 'Content-Type: text/plain; charset=utf-8' );
+				echo "No game with that code.\n";
+				return;
+			}
+			status_header( 200 );
+			header( 'Content-Type: text/html; charset=utf-8' );
+			voiceboard_journey_page( $session );
+		};
 		$routes['session/([a-z0-9-]+)'] = static function ( array $match ) {
 			$session = voiceboard_session( $match[1] );
 			nocache_headers();
@@ -149,6 +163,122 @@ add_filter(
 );
 
 add_action( 'voiceboard_deactivate', static fn () => wp_clear_scheduled_hook( 'voiceboard_prune' ) );
+
+/**
+ * One line for the recap: an answered question, a dice roll, or a new place. Empty when nothing happened worth telling.
+ */
+function voiceboard_summary( array $state ): string {
+	if ( '' !== $state['q'] && in_array( $state['screen'], array( 'reveal', 'final' ), true ) ) {
+		return $state['q'] . ' -> ' . ( '' !== $state['a'] ? $state['a'] : '?' ) . ( '' !== $state['r'] ? " ({$state['r']})" : '' );
+	}
+	if ( preg_match( '/[^.]* rolled [^.]*\./', $state['note'], $roll ) ) {
+		return trim( $roll[0] );
+	}
+	if ( preg_match( '/Location: ([^.]+)\./', $state['note'], $place ) ) {
+		return 'At ' . $place[1];
+	}
+	return '';
+}
+
+/**
+ * The recap page at <board>/journey/<code>: final standings and what happened, in order, with an email form.
+ */
+function voiceboard_journey_page( WP_Post $session ): void {
+	$state   = get_post_meta( $session->ID, '_voiceboard_state', true ) ?: array();
+	$log     = get_post_meta( $session->ID, '_voiceboard_log', true ) ?: array();
+	$players = $state['players'] ?? array();
+	usort( $players, static fn ( $a, $b ) => $b['score'] <=> $a['score'] );
+	$moments = array();
+	foreach ( $log as $entry ) {
+		$line = $entry['summary'] ?? '';
+		if ( '' !== $line && end( $moments ) !== $line ) {
+			$moments[] = $line;
+		}
+	}
+	$sent = sanitize_key( wp_unslash( $_GET['sent'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+	?>
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="noindex">
+	<title><?php echo esc_html( sprintf( 'Voiceboard recap: %s', $session->post_title ) ); ?></title>
+	<link rel="stylesheet" href="<?php echo esc_url( voiceboard_versioned( plugins_url( 'journey.css', __FILE__ ) ) ); ?>">
+</head>
+<body>
+	<main>
+		<p class="eyebrow"><?php echo esc_html( ucfirst( $state['app'] ?? 'game' ) . ' · ' . get_the_date( 'F j, Y', $session ) ); ?></p>
+		<h1><?php echo esc_html( $state['title'] ?? '' ? $state['title'] : 'Your game recap' ); ?></h1>
+		<?php if ( $players ) : ?>
+			<ol class="standings">
+				<?php foreach ( $players as $player ) : ?>
+					<li><span><?php echo esc_html( $player['name'] ); ?></span><span><?php echo esc_html( number_format_i18n( $player['score'] ) ); ?></span></li>
+				<?php endforeach; ?>
+			</ol>
+		<?php endif; ?>
+		<?php if ( ! empty( $state['note'] ) && 'trivia' !== ( $state['app'] ?? '' ) ) : ?>
+			<p class="note"><?php echo esc_html( preg_replace( '/ Legal moves: .*$/', '', $state['note'] ) ); ?></p>
+		<?php endif; ?>
+		<h2>What happened</h2>
+		<?php if ( $moments ) : ?>
+			<ol class="moments">
+				<?php foreach ( $moments as $moment ) : ?>
+					<li><?php echo esc_html( $moment ); ?></li>
+				<?php endforeach; ?>
+			</ol>
+		<?php else : ?>
+			<p>Nothing recorded yet.</p>
+		<?php endif; ?>
+		<form class="email" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<h2>Email it to yourself</h2>
+			<?php if ( 'yes' === $sent ) : ?>
+				<p class="status">Sent. Check your inbox.</p>
+			<?php elseif ( 'no' === $sent ) : ?>
+				<p class="status error">That didn't send. Check the address and try again in a bit.</p>
+			<?php endif; ?>
+			<input type="hidden" name="action" value="voiceboard_email_recap">
+			<input type="hidden" name="code" value="<?php echo esc_attr( $session->post_title ); ?>">
+			<?php wp_nonce_field( 'voiceboard_email_recap' ); ?>
+			<label class="trap" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+			<label for="recap-email">Email address</label>
+			<div class="row"><input id="recap-email" type="email" name="email" required autocomplete="email"><button type="submit">Send</button></div>
+			<p class="fine">We use the address only to send this recap and don't keep it.</p>
+		</form>
+		<p class="fine"><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy</a> · Made by <a href="https://josephfus.co">Joe Fusco</a></p>
+	</main>
+</body>
+</html>
+	<?php
+}
+
+// Emails the recap. The address is used once and never stored. A honeypot field and per-address and
+// per-session limits keep the form from being used to send spam.
+add_action( 'admin_post_nopriv_voiceboard_email_recap', 'voiceboard_email_recap' );
+add_action( 'admin_post_voiceboard_email_recap', 'voiceboard_email_recap' );
+function voiceboard_email_recap(): void {
+	$code    = voiceboard_clean_code( wp_unslash( $_POST['code'] ?? '' ) );
+	$session = voiceboard_session( $code );
+	$email   = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+	$back    = static fn ( string $sent ) => wp_safe_redirect( add_query_arg( 'sent', $sent, voiceboard_url() . "journey/$code" ) ) && exit;
+
+	if ( ! $session || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'voiceboard_email_recap' ) ) {
+		$back( 'no' );
+	}
+	if ( '' !== ( $_POST['website'] ?? '' ) || ! is_email( $email )
+		|| voiceboard_rate_limited( 'mail:' . voiceboard_client(), 5, HOUR_IN_SECONDS )
+		|| voiceboard_rate_limited( "mail-session:$code", 5, DAY_IN_SECONDS ) ) {
+		$back( 'no' );
+	}
+
+	$state   = get_post_meta( $session->ID, '_voiceboard_state', true ) ?: array();
+	$players = $state['players'] ?? array();
+	usort( $players, static fn ( $a, $b ) => $b['score'] <=> $a['score'] );
+	$body  = "Your Voiceboard recap\n\n";
+	$body .= $players ? 'Final scores: ' . implode( ', ', array_map( static fn ( $p ) => "{$p['name']} {$p['score']}", $players ) ) . "\n\n" : '';
+	$body .= 'See the whole game: ' . voiceboard_url() . "journey/$code\n\nVoiceboard, made by Joe Fusco (https://josephfus.co)\n";
+	$back( wp_mail( $email, 'Your Voiceboard recap', $body ) ? 'yes' : 'no' );
+}
 
 /**
  * Plain text an assistant can read back: players, scores, what's on screen, and what's been asked.
