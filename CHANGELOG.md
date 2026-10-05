@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/josephfusco/voiceboard/compare/v0.9.0...v0.10.0) (2026-10-05)
+
+
+### Features
+
+* AAA contrast in every game, a chess board readable from the back seat, and a flat angular Cyber theme ([8958f1a](https://github.com/josephfusco/voiceboard/commit/8958f1a36851ef42fbecab195a6f381a6812af32))
+
 ## [0.9.0](https://github.com/josephfusco/voiceboard/compare/v0.8.0...v0.9.0) (2026-10-05)
 
 
