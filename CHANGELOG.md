@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/josephfusco/voiceboard/compare/v0.6.0...v0.7.0) (2026-10-05)
+
+
+### Features
+
+* sidebar holds only system controls; games launch from Home; new adventure icon; screenshots show the live address ([5ab3d31](https://github.com/josephfusco/voiceboard/commit/5ab3d3123d69625e15f9e1cb7d3ec66e17336fd4))
+
 ## [0.6.0](https://github.com/josephfusco/voiceboard/compare/v0.5.0...v0.6.0) (2026-10-05)
 
 
