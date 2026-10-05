@@ -1,7 +1,7 @@
 // A whole chess game, starting from what people say in the car. Used by the end-to-end test and the demo video.
 // The game is Légal's mate (1755): seven moves, a queen sacrifice, and a knight checkmate.
 export const VOICE_SCRIPT = [
-	{ speaker: 'Driver', says: 'Hey, open voiceboardgames.com and host chess for Joe and Sam. Joe is white.' },
+	{ speaker: 'Driver', says: 'Hey, read voiceboardgames.com/rules, then host chess for Joe and Sam. Joe is white.' },
 	{ speaker: 'Joe', says: 'Pawn to e4' },
 	{ speaker: 'Sam', says: 'Pawn to e5' },
 	{ speaker: 'Joe', says: 'Knight to f3' },

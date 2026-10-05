@@ -37,11 +37,11 @@ test.describe('shell', () => {
 	test('home tiles show what to say, using this site\'s own address', async ({ open, baseURL }) => {
 		const page = await open();
 		const host = new URL(baseURL).host;
-		await expect(page.locator('.home-hint')).toHaveText(`Say “Open ${host} and …”`);
+		await expect(page.locator('.home-hint')).toHaveText(`Say “Read ${host}/rules, then …”`);
 		await expect(page.locator('.tile-say').first()).toHaveText('“host trivia”');
 		await page.locator('.tile', { hasText: 'Trivia' }).click();
 		await expect(page.locator('#board')).toHaveClass(/state-idle/);
-		await expect(page.getByText(`Say “Open ${host} and host trivia”`)).toBeVisible();
+		await expect(page.getByText(`Say “Read ${host}/rules, then host trivia”`)).toBeVisible();
 	});
 
 	test('assistant instructions are in the HTML but hidden once rendered', async ({ open, request, boardPath }) => {

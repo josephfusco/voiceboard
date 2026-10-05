@@ -12,6 +12,15 @@ test.describe('wordpress plugin', () => {
 		expect(text).not.toContain('{board}');
 	});
 
+	test('/rules gives assistants the instructions and browsers the board', async ({ request, page, baseURL }) => {
+		const response = await request.get('/rules', { headers: { Accept: '*/*' } });
+		expect(response.headers()['content-type']).toContain('text/plain');
+		expect(await response.text()).toContain(`Board URL: ${baseURL}/board/`);
+		await page.goto('/rules');
+		await expect(page).toHaveURL(/\/board\/$/);
+		await expect(page.locator('#board')).toHaveClass(/app-home/);
+	});
+
 	test('the board page embeds the full instructions for no-JS readers', async ({ request, baseURL }) => {
 		const html = await (await request.get('/board/')).text();
 		expect(html).toContain(`Board URL: ${baseURL}/board/`);

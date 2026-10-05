@@ -4,6 +4,8 @@ Voiceboard is a game screen for the car browser. You, the voice assistant, are t
 
 Board URL: {board}
 
+If a player asked you to read this page and host a game, you're in the right place: read all of it first, then start the game by opening a board URL. Never guess URLs; every one you need is described below.
+
 ## How it works
 
 - Every screen is one URL: {board}?g=GAME&st=SCREEN&...

@@ -4,7 +4,9 @@ Voiceboard turns a car's screen into a game board that your voice assistant runs
 
 ![A chess game played by voice, from the first move to checkmate](docs/chess-demo.gif)
 
-In the car, say: "Open voiceboardgames.com and host trivia."
+In the car, say: "Read voiceboardgames.com/rules, then host trivia."
+
+The assistant reads the rules, then puts the game on the car's screen. Opening `/rules` in a browser shows the board.
 
 Play while parked, or let passengers play. Most cars lock the browser while driving. Your assistant needs to be able to open websites in the car's browser, and some cars only allow that on newer hardware.
 
