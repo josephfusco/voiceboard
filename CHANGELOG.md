@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/josephfusco/voiceboard/compare/v0.7.0...v0.8.0) (2026-10-05)
+
+
+### Features
+
+* Cybertruck-style Cyber theme; theme and New game move into a ⋮ menu ([c035789](https://github.com/josephfusco/voiceboard/commit/c035789ca7474dedc4595c2b0dcf02f4485683b5))
+
+
+### Performance Improvements
+
+* insert-only URL log table, lighter heartbeat with backoff, short user agent in the log ([60820fa](https://github.com/josephfusco/voiceboard/commit/60820fa122b1ffe78db2523bfb9372700de93475))
+
 ## [0.7.0](https://github.com/josephfusco/voiceboard/compare/v0.6.0...v0.7.0) (2026-10-05)
 
 
