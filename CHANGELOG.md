@@ -5,7 +5,7 @@
 
 ### Features
 
-* Cybertruck-style Cyber theme; theme and New game move into a ⋮ menu ([c035789](https://github.com/josephfusco/voiceboard/commit/c035789ca7474dedc4595c2b0dcf02f4485683b5))
+* Cyber theme refresh; theme and New game move into a ⋮ menu ([c035789](https://github.com/josephfusco/voiceboard/commit/c035789ca7474dedc4595c2b0dcf02f4485683b5))
 
 
 ### Performance Improvements
