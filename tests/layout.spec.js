@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures.js';
 
-// Every Tesla screen size (HW3 and HW4), plus a smaller browser window: no screen may scroll.
+// Every center screen size (both hardware generations), plus a smaller browser window: no screen may scroll.
 const SIZES = { 'Model 3 / Y (15")': [1920, 1200], 'Model S / X (17")': [2200, 1300], '18.5" widescreen': [2400, 1350], 'Model S / X portrait': [1200, 1920], 'browser window': [1600, 900], 'half-width window': [960, 1100], 'small window': [900, 640] };
 const SCREENS = {
 	home: 'g=home',

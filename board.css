@@ -1,4 +1,4 @@
-/* Sized for the Tesla center screen (~1920x1200 landscape); light by day, dark by night. */
+/* Sized for a car's center screen (~1920x1200 landscape); light by day, dark by night. */
 :root {
 	--bg: #ececee;
 	--card: #fff;

@@ -40,7 +40,7 @@
 
 ### Bug Fixes
 
-* no scrollbars on load or on any Tesla screen; manifest and theme color ([2cdc2c5](https://github.com/josephfusco/voiceboard/commit/2cdc2c533215042c4f7769e6eeaca52b93dbfea2))
+* no scrollbars on load or on any car screen; manifest and theme color ([2cdc2c5](https://github.com/josephfusco/voiceboard/commit/2cdc2c533215042c4f7769e6eeaca52b93dbfea2))
 
 ## [0.4.0](https://github.com/josephfusco/voiceboard/compare/v0.3.0...v0.4.0) (2026-10-04)
 

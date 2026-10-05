@@ -9,7 +9,7 @@ const SCREENS = {
 };
 
 test.describe('accessibility (axe)', () => {
-	for (const theme of ['tesla', 'cyber']) {
+	for (const theme of ['classic', 'cyber']) {
 		for (const [name, query] of Object.entries(SCREENS)) {
 			test(`${name} in ${theme} has no violations`, async ({ open, page }) => {
 				await open(`${query}&theme=${theme}`);

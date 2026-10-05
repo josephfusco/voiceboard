@@ -71,9 +71,9 @@ test.describe('themes', () => {
 
 	test('the ⋮ menu switches theme without changing the game', async ({ open, page }) => {
 		await open('g=trivia&q=Stay+put&p=Joe:100');
-		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'classic');
 		await page.getByRole('button', { name: 'More' }).click();
-		await expect(page.getByRole('menuitemradio', { name: 'Tesla' })).toHaveAttribute('aria-checked', 'true');
+		await expect(page.getByRole('menuitemradio', { name: 'Classic' })).toHaveAttribute('aria-checked', 'true');
 		await page.getByRole('menuitemradio', { name: 'Cyber' }).click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
 		await expect(page.getByRole('menu')).toBeHidden();
@@ -83,9 +83,15 @@ test.describe('themes', () => {
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
 	});
 
-	test('unknown theme falls back to tesla', async ({ open, page }) => {
+	test('unknown theme falls back to classic', async ({ open, page }) => {
 		await open('g=home&theme=nope');
-		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'classic');
+	});
+
+	test('a saved theme that no longer exists falls back to classic', async ({ open, page }) => {
+		await page.addInitScript(() => localStorage.setItem('voiceboard', JSON.stringify({ theme: 'retired' })));
+		await open('g=home');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'classic');
 	});
 });
 
@@ -101,10 +107,10 @@ test.describe('shell: time and theme details', () => {
 
 	test('a theme= URL overrides the saved choice, and the menu shows the current theme', async ({ open, page }) => {
 		await open('g=home&theme=cyber');
-		await open('g=home&theme=tesla');
-		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await open('g=home&theme=classic');
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'classic');
 		await page.getByRole('button', { name: 'More' }).click();
-		await expect(page.getByRole('menuitemradio', { name: 'Tesla' })).toHaveAttribute('aria-checked', 'true');
+		await expect(page.getByRole('menuitemradio', { name: 'Classic' })).toHaveAttribute('aria-checked', 'true');
 		await expect(page.getByRole('menuitemradio', { name: 'Cyber' })).toHaveAttribute('aria-checked', 'false');
 	});
 });

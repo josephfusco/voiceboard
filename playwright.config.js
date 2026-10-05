@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// The Tesla browser is Chromium; the viewport matches its center screen.
+// The car browser is Chromium; the viewport matches its center screen.
 const use = { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1200 } };
 
 export default defineConfig({

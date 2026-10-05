@@ -4,7 +4,7 @@ import { MAX_PLAYERS } from './params.js';
 
 const KEY = 'voiceboard';
 const HISTORY = 20;
-export const THEMES = ['tesla', 'cyber'];
+export const THEMES = ['classic', 'cyber'];
 
 const load = () => {
 	try {
@@ -47,7 +47,7 @@ export const sync = (state, { app, search }) => {
 	// Theme is a device preference: a theme= URL sets it, otherwise the last choice sticks.
 	if (THEMES.includes(state.theme) && state.theme !== data.theme) save({ ...data, theme: state.theme });
 
-	return { ...state, p: data.players, history: data.history, theme: THEMES.includes(state.theme) ? state.theme : data.theme ?? THEMES[0] };
+	return { ...state, p: data.players, history: data.history, theme: [state.theme, data.theme].find((name) => THEMES.includes(name)) ?? THEMES[0] };
 };
 
 // Device preferences (theme, language); never part of game state.
