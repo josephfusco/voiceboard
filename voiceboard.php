@@ -159,18 +159,21 @@ add_action(
 
 			// The spoken address ("read example.com/rules, then host trivia"). A browser, which is the car
 			// opening the link, gets the board; an assistant fetching the page gets the instructions as text.
+			// Never cached: CDNs such as Cloudflare ignore Vary: Accept and would hand browsers the text.
 			case $route( 'rules' ):
-				header( 'Vary: Accept' );
-				if ( false !== strpos( (string) ( $_SERVER['HTTP_ACCEPT'] ?? '' ), 'text/html' ) ) {
-					header( 'Cache-Control: public, max-age=300' );
-					wp_safe_redirect( wp_make_link_relative( voiceboard_url() ), 302, 'Voiceboard' );
-					exit;
-				}
-				// Falls through to the instructions.
 			case $route( 'llms.txt' ):
+				if ( $route( 'rules' ) === $request ) {
+					nocache_headers();
+					header( 'Vary: Accept' );
+					if ( false !== strpos( (string) ( $_SERVER['HTTP_ACCEPT'] ?? '' ), 'text/html' ) ) {
+						wp_safe_redirect( wp_make_link_relative( voiceboard_url() ), 302, 'Voiceboard' );
+						exit;
+					}
+				} else {
+					header( 'Cache-Control: public, max-age=300' );
+				}
 				status_header( 200 );
 				header( 'Content-Type: text/plain; charset=utf-8' );
-				header( 'Cache-Control: public, max-age=300' );
 				voiceboard_common_headers();
 				echo voiceboard_instructions(); // phpcs:ignore WordPress.Security.EscapeOutput
 				exit;

@@ -15,6 +15,8 @@ test.describe('wordpress plugin', () => {
 	test('/rules gives assistants the instructions and browsers the board', async ({ request, page, baseURL }) => {
 		const response = await request.get('/rules', { headers: { Accept: '*/*' } });
 		expect(response.headers()['content-type']).toContain('text/plain');
+		// Uncached, so a CDN that ignores Vary: Accept can't hand the text to a browser.
+		expect(response.headers()['cache-control']).toContain('no-store');
 		expect(await response.text()).toContain(`Board URL: ${baseURL}/board/`);
 		await page.goto('/rules');
 		await expect(page).toHaveURL(/\/board\/$/);
