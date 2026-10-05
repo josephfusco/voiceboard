@@ -3,7 +3,7 @@
  * Plugin Name:       Voiceboard
  * Description:       Voice-hosted game boards for the car screen. A voice assistant opens /board/?… URLs; the page renders them.
  * x-release-please-start-version
- * Version:           0.7.0
+ * Version:           0.8.0
  * x-release-please-end
  * Requires at least: 6.0
  * Requires PHP:      7.4
