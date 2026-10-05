@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures.js';
 
 // Every Tesla screen size (HW3 and HW4), plus a smaller browser window: no screen may scroll.
-const SIZES = { 'Model 3 / Y (15")': [1920, 1200], 'Model S / X (17")': [2200, 1300], Cybertruck: [2400, 1350], 'Model S / X portrait': [1200, 1920], 'browser window': [1600, 900], 'half-width window': [960, 1100], 'small window': [900, 640] };
+const SIZES = { 'Model 3 / Y (15")': [1920, 1200], 'Model S / X (17")': [2200, 1300], '18.5" widescreen': [2400, 1350], 'Model S / X portrait': [1200, 1920], 'browser window': [1600, 900], 'half-width window': [960, 1100], 'small window': [900, 640] };
 const SCREENS = {
 	home: 'g=home',
 	question: 'g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons+in+our+solar+system%3F&c=Jupiter|Saturn|Uranus|Neptune&p=A:1,B:2,C:3,D:4,E:5,F:6&timer=15',

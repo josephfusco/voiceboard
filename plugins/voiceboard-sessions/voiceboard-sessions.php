@@ -43,6 +43,7 @@ add_action(
 		if ( ! wp_next_scheduled( 'voiceboard_prune' ) ) {
 			wp_schedule_event( time(), 'daily', 'voiceboard_prune' );
 		}
+		voiceboard_log_table_install();
 	}
 );
 
@@ -111,16 +112,21 @@ add_action(
 		$state = $context['state'];
 		update_post_meta( $session->ID, '_voiceboard_state', $state );
 
-		$log   = get_post_meta( $session->ID, '_voiceboard_log', true ) ?: array();
-		$log[] = array(
-			'time'    => time(),
-			'car'     => $context['car'],
-			'browser' => $context['browser'],
-			'query'   => $context['query'],
-			'diag'    => $context['diag'],
-			'summary' => voiceboard_summary( $state ),
+		// One cheap insert per screen; nothing grows or gets rewritten.
+		global $wpdb;
+		$wpdb->insert(
+			voiceboard_log_table(),
+			array(
+				'session_id' => $session->ID,
+				'time'       => time(),
+				'car'        => $context['car'],
+				'browser'    => $context['browser'],
+				'agent'      => mb_substr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ), 0, 200 ),
+				'query'      => $context['query'],
+				'diag'       => implode( "\n", $context['diag'] ),
+				'summary'    => voiceboard_summary( $state ),
+			)
 		);
-		update_post_meta( $session->ID, '_voiceboard_log', array_slice( $log, -VOICEBOARD_LOG_LIMIT ) );
 
 		if ( in_array( $state['screen'], array( 'reveal', 'final' ), true ) && '' !== $state['q'] ) {
 			$asked = get_post_meta( $session->ID, '_voiceboard_asked', true ) ?: array();
@@ -130,7 +136,9 @@ add_action(
 				update_post_meta( $session->ID, '_voiceboard_asked', $asked );
 			}
 		}
-		wp_update_post( array( 'ID' => $session->ID ) ); // Bumps the modified date that pruning uses.
+		// Bumps the modified date that pruning uses, without the cost of a full post update.
+		$wpdb->update( $wpdb->posts, array( 'post_modified' => current_time( 'mysql' ), 'post_modified_gmt' => current_time( 'mysql', true ) ), array( 'ID' => $session->ID ) );
+		clean_post_cache( $session->ID );
 	}
 );
 
@@ -165,6 +173,61 @@ add_filter(
 add_action( 'voiceboard_deactivate', static fn () => wp_clear_scheduled_hook( 'voiceboard_prune' ) );
 
 /**
+ * The URL log lives in its own insert-only table, so a busy site never rewrites a growing list per screen.
+ */
+function voiceboard_log_table(): string {
+	global $wpdb;
+	return $wpdb->prefix . 'voiceboard_log';
+}
+
+function voiceboard_log_table_install(): void {
+	if ( '1' === get_option( 'voiceboard_log_db' ) ) {
+		return;
+	}
+	global $wpdb;
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	dbDelta(
+		'CREATE TABLE ' . voiceboard_log_table() . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			session_id bigint(20) unsigned NOT NULL,
+			time int(10) unsigned NOT NULL,
+			car varchar(40) NOT NULL DEFAULT '',
+			browser varchar(60) NOT NULL DEFAULT '',
+			agent varchar(200) NOT NULL DEFAULT '',
+			query text NOT NULL,
+			diag text NOT NULL,
+			summary text NOT NULL,
+			PRIMARY KEY  (id),
+			KEY session_time (session_id, time)
+		) {$wpdb->get_charset_collate()};"
+	);
+	update_option( 'voiceboard_log_db', '1', false );
+}
+
+/**
+ * A session's log entries, oldest first (sessions from before the table still read their old meta).
+ */
+function voiceboard_log_entries( int $session_id ): array {
+	global $wpdb;
+	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT time, car, browser, agent, query, diag, summary FROM ' . voiceboard_log_table() . ' WHERE session_id = %d ORDER BY id ASC LIMIT %d', $session_id, VOICEBOARD_LOG_LIMIT ), ARRAY_A ); // phpcs:ignore WordPress.DB
+	if ( ! $rows ) {
+		return get_post_meta( $session_id, '_voiceboard_log', true ) ?: array();
+	}
+	return array_map( static fn ( $row ) => array_merge( $row, array( 'time' => (int) $row['time'], 'diag' => array_filter( explode( "\n", $row['diag'] ) ) ) ), $rows );
+}
+
+// Log rows go with their session.
+add_action(
+	'before_delete_post',
+	static function ( $post_id ) {
+		if ( 'voiceboard_session' === get_post_type( $post_id ) ) {
+			global $wpdb;
+			$wpdb->delete( voiceboard_log_table(), array( 'session_id' => $post_id ) );
+		}
+	}
+);
+
+/**
  * One line for the recap: an answered question, a dice roll, or a new place. Empty when nothing happened worth telling.
  */
 function voiceboard_summary( array $state ): string {
@@ -185,7 +248,7 @@ function voiceboard_summary( array $state ): string {
  */
 function voiceboard_journey_page( WP_Post $session ): void {
 	$state   = get_post_meta( $session->ID, '_voiceboard_state', true ) ?: array();
-	$log     = get_post_meta( $session->ID, '_voiceboard_log', true ) ?: array();
+	$log     = voiceboard_log_entries( $session->ID );
 	$players = $state['players'] ?? array();
 	usort( $players, static fn ( $a, $b ) => $b['score'] <=> $a['score'] );
 	$moments = array();
@@ -359,7 +422,7 @@ add_action(
 			'voiceboard-log',
 			__( 'URL log', 'voiceboard' ),
 			static function () use ( $session ) {
-				$log = array_reverse( get_post_meta( $session->ID, '_voiceboard_log', true ) ?: array() );
+				$log = array_reverse( array_slice( voiceboard_log_entries( $session->ID ), -50 ) );
 				if ( ! $log ) {
 					echo '<p>' . esc_html__( 'No screens yet.', 'voiceboard' ) . '</p>';
 					return;
@@ -369,7 +432,7 @@ add_action(
 					printf(
 						'<tr><td>%s</td><td>%s</td><td><code style="word-break:break-all">%s</code></td><td>%s</td></tr>',
 						esc_html( wp_date( 'M j, H:i:s', $entry['time'] ) ),
-						esc_html( $entry['browser'] ?? '' ),
+						esc_html( trim( ( $entry['browser'] ?? '' ) . ' ' . ( isset( $entry['agent'] ) && '' !== $entry['agent'] ? '(' . $entry['agent'] . ')' : '' ) ) ),
 						esc_html( rawurldecode( $entry['query'] ) ),
 						esc_html( implode( '; ', $entry['diag'] ) )
 					);

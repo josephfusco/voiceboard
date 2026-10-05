@@ -383,7 +383,7 @@ a.card { transition: transform 0.1s; }
 @keyframes fall { to { transform: translate3d(var(--drift), 112vh, 0) rotate(var(--spin)); } }
 
 /*
- * Cyber theme, after the Cybertruck: brushed stainless, sharp facets, a white light bar, red for alerts.
+ * Cyber theme: brushed stainless, sharp facets, a white light bar, red for alerts.
  * theme=cyber or the ⋮ menu.
  */
 :root[data-theme="cyber"] {

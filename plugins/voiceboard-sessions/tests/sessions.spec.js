@@ -45,3 +45,15 @@ test('static hosting sends no reports', async ({ open, page, baseURL }) => {
 	await page.waitForTimeout(300);
 	expect(pings).toEqual([]);
 });
+
+test('when the server says slow down, the board stops reporting but keeps playing', async ({ page, boardPath }) => {
+	test.skip(boardPath === '/', 'needs the WordPress plugin');
+	let pings = 0;
+	await page.route('**/voiceboard/v1/ping', (route) => { pings += 1; route.fulfill({ status: 429, body: '{}' }); });
+	await page.goto(`${boardPath}?g=trivia&code=quiet-${Date.now()}&q=One`);
+	await expect.poll(() => pings).toBe(1);
+	await page.goto(`${boardPath}?g=trivia&code=quiet-${Date.now()}&q=Two`);
+	await expect(page.locator('h1')).toHaveText('Two');
+	await page.waitForTimeout(500);
+	expect(pings).toBe(1);
+});

@@ -4,7 +4,12 @@ import { carId } from './store.js';
 import { lang } from './i18n.js';
 
 const api = document.querySelector('meta[name="voiceboard-api"]')?.content;
-const HEARTBEAT = 60_000;
+// Every two minutes keeps a board inside Presence's 150-second window.
+const HEARTBEAT = 120_000;
+// If the server says slow down or fails, stop reporting for a while. The game never depends on it.
+const QUIET = 'voiceboard-quiet-until';
+const quiet = () => Number(sessionStorage.getItem(QUIET) || 0) > Date.now();
+const backOff = () => { try { sessionStorage.setItem(QUIET, String(Date.now() + 5 * 60_000)); } catch {} };
 
 // The answer as text for the transcript: a letter or number picks from the choices.
 const answerText = ({ a = '', c = [] }) => {
@@ -14,7 +19,7 @@ const answerText = ({ a = '', c = [] }) => {
 };
 
 export const report = (state, screen, diag) => {
-	if (!api) return;
+	if (!api || quiet()) return;
 	const car = carId();
 	const body = (beat) => JSON.stringify({
 		car,
@@ -24,7 +29,9 @@ export const report = (state, screen, diag) => {
 		diag,
 		state: { app: state.app.name, screen, title: state.t, n: state.n, of: state.of, q: state.q ?? '', a: answerText(state), r: state.r ?? '', up: state.up, note: state.note ?? '', players: state.p, lang },
 	});
-	const send = (beat) => fetch(`${api}ping`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body(beat), keepalive: true }).catch(() => {});
+	const send = (beat) => !quiet() && fetch(`${api}ping`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body(beat), keepalive: true })
+		.then((response) => (response.status === 429 || response.status >= 500) && backOff())
+		.catch(backOff);
 
 	send(false);
 	const timer = setInterval(() => document.visibilityState === 'visible' && send(true), HEARTBEAT);
