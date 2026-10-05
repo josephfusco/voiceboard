@@ -5,6 +5,7 @@
 	},
 	{
 		"title": "Trivia question with a countdown",
+		"featured": true,
 		"query": "?g=trivia&st=ask&t=Space&n=3&of=10&q=Which+planet+has+the+most+known+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:200,Sam:100&timer=15"
 	},
 	{
@@ -21,6 +22,7 @@
 	},
 	{
 		"title": "Arabic, laid out right to left",
+		"featured": true,
 		"query": "?g=trivia&st=reveal&lang=ar&t=الفضاء&q=ما+هو+أكبر+كوكب+في+المجموعة+الشمسية؟&c=المشتري|زحل|الأرض|المريخ&a=A&r=سارة&p=سارة:300,عمر:200"
 	},
 	{
@@ -37,10 +39,12 @@
 	},
 	{
 		"title": "Category board mid-game",
+		"featured": true,
 		"query": "?g=jeopardy&st=board&cats=Space|Rivers|80s+Movies|Food|Sports|Words&u=A1,C3,F5,B2&at=D4&p=Joe:400,Sam:-200,Ava:1200"
 	},
 	{
 		"title": "Daily Double",
+		"featured": true,
 		"query": "?g=jeopardy&st=clue&cats=Space|Rivers|80s+Movies|Food|Sports|Words&at=B3&q=This+river+flows+through+Cairo&dd=1&timer=10&p=Joe:400,Sam:-200,Ava:1200"
 	},
 	{
@@ -53,10 +57,12 @@
 	},
 	{
 		"title": "Six players and confetti",
+		"featured": true,
 		"query": "?g=trivia&st=end&t=Space&p=Joe:300,Sam:500,Ava:400,Max:250,Lee:450,Kim:100&fx=confetti"
 	},
 	{
 		"title": "Category board in the Cyber theme",
+		"featured": true,
 		"query": "?g=jeopardy&st=board&cats=Robots|Space|Synthwave|Hackers|Neon|Future&u=A1,D2&at=C3&p=Neo:800,Trinity:1200,Morpheus:400&theme=cyber"
 	},
 	{
@@ -98,10 +104,12 @@
 	},
 	{
 		"title": "Adventure scene with the party",
+		"featured": true,
 		"query": "?g=adventure&code=readme&ch=Joe:fighter:12/12,Sam:rogue:6/10,Ava:wizard:8/8&inv=Joe:sword|torch;Sam:lockpicks|rope;Ava:spellbook&loc=The+Old+Mill&see=a+locked+chest|cobwebs|a+sleeping+goblin&ex=door|ladder+up"
 	},
 	{
 		"title": "Sam rolls to pick the lock",
+		"featured": true,
 		"query": "?g=adventure&code=readme&ch=Joe:fighter:12/12,Sam:rogue:6/10,Ava:wizard:8/8&inv=Joe:sword|torch;Sam:lockpicks|rope;Ava:spellbook&loc=The+Old+Mill&roll=d20%2B3&for=Sam&vs=12&rn=1"
 	},
 	{

@@ -28,7 +28,7 @@ plugins/                 modules: each folder is a plugin (see plugins/README.md
 site-theme/              the WordPress site's child theme, deployed with the plugin
 tests/                   core Playwright tests, fixtures, and WordPress Playground blueprints (each module keeps its own tests in plugins/<name>/tests/)
 scripts/                 screenshot and demo video recorders
-docs/                    README gallery images, examples list, demo GIF
+docs/                    gallery page and images, examples list, demo GIF
 ```
 
 ## Running it
@@ -45,7 +45,7 @@ npm run wp:root       # board at the site root with the site theme, on :9401
 
 ## Examples and screenshots
 
-The README gallery is built from `docs/examples.json`. After you change that file, run `npm run screenshots`. To re-record the chess GIF, run `npm run demo-video`.
+The galleries are built from `docs/examples.json`: examples marked `"featured": true` go in the README, and every example goes in `docs/gallery.md`. After you change that file, run `npm run screenshots`. To re-record the chess GIF, run `npm run demo-video`.
 
 ## Releases
 

@@ -1,5 +1,6 @@
-// Screenshots every example in docs/examples.json against the local build and rewrites the
-// README gallery between the examples markers. Run with `npm run screenshots`.
+// Screenshots every example in docs/examples.json against the local build, then rewrites the
+// README gallery (featured examples) and docs/gallery.md (all of them) between the examples
+// markers. Run with `npm run screenshots`.
 import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
@@ -19,15 +20,24 @@ const examples = JSON.parse(readFileSync(new URL('docs/examples.json', root), 'u
 export const slug = (title) => title.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'example';
 const image = (example, i) => `docs/screenshots/${String(i + 1).padStart(2, '0')}-${slug(example.title)}.jpg`;
 
-export const gallery = (list) => {
-	const cell = (example, i) => {
+// featured keeps only the examples marked featured; dir is the folder the gallery's file lives in.
+export const gallery = (list, { featured = false, dir = '' } = {}) => {
+	const shown = list.map((example, i) => ({ example, i })).filter(({ example }) => !featured || example.featured);
+	const cell = ({ example, i }) => {
 		const url = LIVE + example.query;
-		return `<td width="50%" valign="top"><a href="${url}"><img src="${image(example, i)}" alt="${example.title}"></a><br><a href="${url}">${example.title}</a></td>`;
+		const src = image(example, i).slice(dir.length);
+		return `<td width="50%" valign="top"><a href="${url}"><img src="${src}" alt="${example.title}"></a><br><a href="${url}">${example.title}</a></td>`;
 	};
 	const rows = [];
-	for (let i = 0; i < list.length; i += 2) rows.push(`<tr>${cell(list[i], i)}${list[i + 1] ? cell(list[i + 1], i + 1) : '<td></td>'}</tr>`);
+	for (let i = 0; i < shown.length; i += 2) rows.push(`<tr>${cell(shown[i])}${shown[i + 1] ? cell(shown[i + 1]) : '<td></td>'}</tr>`);
 	return `<table>\n${rows.join('\n')}\n</table>`;
 };
+
+export const galleries = (list) => [
+	{ file: 'README.md', table: gallery(list, { featured: true }) },
+	{ file: 'docs/gallery.md', table: gallery(list, { dir: 'docs/' }) },
+];
+const MARKERS = /<!-- examples:start -->[\s\S]*<!-- examples:end -->/;
 
 if (import.meta.url === `file://${process.argv[1]}`) {
 	const server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1'], { cwd: root.pathname, stdio: 'ignore' });
@@ -53,7 +63,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 		server.kill();
 	}
 
-	const readmePath = new URL('README.md', root);
-	const readme = readFileSync(readmePath, 'utf8');
-	writeFileSync(readmePath, readme.replace(/<!-- examples:start -->[\s\S]*<!-- examples:end -->/, `<!-- examples:start -->\n${gallery(examples)}\n<!-- examples:end -->`));
+	for (const { file, table } of galleries(examples)) {
+		const path = new URL(file, root);
+		writeFileSync(path, readFileSync(path, 'utf8').replace(MARKERS, `<!-- examples:start -->\n${table}\n<!-- examples:end -->`));
+	}
 }
