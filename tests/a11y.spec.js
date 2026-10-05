@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { readFileSync } from 'node:fs';
 import { test, expect } from './fixtures.js';
 
 const SCREENS = {
@@ -18,5 +19,28 @@ test.describe('accessibility (axe)', () => {
 				expect(violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 			});
 		}
+	}
+});
+
+// Text contrast meets WCAG AAA (7:1, or 4.5:1 for large text) on every example screen, in every look,
+// so the board stays readable from the back seat and in sunlight.
+const examples = JSON.parse(readFileSync(new URL('../docs/examples.json', import.meta.url), 'utf8'));
+const LOOKS = [['classic', 'light'], ['classic', 'dark'], ['cyber', 'dark']];
+
+test.describe('contrast (AAA)', () => {
+	for (const [theme, colorScheme] of LOOKS) {
+		test(`every example in ${theme} ${colorScheme}`, async ({ open, page }) => {
+			test.setTimeout(120_000);
+			await page.emulateMedia({ colorScheme });
+			const failures = [];
+			for (const example of examples) {
+				const query = example.query.replace(/^\?/, '').replace(/&?theme=\w+/, '');
+				await open(`${query}${query ? '&' : ''}theme=${theme}`);
+				await page.waitForTimeout(250);
+				const { violations } = await new AxeBuilder({ page }).include('body').withRules(['color-contrast', 'color-contrast-enhanced']).analyze();
+				for (const v of violations) for (const node of v.nodes) failures.push(`${example.title}: ${node.target.join(' ')} — ${node.any[0]?.message ?? v.id}`);
+			}
+			expect(failures).toEqual([]);
+		});
 	}
 });

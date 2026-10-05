@@ -1,6 +1,6 @@
 /* Recap page: a phone-first reading layout. */
-:root { color-scheme: light dark; --text: #171a20; --muted: #5c5e62; --bg: #fff; --card: #f4f4f4; --accent: #3e6ae1; }
-@media (prefers-color-scheme: dark) { :root { --text: #f2f2f3; --muted: #a2a6ad; --bg: #0d0d0e; --card: #1f2023; --accent: #5b84f0; } }
+:root { color-scheme: light dark; --text: #171a20; --muted: #44464b; --bg: #fff; --card: #f4f4f4; --accent: #1a3d9e; --on-accent: #fff; --danger: #8f1a1d; }
+@media (prefers-color-scheme: dark) { :root { --text: #f2f2f3; --muted: #a8abb0; --bg: #0d0d0e; --card: #1f2023; --accent: #8ca9f5; --on-accent: #0d0d0e; --danger: #ef9194; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
 main { max-width: 38rem; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
@@ -18,9 +18,9 @@ h2 { margin: 2.5rem 0 0.75rem; font-size: 1.25rem; }
 .email label { display: block; margin-bottom: 0.35rem; font-weight: 600; }
 .row { display: flex; gap: 0.5rem; }
 input[type=email] { flex: 1; min-width: 0; padding: 0.7rem 0.9rem; border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent); border-radius: 10px; background: var(--bg); color: var(--text); font: inherit; }
-button { padding: 0.7rem 1.3rem; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+button { padding: 0.7rem 1.3rem; border: 0; border-radius: 10px; background: var(--accent); color: var(--on-accent); font: inherit; font-weight: 600; cursor: pointer; }
 .status { padding: 0.6rem 0.9rem; border-radius: 10px; background: var(--card); }
-.status.error { color: #e5484d; }
+.status.error { color: var(--danger); }
 .trap { position: absolute; left: -9999px; }
 .fine { color: var(--muted); font-size: 0.85rem; }
 a { color: var(--accent); }

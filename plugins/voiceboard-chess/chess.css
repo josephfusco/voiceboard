@@ -1,7 +1,14 @@
 /* Chess board. Orientation never mirrors in right-to-left languages. */
+/* Built to read from the back seat: pieces fill their squares, black pieces get a light edge on dark
+   boards, and coordinates keep AAA contrast on both square colors. */
 .chess-board {
-	--sq-light: #eef0f3;
-	--sq-dark: #b4bfcd;
+	--sq-light: #f0f2f5;
+	--sq-dark: #9aa6b7;
+	--coord: #15171a;
+	--w-fill: #fff;
+	--w-edge: #15171a;
+	--b-fill: #15171a;
+	--b-edge: #15171a;
 	direction: ltr;
 	display: grid;
 	grid-template-columns: repeat(8, 1fr);
@@ -16,33 +23,40 @@
 	box-shadow: var(--shadow);
 }
 @media (prefers-color-scheme: dark) {
-	:root:not([data-theme="cyber"]) .chess-board { --sq-light: #4a4e57; --sq-dark: #2d3036; }
+	:root:not([data-theme="cyber"]) .chess-board { --sq-light: #4a4e57; --sq-dark: #25272c; --coord: #f2f2f3; --w-edge: #0d0d0e; --b-fill: #0d0d0e; --b-edge: #e6e8eb; }
 }
-[data-theme="cyber"] .chess-board { --sq-light: #3a3e44; --sq-dark: #1b1d20; box-shadow: inset 0 0 0 1px #ffffff14; border-radius: 0; }
+[data-theme="cyber"] .chess-board { --sq-light: #44474d; --sq-dark: #1a1b1e; --coord: #eef0f2; --w-fill: #f2f4f6; --w-edge: #0a0b0c; --b-fill: #0a0b0c; --b-edge: #e6e8eb; box-shadow: 0 0 0 1px var(--edge); border-radius: 0; }
 
-.sq { position: relative; display: grid; place-items: center; }
+.sq { position: relative; display: grid; place-items: center; container-type: size; }
 .sq.light { background: var(--sq-light); }
 .sq.dark { background: var(--sq-dark); }
-.sq.last::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--accent) 30%, transparent); }
+/* Last move: a thick ring rather than a tint, so the coordinates keep their contrast. */
+.sq.last::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 7cqmin var(--accent); }
 .sq.check { background: radial-gradient(circle, var(--danger) 0 45%, transparent 75%), var(--sq-dark); }
 
-.piece { position: relative; z-index: 1; font-size: min(9vh, 5.4vw); line-height: 1; }
-.piece.w { color: #fff; -webkit-text-stroke: 1.5px #1a1c20; }
-.piece.b { color: #15171a; }
-[data-theme="cyber"] .piece.w { color: #f2f4f6; -webkit-text-stroke: 0; text-shadow: 0 0 10px #ffffff66; }
-[data-theme="cyber"] .piece.b { color: #0a0b0c; -webkit-text-stroke: 1px #8b9098; }
+/* The stroke is painted under the fill, so a thick edge never eats into the piece. */
+.piece {
+	position: relative;
+	z-index: 1;
+	font-family: "DejaVu Sans", "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", sans-serif;
+	font-size: 80cqmin;
+	line-height: 1;
+	paint-order: stroke fill;
+	-webkit-text-stroke: 6cqmin var(--edge-color);
+}
+.piece.w { color: var(--w-fill); --edge-color: var(--w-edge); }
+.piece.b { color: var(--b-fill); --edge-color: var(--b-edge); -webkit-text-stroke-width: 4cqmin; }
 
-.coord { position: absolute; z-index: 1; font-size: clamp(0.6rem, 1.4vh, 0.9rem); font-weight: 600; color: var(--muted); }
-.coord.rank { top: 0.3em; left: 0.35em; }
-.coord.file { bottom: 0.2em; right: 0.35em; }
+.coord { position: absolute; z-index: 1; font-size: max(0.85rem, 18cqmin); font-weight: 700; line-height: 1; color: var(--coord); }
+.coord.rank { top: 10cqmin; left: 11cqmin; }
+.coord.file { bottom: 9cqmin; right: 11cqmin; }
 
 .chess-status { margin: 0; font-size: clamp(1.4rem, 4.2vh, 3rem); font-weight: 600; }
 .chess-change { margin: 0; color: var(--accent); font-size: clamp(1rem, 2.6vh, 1.6rem); font-weight: 600; }
 .chess-captured { margin-inline-start: auto; font-size: 0.8em; letter-spacing: -0.1em; }
-.chess-captured.w { color: #fff; -webkit-text-stroke: 1px #1a1c20; }
-.chess-captured.b { color: #15171a; }
-[data-theme="cyber"] .chess-captured.w { color: #f2f4f6; -webkit-text-stroke: 0; }
-[data-theme="cyber"] .chess-captured.b { color: #0a0b0c; -webkit-text-stroke: 1px #8b9098; }
+.chess-captured { font-family: "DejaVu Sans", "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", sans-serif; paint-order: stroke fill; }
+.chess-captured.w { color: #fff; -webkit-text-stroke: 2px #15171a; }
+.chess-captured.b { color: #15171a; -webkit-text-stroke: 2px #e6e8eb; }
 .chess-illegal { margin: 0; color: var(--danger); font-size: clamp(1rem, 2.6vh, 1.6rem); font-weight: 600; }
 .chess-moves { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.6vh; font-size: clamp(1rem, 2.4vh, 1.5rem); font-variant-numeric: tabular-nums; }
 .chess-moves li { display: grid; grid-template-columns: 2.6em 1fr 1fr; }
@@ -73,5 +87,4 @@
 	.chess-moves li:nth-last-child(n+4) { display: none; }
 	.chess-side { justify-content: flex-start; }
 	.chess-center { flex: none; }
-	.piece { font-size: min(8.5vw, 5.5vh); }
 }

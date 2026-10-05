@@ -5,10 +5,14 @@
 	--dock: #dfdfe2;
 	--shadow: 0 1px 2px #0000000f, 0 2px 8px #0000000a;
 	--text: #171a20;
-	--muted: #6b6e75;
-	--accent: #3e6ae1;
-	--correct: #1fa463;
-	--danger: #e5484d;
+	--muted: #44464b;
+	--accent: #1a3d9e;
+	--correct: #0a5530;
+	--danger: #8f1a1d;
+	/* Text on accent, correct, and danger fills. Every text color meets WCAG AAA (7:1) on its surface. */
+	--on-accent: #fff;
+	--on-correct: #fff;
+	--on-danger: #fff;
 	--radius: 16px;
 	--chamfer: 0px;
 	--mono: ui-monospace, "SF Mono", Menlo, monospace;
@@ -22,8 +26,13 @@
 		--dock: #18181a;
 		--shadow: none;
 		--text: #f2f2f3;
-		--muted: #8d9097;
-		--accent: #5b84f0;
+		--muted: #a8abb0;
+		--accent: #8ca9f5;
+		--correct: #5bbd8d;
+		--danger: #ef9194;
+		--on-accent: #0d0d0e;
+		--on-correct: #0d0d0e;
+		--on-danger: #0d0d0e;
 	}
 }
 
@@ -122,7 +131,7 @@ html, body {
 	transition: background 0.2s, color 0.2s, transform 0.1s;
 }
 .dock-item:hover { color: var(--text); }
-.dock-item.is-active { background: var(--accent); color: #fff; }
+.dock-item.is-active { background: var(--accent); color: var(--on-accent); }
 
 /* ⋮ menu (popover) */
 .dock-more .icon path { fill: currentColor; stroke: none; }
@@ -217,12 +226,13 @@ a.card { transition: transform 0.1s; }
 	padding: 3vh 2vw;
 	font-size: clamp(1.4rem, 4vh, 3rem);
 	text-align: start;
-	transition: opacity 0.3s, background 0.3s;
+	transition: color 0.3s, background 0.3s;
 }
 .choice .muted { min-width: 1.2em; font-size: 0.75em; font-weight: 600; }
-.choice.is-correct { background: var(--correct); color: #fff; }
-.choice.is-correct .muted { color: inherit; opacity: 0.8; }
-.choice.is-dim { opacity: 0.5; }
+.choice.is-correct { background: var(--correct); color: var(--on-correct); }
+.choice.is-correct .muted { color: inherit; }
+/* Wrong answers recede by color, not opacity, so they stay readable. */
+.choice.is-dim { color: var(--muted); box-shadow: none; background: transparent; outline: 1px solid color-mix(in srgb, var(--muted) 40%, transparent); outline-offset: -1px; }
 .clue .choice { justify-content: center; }
 
 .verdict {
@@ -334,7 +344,7 @@ a.card { transition: transform 0.1s; }
 	font-variant-numeric: tabular-nums;
 }
 .grid-cell.is-used { background: transparent; box-shadow: inset 0 0 0 2px var(--card); }
-.grid-cell.is-current { background: var(--accent); color: #fff; }
+.grid-cell.is-current { background: var(--accent); color: var(--on-accent); }
 
 /* Effects */
 @property --left {
@@ -383,50 +393,44 @@ a.card { transition: transform 0.1s; }
 @keyframes fall { to { transform: translate3d(var(--drift), 112vh, 0) rotate(var(--spin)); } }
 
 /*
- * Cyber theme: brushed stainless, sharp facets, a white light bar, red for alerts.
+ * Cyber theme: the angular in-car software look. Near-black flat panels, chamfered corners,
+ * hairline edges, wide uppercase labels in a technical face, white as the accent.
  * theme=cyber or the ⋮ menu.
  */
 :root[data-theme="cyber"] {
 	--bg: #0a0b0c;
-	--card: #1c1e21;
-	--dock: #111214;
+	--card: #17181b;
+	--dock: #0f1012;
+	--edge: #ffffff24;
 	--shadow: none;
 	--text: #eef0f2;
-	--muted: #8b9098;
+	--muted: #a5a8af;
 	--accent: #f2f4f6;
 	--correct: #4ade80;
-	--danger: #ff453a;
+	--danger: #ff847d;
+	--on-accent: #0a0b0c;
+	--on-correct: #04140a;
+	--on-danger: #0a0b0c;
 	--radius: 0px;
 	--chamfer: 14px;
-	--steel: linear-gradient(160deg, #34383d 0%, #1e2124 38%, #26292d 62%, #181a1d 100%);
 	color-scheme: dark;
 }
 
 [data-theme="cyber"] body { background: var(--bg); }
 
-/* The light bar: one thin white line across the top. */
-[data-theme="cyber"] .board::before {
-	content: "";
-	position: absolute;
-	top: 0;
-	inset-inline: 6%;
-	height: 2px;
-	background: #fff;
-	box-shadow: 0 0 14px #ffffffb0, 0 0 40px #ffffff40;
-	pointer-events: none;
-}
-
+/* Chamfered panels: flat fills, a shade lighter than the background, so the cut corners read clearly. */
 [data-theme="cyber"] .card,
 [data-theme="cyber"] .chip,
 [data-theme="cyber"] .dock-item {
 	border-radius: 0;
 	clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
 }
-[data-theme="cyber"] .card { background: var(--steel); box-shadow: inset 0 1px 0 #ffffff1f, inset 0 0 0 1px #ffffff10; }
-[data-theme="cyber"] .chip { --chamfer: 8px; background: var(--steel); }
+[data-theme="cyber"] .card,
+[data-theme="cyber"] .chip { background: var(--card); box-shadow: none; }
+[data-theme="cyber"] .chip { --chamfer: 8px; }
 [data-theme="cyber"] .dock-item { --chamfer: 10px; }
-[data-theme="cyber"] #dock { border-inline-end: 1px solid #ffffff12; }
-[data-theme="cyber"] .dock-menu { clip-path: none; border: 1px solid #ffffff1f; }
+[data-theme="cyber"] #dock { border-inline-end: 1px solid var(--edge); }
+[data-theme="cyber"] .dock-menu { clip-path: none; border: 1px solid var(--edge); }
 
 [data-theme="cyber"] .bar,
 [data-theme="cyber"] .grid-cat,
@@ -443,12 +447,21 @@ a.card { transition: transform 0.1s; }
 [data-theme="cyber"] .chip,
 [data-theme="cyber"] .fx-timer { font-family: var(--mono); }
 
+/* States repeat their fill here, since the panel background above is more specific. */
 [data-theme="cyber"] .dock-item.is-active,
-[data-theme="cyber"] .grid-cell.is-current { background: var(--accent); color: #0a0b0c; }
-[data-theme="cyber"] .choice.is-correct { background: var(--correct); color: #04140a; }
-[data-theme="cyber"] .grid-cell.is-used { background: transparent; box-shadow: inset 0 0 0 1px #ffffff14; }
-[data-theme="cyber"] .score-row.is-leader { box-shadow: inset 0 0 0 2px var(--accent); }
-[data-theme="cyber"] .verdict { text-shadow: 0 0 18px #ffffff55; }
+[data-theme="cyber"] .grid-cell.is-current { background: var(--accent); }
+[data-theme="cyber"] .choice.is-correct { background: var(--correct); }
+[data-theme="cyber"] .choice.is-dim { background: var(--card); outline: 0; }
+[data-theme="cyber"] .grid-cell.is-used { background: var(--dock); }
+/* Highlights: an accent edge drawn as a background layer, so it follows the chamfer. */
+[data-theme="cyber"] .score-row.is-leader,
+[data-theme="cyber"] .chip.is-up,
+[data-theme="cyber"] .chess-player.is-turn,
+[data-theme="cyber"] .adv-character.is-up {
+	background: linear-gradient(var(--card), var(--card)) padding-box, var(--accent) border-box;
+	border: 2px solid transparent;
+	box-shadow: none;
+}
 [data-theme="cyber"] .fx-timer { background: radial-gradient(closest-side, var(--bg) 84%, transparent 85%), conic-gradient(var(--accent) var(--left), #2a2d31 0); }
 
 /* Confirmation dialog */
@@ -477,7 +490,7 @@ a.card { transition: transform 0.1s; }
 	font-weight: 600;
 	cursor: pointer;
 }
-.button.is-danger { background: var(--danger); color: #fff; }
+.button.is-danger { background: var(--danger); color: var(--on-danger); }
 [data-theme="cyber"] .confirm,
 [data-theme="cyber"] .button {
 	border-radius: 0;
@@ -488,7 +501,7 @@ a.card { transition: transform 0.1s; }
 /* Final-screen credit: small and quiet */
 .credit {
 	align-self: center;
-	color: color-mix(in srgb, var(--muted) 75%, var(--text));
+	color: var(--muted);
 	font-size: clamp(0.75rem, 1.6vh, 1rem);
 }
 .credit:hover { color: var(--text); }
