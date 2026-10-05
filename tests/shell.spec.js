@@ -19,7 +19,7 @@ test.describe('shell', () => {
 		await expect(page.locator('#dock a.dock-item')).toHaveCount(2);
 		await expect(page.getByRole('link', { name: 'Hall of Fame' })).toBeVisible();
 		await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'More' })).toBeVisible();
 		for (const game of ['Trivia', 'Categories', 'Chess', 'Adventure']) {
 			await expect(page.locator('#dock').getByRole('link', { name: game })).toHaveCount(0);
 		}
@@ -69,12 +69,14 @@ test.describe('themes', () => {
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
 	});
 
-	test('the sidebar toggle switches theme without changing the game', async ({ open, page }) => {
+	test('the ⋮ menu switches theme without changing the game', async ({ open, page }) => {
 		await open('g=trivia&q=Stay+put&p=Joe:100');
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
-		await page.getByRole('button', { name: 'Switch to Cyber theme' }).click();
+		await page.getByRole('button', { name: 'More' }).click();
+		await expect(page.getByRole('menuitemradio', { name: 'Tesla' })).toHaveAttribute('aria-checked', 'true');
+		await page.getByRole('menuitemradio', { name: 'Cyber' }).click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'cyber');
-		await expect(page.getByRole('button', { name: 'Switch to Tesla theme' })).toBeVisible();
+		await expect(page.getByRole('menu')).toBeHidden();
 		await expect(page.locator('h1')).toHaveText('Stay put');
 		await expect(page.locator('.chip')).toHaveText(['Joe100']);
 		await page.reload();
@@ -97,12 +99,12 @@ test.describe('shell: time and theme details', () => {
 		await expect(page.locator('.bar-title')).toHaveText('Good evening');
 	});
 
-	test('a theme= URL overrides the saved choice, and the toggle cycles back', async ({ open, page }) => {
+	test('a theme= URL overrides the saved choice, and the menu shows the current theme', async ({ open, page }) => {
 		await open('g=home&theme=cyber');
 		await open('g=home&theme=tesla');
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
-		await page.getByRole('button', { name: 'Switch to Cyber theme' }).click();
-		await page.getByRole('button', { name: 'Switch to Tesla theme' }).click();
-		await expect(page.locator('html')).toHaveAttribute('data-theme', 'tesla');
+		await page.getByRole('button', { name: 'More' }).click();
+		await expect(page.getByRole('menuitemradio', { name: 'Tesla' })).toHaveAttribute('aria-checked', 'true');
+		await expect(page.getByRole('menuitemradio', { name: 'Cyber' })).toHaveAttribute('aria-checked', 'false');
 	});
 });

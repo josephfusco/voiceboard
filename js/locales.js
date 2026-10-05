@@ -13,6 +13,7 @@ export const LOCALES = {
 		nextUp: "Next up", sayReady: "Say “ready” to start",
 		madeBy: "Made by {name}",
 		recapScan: "Scan for the game recap",
+		more: "More", themeLabel: "Theme",
 						'hall.title': 'Hall of Fame', 'home.title': 'Home',
 	},
 	es: {
@@ -27,6 +28,7 @@ export const LOCALES = {
 		nextUp: "Siguiente turno", sayReady: "Di «listo» para empezar",
 		madeBy: "Hecho por {name}",
 		recapScan: "Escanea para ver el resumen",
+		more: "Más", themeLabel: "Tema",
 						'hall.title': 'Salón de la fama', 'home.title': 'Inicio',
 	},
 	fr: {
@@ -41,6 +43,7 @@ export const LOCALES = {
 		nextUp: "Au tour de", sayReady: "Dites « prêt » pour commencer",
 		madeBy: "Créé par {name}",
 		recapScan: "Scannez pour le récapitulatif",
+		more: "Plus", themeLabel: "Thème",
 						'hall.title': 'Palmarès', 'home.title': 'Accueil',
 	},
 	de: {
@@ -55,6 +58,7 @@ export const LOCALES = {
 		nextUp: "Als Nächstes", sayReady: "Sag „bereit“ zum Starten",
 		madeBy: "Gemacht von {name}",
 		recapScan: "Scannen für die Zusammenfassung",
+		more: "Mehr", themeLabel: "Design",
 						'hall.title': 'Ruhmeshalle', 'home.title': 'Start',
 	},
 	pt: {
@@ -69,6 +73,7 @@ export const LOCALES = {
 		nextUp: "Próximo", sayReady: "Diga “pronto” para começar",
 		madeBy: "Feito por {name}",
 		recapScan: "Escaneie para ver o resumo",
+		more: "Mais", themeLabel: "Tema",
 						'hall.title': 'Hall da fama', 'home.title': 'Início',
 	},
 	ja: {
@@ -83,6 +88,7 @@ export const LOCALES = {
 		nextUp: "次は", sayReady: "「準備OK」と言ったらスタート",
 		madeBy: "制作: {name}",
 		recapScan: "スキャンしてゲームの記録を見る",
+		more: "その他", themeLabel: "テーマ",
 						'hall.title': '殿堂', 'home.title': 'ホーム',
 	},
 	zh: {
@@ -97,6 +103,7 @@ export const LOCALES = {
 		nextUp: "下一位", sayReady: "说“准备好了”开始",
 		madeBy: "制作：{name}",
 		recapScan: "扫码查看游戏回顾",
+		more: "更多", themeLabel: "主题",
 						'hall.title': '名人堂', 'home.title': '主页',
 	},
 	ar: {
@@ -111,6 +118,7 @@ export const LOCALES = {
 		nextUp: "التالي", sayReady: "قل «جاهز» للبدء",
 		madeBy: "صنعه {name}",
 		recapScan: "امسح لمشاهدة ملخص اللعبة",
+		more: "المزيد", themeLabel: "السمة",
 						'hall.title': 'قاعة المشاهير', 'home.title': 'الرئيسية',
 	},
 	he: {
@@ -125,6 +133,7 @@ export const LOCALES = {
 		nextUp: "הבא בתור", sayReady: "אמרו \"מוכן\" כדי להתחיל",
 		madeBy: "נוצר על ידי {name}",
 		recapScan: "סרקו לסיכום המשחק",
+		more: "עוד", themeLabel: "ערכת נושא",
 						'hall.title': 'היכל התהילה', 'home.title': 'בית',
 	},
 };

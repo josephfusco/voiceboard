@@ -64,14 +64,16 @@ test.describe('remembered state: resilience', () => {
 test.describe('new game (touch)', () => {
 	test('cancel keeps the players; clear removes them after confirming', async ({ open, page }) => {
 		await open('g=trivia&q=One&p=Joe:100,Sam:50');
-		await page.getByRole('button', { name: 'New game' }).click();
+		await page.getByRole('button', { name: 'More' }).click();
+		await page.getByRole('menuitem', { name: 'New game' }).click();
 		await expect(page.getByRole('dialog')).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Clear players and scores?' })).toBeVisible();
 		await page.getByRole('button', { name: 'Cancel' }).click();
 		await expect(page.getByRole('dialog')).toBeHidden();
 		await expect(page.locator('.chip')).toHaveText(['Joe100', 'Sam50']);
 
-		await page.getByRole('button', { name: 'New game' }).click();
+		await page.getByRole('button', { name: 'More' }).click();
+		await page.getByRole('menuitem', { name: 'New game' }).click();
 		await Promise.all([page.waitForEvent('load'), page.getByRole('button', { name: 'Clear', exact: true }).click()]);
 		await expect(page.locator('.chip')).toHaveCount(0);
 		await page.reload();
@@ -80,10 +82,12 @@ test.describe('new game (touch)', () => {
 
 	test('escape closes without clearing; the Hall of Fame survives a clear', async ({ open, page }) => {
 		await open('g=trivia&st=end&p=Joe:300');
-		await page.getByRole('button', { name: 'New game' }).click();
+		await page.getByRole('button', { name: 'More' }).click();
+		await page.getByRole('menuitem', { name: 'New game' }).click();
 		await page.keyboard.press('Escape');
 		await expect(page.locator('.score-row')).toHaveCount(1);
-		await page.getByRole('button', { name: 'New game' }).click();
+		await page.getByRole('button', { name: 'More' }).click();
+		await page.getByRole('menuitem', { name: 'New game' }).click();
 		await Promise.all([page.waitForEvent('load'), page.getByRole('button', { name: 'Clear', exact: true }).click()]);
 		await open('g=hall');
 		await expect(page.locator('.score-row')).toHaveCount(1);
@@ -91,7 +95,8 @@ test.describe('new game (touch)', () => {
 
 	test('the dialog is translated', async ({ open, page }) => {
 		await open('g=trivia&q=Hola&p=Ana:1&lang=es');
-		await page.getByRole('button', { name: 'Nueva partida' }).click();
+		await page.getByRole('button', { name: 'Más' }).click();
+		await page.getByRole('menuitem', { name: 'Nueva partida' }).click();
 		await expect(page.getByRole('heading', { name: '¿Borrar jugadores y puntuaciones?' })).toBeVisible();
 	});
 });

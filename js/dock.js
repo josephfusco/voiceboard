@@ -1,4 +1,4 @@
-// Sidebar: system controls only (clock, Hall of Fame, New game, theme, Home). Games launch from Home, so
+// Sidebar: system controls only (clock, Hall of Fame, the ⋮ menu, Home). Games launch from Home, so
 // the sidebar never lists other games while you're playing one.
 import { apps } from './registry.js';
 import { appLink, h, icon } from './dom.js';
@@ -15,34 +15,8 @@ const clock = () => {
 	return node;
 };
 
-// Each theme previews itself: angular for Cyber, rounded for Tesla.
-const THEME_ICONS = {
-	tesla: ['M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4z'],
-	cyber: ['M8 3h13v13l-5 5H3V8z', 'M8 3v5H3'],
-};
-const nextTheme = (theme) => THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
-
-// Switches the device theme in place; the game on screen is untouched. Shows the theme you'd switch to.
-const themeToggle = (theme) => {
-	const button = h('button', 'dock-item dock-theme');
-	button.type = 'button';
-	const show = (current) => {
-		const next = nextTheme(current);
-		button.replaceChildren(icon(THEME_ICONS[next]));
-		button.setAttribute('aria-label', t('switchTheme', { theme: next[0].toUpperCase() + next.slice(1) }));
-	};
-	button.addEventListener('click', () => {
-		const next = nextTheme(document.documentElement.dataset.theme);
-		document.documentElement.dataset.theme = next;
-		saveTheme(next);
-		show(next);
-	});
-	show(theme);
-	return button;
-};
-
 // Clears this device's players and scores after a confirmation, since it can't be undone.
-const newGameButton = () => {
+const newGameDialog = () => {
 	const dialog = h('dialog', 'confirm',
 		h('h2', null, t('clearTitle')),
 		h('p', 'muted', t('clearBody')),
@@ -60,15 +34,54 @@ const newGameButton = () => {
 		}
 	});
 	document.body.append(dialog);
-
-	const button = h('button', 'dock-item', icon(['M3 12a9 9 0 1 0 3-6.7', 'M3 4v5h5']));
-	button.type = 'button';
-	button.setAttribute('aria-label', t('newGame'));
-	button.addEventListener('click', () => {
+	return () => {
 		dialog.returnValue = '';
 		dialog.showModal();
 		cancel.focus();
+	};
+};
+
+// The ⋮ menu: theme and New game, kept out of the way of the game. Built on the popover attribute.
+const moreMenu = (theme) => {
+	const openNewGame = newGameDialog();
+	const menu = h('div', 'card dock-menu');
+	Object.assign(menu, { id: 'dock-menu', popover: 'auto' });
+	menu.setAttribute('role', 'menu');
+
+	const themes = THEMES.map((name) => {
+		const option = h('button', 'dock-menu-item', name[0].toUpperCase() + name.slice(1));
+		Object.assign(option, { type: 'button' });
+		option.setAttribute('role', 'menuitemradio');
+		option.setAttribute('aria-checked', String(name === theme));
+		option.addEventListener('click', () => {
+			document.documentElement.dataset.theme = name;
+			saveTheme(name);
+			themes.forEach((other) => other.setAttribute('aria-checked', String(other === option)));
+			menu.hidePopover();
+		});
+		return option;
 	});
+	const newGame = h('button', 'dock-menu-item is-danger', t('newGame'));
+	Object.assign(newGame, { type: 'button' });
+	newGame.setAttribute('role', 'menuitem');
+	newGame.addEventListener('click', () => {
+		menu.hidePopover();
+		openNewGame();
+	});
+	menu.append(h('p', 'muted dock-menu-label', t('themeLabel')), ...themes, h('hr'), newGame);
+
+	const button = h('button', 'dock-item dock-more', icon(['M12 4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z', 'M12 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z', 'M12 16.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z']));
+	Object.assign(button, { type: 'button', popoverTargetElement: menu });
+	button.setAttribute('aria-label', t('more'));
+	button.setAttribute('aria-haspopup', 'menu');
+	// Open beside the button.
+	menu.addEventListener('toggle', (event) => {
+		if (event.newState !== 'open') return;
+		const box = button.getBoundingClientRect();
+		menu.style.insetInlineStart = `${box.right + 12}px`;
+		menu.style.top = `${Math.min(box.top, innerHeight - menu.offsetHeight - 12)}px`;
+	});
+	document.body.append(menu);
 	return button;
 };
 
@@ -82,7 +95,7 @@ export const dock = (current, theme) => {
 
 	return [
 		clock(),
-		h('div', 'dock-apps', system.filter((a) => a.dock !== 'bottom').map(item), newGameButton(), themeToggle(theme)),
+		h('div', 'dock-apps', system.filter((a) => a.dock !== 'bottom').map(item), moreMenu(theme)),
 		system.filter((a) => a.dock === 'bottom').map(item),
 	];
 };
