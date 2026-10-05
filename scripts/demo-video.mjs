@@ -6,7 +6,7 @@ import { mkdtempSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from '@playwright/test';
-import { VOICE_SCRIPT, mockAssistant } from '../tests/scripts/chess-game.js';
+import { VOICE_SCRIPT, mockAssistant } from '../plugins/voiceboard-chess/tests/chess-game.js';
 
 const PORT = 8768;
 const root = new URL('../', import.meta.url).pathname;

@@ -13,3 +13,4 @@
 /docs export-ignore
 /scripts export-ignore
 /README.md export-ignore
+/plugins/*/tests export-ignore

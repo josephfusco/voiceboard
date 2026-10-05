@@ -7,6 +7,18 @@
 			"data": "<?php\n// Test sites: pretend every email sends.\nadd_filter( 'pre_wp_mail', '__return_true' );\n"
 		},
 		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "presence-api"
+			}
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/test-presence.php",
+			"data": "<?php\n// Test sites only: list a presence room's client IDs so tests can check them.\nadd_action( 'rest_api_init', static function () {\n\tregister_rest_route( 'voiceboard-test/v1', '/presence', array(\n\t\t'methods' => 'GET',\n\t\t'permission_callback' => '__return_true',\n\t\t'callback' => static fn ( WP_REST_Request $r ) => function_exists( 'wp_get_presence' ) ? array_values( array_map( static fn ( $e ) => $e->client_id, wp_get_presence( (string) $r['room'] ) ) ) : array(),\n\t) );\n} );\n"
+		},
+		{
 			"step": "defineWpConfigConsts",
 			"consts": {
 				"VOICEBOARD_IP_PER_MIN": 100000,

@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures.js';
+import { test, expect } from '../../../tests/fixtures.js';
 
 test.describe('effects', () => {
 	test('timer counts down to zero and flags time up', async ({ open, page }) => {

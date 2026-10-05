@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures.js';
+import { test, expect } from '../../../tests/fixtures.js';
 
 const PARTY = 'ch=Joe:fighter:12/12,Sam:rogue:4/10&inv=Joe:sword|torch;Sam:lockpicks';
 

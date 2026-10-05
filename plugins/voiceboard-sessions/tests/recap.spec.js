@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures.js';
+import { test, expect } from '../../../tests/fixtures.js';
 
 const ping = (page) => page.waitForResponse((r) => r.url().includes('/voiceboard/v1/ping'));
 

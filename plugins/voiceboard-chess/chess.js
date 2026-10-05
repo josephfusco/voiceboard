@@ -164,15 +164,12 @@ const play = (state) => {
 	const over = game.isGameOver() || Boolean(state.result);
 	// Pieces each side has taken, shown beside that player.
 	const captured = (color) => game.history({ verbose: true }).filter((m) => m.color === color && m.captured).map((m) => GLYPH[m.captured]).join('');
-	const playerRow = (color) => h('div', `chess-player${game.turn() === color && !over ? ' is-turn' : ''}`,
+	const playerRow = (color) => h('div', `card chess-player${game.turn() === color && !over ? ' is-turn' : ''}`,
 		h('span', `dot ${color}`), player(state.p, color),
 		captured(color) && h('span', `chess-captured ${color === 'w' ? 'b' : 'w'}`, captured(color)));
-	// The last few moves in standard numbering; a list that starts on Black's move gets "n…".
-	const recent = history.slice(-6).map((san, i, list) => {
-		const ply = history.length - list.length + i;
-		if (ply % 2 === 0) return `${ply / 2 + 1}. ${san}`;
-		return i === 0 ? `${(ply + 1) / 2}… ${san}` : san;
-	}).join(' ');
+	// The last ten full moves as a numbered table: 1. e4 e5
+	const rows = [];
+	for (let i = 0; i < history.length; i += 2) rows.push([i / 2 + 1, history[i], history[i + 1] ?? '']);
 
 	return [
 		header(state, history.length ? t('chess.moveN', { n: Math.floor(history.length / 2) + 1 }) : null),
@@ -181,12 +178,14 @@ const play = (state) => {
 				boardView(state),
 				h('div', 'chess-side',
 					playerRow('b'),
-					change && h('p', 'chess-change', change.added.length
-						? t('chess.changed', { from: change.removed.join(' '), to: change.added.join(' ') })
-						: t('chess.undid', { moves: change.removed.join(' ') })),
-					h('p', 'chess-status', status(state)),
-					illegal && h('p', 'chess-illegal', t('chess.illegal', { move: illegal })),
-					recent && h('p', 'chess-moves', recent),
+					h('div', 'chess-center',
+						change && h('p', 'chess-change', change.added.length
+							? t('chess.changed', { from: change.removed.join(' '), to: change.added.join(' ') })
+							: t('chess.undid', { moves: change.removed.join(' ') })),
+						h('p', 'chess-status', status(state)),
+						illegal && h('p', 'chess-illegal', t('chess.illegal', { move: illegal })),
+						rows.length > 0 && h('ol', 'chess-moves', rows.slice(-10).map(([n, white, black]) =>
+							h('li', null, h('span', 'muted', `${n}.`), h('span', null, white), h('span', null, black))))),
 					playerRow('w')))),
 	];
 };

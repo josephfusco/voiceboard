@@ -26,7 +26,7 @@ js/apps/                 built-in Home and Hall of Fame
 js/vendor/               bundled QR code library (MIT)
 plugins/                 modules: each folder is a plugin (see plugins/README.md)
 site-theme/              the WordPress site's child theme, deployed with the plugin
-tests/                   Playwright tests and WordPress Playground blueprints
+tests/                   core Playwright tests, fixtures, and WordPress Playground blueprints (each module keeps its own tests in plugins/<name>/tests/)
 scripts/                 screenshot and demo video recorders
 docs/                    README gallery images, examples list, demo GIF
 ```

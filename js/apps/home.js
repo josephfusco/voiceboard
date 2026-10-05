@@ -13,12 +13,15 @@ const tile = (app) => appLink(app.name, 'card tile',
 	icon(app.icon),
 	h('strong', null, app.title),
 	h('span', 'muted', app.description),
-	h('span', 'tile-say', `“${say(app)}”`));
+	h('span', 'tile-say', `“${app.phrase}”`));
 
 const home = () => [
 	h('header', 'bar', h('span', 'bar-title', greeting())),
 	h('section', 'stage',
-		h('h1', 'question', t('whatToPlay')),
+		h('div', 'home-head',
+			h('h1', 'question', t('whatToPlay')),
+			// The full sentence once; each tile shows only its own ending.
+			h('p', 'muted home-hint', t('say', { phrase: say({ phrase: '…' }) }))),
 		h('div', 'launcher', apps.list().filter((a) => !a.system).map(tile))),
 ];
 

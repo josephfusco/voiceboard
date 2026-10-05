@@ -56,6 +56,10 @@ apps.register('hello', {
 
 Add the JS path to `<meta name="voiceboard-modules">` in `index.html` too if it should run on static hosting.
 
+## Tests
+
+Each module keeps its Playwright tests in its own `tests/` folder and imports the shared fixture from `tests/fixtures.js`. They run against static files, the plugin at `/board/`, and the plugin at the site root. The test site installs the Presence API and fakes email, so every module can be tested end to end.
+
 ## JavaScript API (`import … from 'voiceboard'`)
 
 | Export | Use |

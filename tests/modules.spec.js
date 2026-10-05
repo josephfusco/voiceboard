@@ -17,6 +17,11 @@ test.describe('modules', () => {
 			expect(php).toMatch(/if \( defined\( 'VOICEBOARD_[A-Z]+' \) \)/);
 		});
 
+		test(`${name} ships its own tests`, () => {
+			const specs = readdirSync(new URL(`${name}/tests/`, root)).filter((f) => f.endsWith('.spec.js'));
+			expect(specs.length).toBeGreaterThan(0);
+		});
+
 		test(`${name} uses only the public JavaScript API (plus its own files)`, () => {
 			for (const file of readdirSync(new URL(`${name}/`, root)).filter((f) => f.endsWith('.js'))) {
 				const imports = [...read(`${name}/${file}`).matchAll(/from '([^']+)'/g)].map((m) => m[1]);

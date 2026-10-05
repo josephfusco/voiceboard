@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures.js';
+import { test, expect } from '../../../tests/fixtures.js';
 
 const QUESTION = {
 	g: 'trivia',

@@ -262,22 +262,30 @@ a.card { transition: transform 0.1s; }
 .is-leader .score-value { color: var(--accent); font-weight: 600; }
 .state-hall .score-row { font-size: clamp(1.2rem, 3.4vh, 2.5rem); }
 
-/* Home launcher */
+/* Home launcher: every game visible at once on any screen. Tiles share a row when there's room, and on
+   short screens the descriptions drop out before anything would scroll. */
+.home-head { display: grid; gap: 1vh; }
+.home-hint { margin: 0; font-size: clamp(1rem, 2.4vh, 1.6rem); }
+.state-home .stage { gap: 3.5vh; }
 .launcher {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
 	gap: 1.6vh 1.2vw;
 }
 .tile {
 	display: flex;
 	flex-direction: column;
-	gap: 1.2vh;
-	padding: 3.5vh 2vw;
-	font-size: clamp(1rem, 2.4vh, 1.6rem);
+	gap: 1vh;
+	padding: clamp(1rem, 3vh, 2.2rem) clamp(1rem, 1.6vw, 2rem);
+	font-size: clamp(0.95rem, 2.2vh, 1.5rem);
 }
-.tile .icon { font-size: 2.6em; color: var(--accent); }
-.tile strong { font-size: 1.5em; font-weight: 600; }
+.tile .icon { font-size: 2.4em; color: var(--accent); }
+.tile strong { font-size: 1.45em; font-weight: 600; }
 .tile-say { margin-top: auto; color: var(--accent); }
+@media (max-height: 760px) {
+	.tile .muted { display: none; }
+	.tile .icon { font-size: 1.8em; }
+}
 
 /* Category board */
 .grid {

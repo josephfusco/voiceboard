@@ -4,7 +4,9 @@ import { defineConfig, devices } from '@playwright/test';
 const use = { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1200 } };
 
 export default defineConfig({
-	testDir: 'tests',
+	// Core tests live in tests/; each module keeps its own in plugins/<name>/tests/.
+	testDir: '.',
+	testMatch: ['tests/**/*.spec.js', 'plugins/*/tests/**/*.spec.js'],
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 1 : 0,

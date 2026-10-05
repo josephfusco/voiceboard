@@ -1,5 +1,5 @@
-import { test, expect } from './fixtures.js';
-import { VOICE_SCRIPT, mockAssistant } from './scripts/chess-game.js';
+import { test, expect } from '../../../tests/fixtures.js';
+import { VOICE_SCRIPT, mockAssistant } from './chess-game.js';
 
 // End to end: a full game driven only by a voice script and a mock assistant that turns speech into URLs.
 test('a whole chess game, from the voice script to checkmate', async ({ open, page }) => {
@@ -22,7 +22,7 @@ test('a whole chess game, from the voice script to checkmate', async ({ open, pa
 			await expect(page.getByRole('gridcell', { name: expected.square })).toBeVisible();
 		}
 	}
-	await expect(page.locator('.chess-moves')).toContainText('7. Nd5#');
+	await expect(page.locator('.chess-moves li').last()).toHaveText('7.Nd5#');
 });
 
 test('spoken moves that two pieces could make are flagged', async ({ open, page }) => {

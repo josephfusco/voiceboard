@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures.js';
+import { test, expect } from '../../../tests/fixtures.js';
 
 test.describe('chess', () => {
 	test('starts from the standard position with labeled squares', async ({ open, page }) => {
@@ -15,7 +15,7 @@ test.describe('chess', () => {
 		await expect(page.getByRole('gridcell', { name: 'f3: white knight' })).toBeVisible();
 		await expect(page.locator('.sq.last')).toHaveCount(2);
 		await expect(page.locator('.chess-status')).toHaveText('Black to move');
-		await expect(page.locator('.chess-moves')).toHaveText('1. e4 e5 2. Nf3');
+		await expect(page.locator('.chess-moves li')).toHaveText(['1.e4e5', '2.Nf3']);
 	});
 
 	test('checkmate names the winner', async ({ open, page }) => {
