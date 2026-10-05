@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/josephfusco/voiceboard/compare/v0.11.0...v0.11.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* never cache /rules, so a CDN can't hand the car's browser the text version ([d69b8d0](https://github.com/josephfusco/voiceboard/commit/d69b8d0668c5a8bf357a375ed768e0e37ed77038))
+
 ## [0.11.0](https://github.com/josephfusco/voiceboard/compare/v0.10.0...v0.11.0) (2026-10-05)
 
 
