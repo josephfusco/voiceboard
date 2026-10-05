@@ -1,4 +1,5 @@
-// CarPlay-style sidebar: clock on top, apps in the middle, home at the bottom.
+// Sidebar: system controls only (clock, Hall of Fame, New game, theme, Home). Games launch from Home, so
+// the sidebar never lists other games while you're playing one.
 import { apps } from './registry.js';
 import { appLink, h, icon } from './dom.js';
 import { THEMES, clearRoster, saveTheme } from './store.js';
@@ -77,13 +78,11 @@ export const dock = (current, theme) => {
 		link.setAttribute('aria-label', app.title);
 		return link;
 	};
-	const all = apps.list();
+	const system = apps.list().filter((a) => a.system);
 
 	return [
 		clock(),
-		h('div', 'dock-apps', all.filter((a) => a.dock !== 'bottom').map(item)),
-		newGameButton(),
-		themeToggle(theme),
-		all.filter((a) => a.dock === 'bottom').map(item),
+		h('div', 'dock-apps', system.filter((a) => a.dock !== 'bottom').map(item), newGameButton(), themeToggle(theme)),
+		system.filter((a) => a.dock === 'bottom').map(item),
 	];
 };

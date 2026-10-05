@@ -25,10 +25,15 @@ await new Promise((resolve) => setTimeout(resolve, 800));
 const browser = await chromium.launch();
 try {
 	const context = await browser.newContext({ viewport: size, recordVideo: { dir, size }, colorScheme: 'light' });
+	// Load at the live address, served from the local build.
+	await context.route('https://voiceboardgames.com/**', async (route) => {
+		const { pathname, search } = new URL(route.request().url());
+		route.fulfill({ response: await route.fetch({ url: `http://127.0.0.1:${PORT}/${pathname.replace(/^\/board\/?/, '').replace(/^\//, '')}${search}` }) });
+	});
 	const page = await context.newPage();
 	const assistant = mockAssistant();
 	for (const [i, line] of VOICE_SCRIPT.entries()) {
-		await page.goto(`http://127.0.0.1:${PORT}/${assistant(line)}`);
+		await page.goto(`https://voiceboardgames.com/board/${assistant(line)}`);
 		await page.waitForSelector('.chess-board');
 		await caption(page, line);
 		await page.waitForTimeout(1500);

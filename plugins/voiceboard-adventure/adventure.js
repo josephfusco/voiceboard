@@ -105,7 +105,7 @@ apps.register('adventure', {
 	title: t('adventure.title'),
 	description: t('adventure.description'),
 	phrase: t('adventure.phrase'),
-	icon: ['M12 3 20 7.5v9L12 21l-8-4.5v-9z', 'M12 3v18', 'M4 7.5l8 4.5 8-4.5'],
+	icon: ['M12 2.5 20.5 7.3v9.4L12 21.5l-8.5-4.8V7.3z', 'M12 6.5 16.8 15H7.2z', 'M12 2.5v4M3.5 7.3l3.7 7.7M20.5 7.3 16.8 15M7.2 15 12 21.5 16.8 15'],
 	params: { ch: characters, inv: inventory, loc: text, see: list, ex: list, roll: dice, for: text, vs: int, rn: int },
 	screens,
 	pick: (state) => {

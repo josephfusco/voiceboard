@@ -13,20 +13,25 @@ test.describe('shell', () => {
 		await expect(page.locator('#board')).toHaveClass(/app-home/);
 	});
 
-	test('sidebar shows a clock, the apps, and marks the active one', async ({ open }) => {
-		const page = await open('g=trivia');
+	test('the sidebar holds only system controls, never other games', async ({ open }) => {
+		const page = await open('g=chess');
 		await expect(page.locator('.dock-clock')).toHaveText(/^\d{1,2}:\d{2}$/);
-		await expect(page.locator('a.dock-item')).toHaveCount(6);
+		await expect(page.locator('#dock a.dock-item')).toHaveCount(2);
+		await expect(page.getByRole('link', { name: 'Hall of Fame' })).toBeVisible();
+		await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
-		await expect(page.locator('.dock-item.is-active')).toHaveAttribute('aria-label', 'Trivia');
+		for (const game of ['Trivia', 'Categories', 'Chess', 'Adventure']) {
+			await expect(page.locator('#dock').getByRole('link', { name: game })).toHaveCount(0);
+		}
 	});
 
-	test('sidebar links navigate between apps on the same page', async ({ open, boardPath }) => {
+	test('games launch from Home; the sidebar goes back Home', async ({ open, boardPath }) => {
 		const page = await open('g=trivia');
-		await page.getByRole('link', { name: 'Categories' }).click();
-		await expect(page).toHaveURL(`${boardPath}?g=categories`);
 		await page.getByRole('link', { name: 'Home' }).click();
 		await expect(page.locator('#board')).toHaveClass(/app-home/);
+		await page.locator('.tile', { hasText: 'Chess' }).click();
+		await expect(page).toHaveURL(`${boardPath}?g=chess`);
+		await expect(page.locator('.dock-item.is-active')).toHaveCount(0);
 	});
 
 	test('home tiles show what to say, using this site\'s own address', async ({ open, baseURL }) => {
