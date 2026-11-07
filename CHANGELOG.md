@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.3](https://github.com/josephfusco/voiceboard/compare/v0.11.2...v0.11.3) (2026-11-07)
+
+
+### Bug Fixes
+
+* harden game records against guessing, and keep the retention promise ([104de56](https://github.com/josephfusco/voiceboard/commit/104de56cea774858cc7e669aad9c42905239818b))
+* harden game records against guessing, and keep the retention promise ([47fb511](https://github.com/josephfusco/voiceboard/commit/47fb5117e653315fc79d3b430b7701cc8528855b))
+
 ## [0.11.2](https://github.com/josephfusco/voiceboard/compare/v0.11.1...v0.11.2) (2026-11-07)
 
 
