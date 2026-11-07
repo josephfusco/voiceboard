@@ -20,6 +20,7 @@ define( 'VOICEBOARD_SESSIONS', __FILE__ );
 defined( 'VOICEBOARD_LOG_LIMIT' ) || define( 'VOICEBOARD_LOG_LIMIT', 200 );
 defined( 'VOICEBOARD_RETENTION_DAYS' ) || define( 'VOICEBOARD_RETENTION_DAYS', 30 );
 defined( 'VOICEBOARD_NEW_PER_HOUR' ) || define( 'VOICEBOARD_NEW_PER_HOUR', 20 ); // new sessions per network address
+defined( 'VOICEBOARD_MISSES_PER_HOUR' ) || define( 'VOICEBOARD_MISSES_PER_HOUR', 60 ); // unknown session codes per network address
 
 add_action(
 	'init',
@@ -73,6 +74,27 @@ function voiceboard_session( string $code, bool $create = false ): ?WP_Post {
 	return $id && ! is_wp_error( $id ) ? get_post( $id ) : null;
 }
 
+/**
+ * A session for a public read. The code is the only key to a game, so an address that keeps
+ * trying unknown codes is cut off from reading any session, including ones it guesses right.
+ */
+function voiceboard_readable_session( string $code ): ?WP_Post {
+	$misses = 'miss:' . voiceboard_client();
+	header( 'X-Robots-Tag: noindex' );
+	nocache_headers();
+	if ( (int) get_transient( voiceboard_rate_key( $misses ) ) >= VOICEBOARD_MISSES_PER_HOUR ) {
+		status_header( 429 );
+		header( 'Content-Type: text/plain; charset=utf-8' );
+		echo "Too many unknown codes. Try again later.\n";
+		exit;
+	}
+	$session = voiceboard_session( $code );
+	if ( ! $session ) {
+		voiceboard_rate_limited( $misses, VOICEBOARD_MISSES_PER_HOUR, HOUR_IN_SECONDS );
+	}
+	return $session;
+}
+
 // A session belongs to the board that started it; other boards can't write into it. New sessions are rate limited per address.
 add_filter(
 	'voiceboard_screen_check',
@@ -121,7 +143,6 @@ add_action(
 				'time'       => time(),
 				'car'        => $context['car'],
 				'browser'    => $context['browser'],
-				'agent'      => mb_substr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ), 0, 200 ),
 				'query'      => $context['query'],
 				'diag'       => implode( "\n", $context['diag'] ),
 				'summary'    => voiceboard_summary( $state ),
@@ -147,8 +168,7 @@ add_filter(
 	'voiceboard_routes',
 	static function ( array $routes ): array {
 		$routes['journey/([a-z0-9-]+)'] = static function ( array $match ) {
-			$session = voiceboard_session( $match[1] );
-			nocache_headers();
+			$session = voiceboard_readable_session( $match[1] );
 			if ( ! $session ) {
 				status_header( 404 );
 				header( 'Content-Type: text/plain; charset=utf-8' );
@@ -160,8 +180,7 @@ add_filter(
 			voiceboard_journey_page( $session );
 		};
 		$routes['session/([a-z0-9-]+)'] = static function ( array $match ) {
-			$session = voiceboard_session( $match[1] );
-			nocache_headers();
+			$session = voiceboard_readable_session( $match[1] );
 			status_header( $session ? 200 : 404 );
 			header( 'Content-Type: text/plain; charset=utf-8' );
 			echo $session ? voiceboard_transcript( $session ) : "No session with that code yet.\n"; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -383,23 +402,27 @@ function voiceboard_transcript( WP_Post $session ): string {
 add_action(
 	'voiceboard_prune',
 	static function () {
-		$old = get_posts(
-			array(
-				'post_type'   => 'voiceboard_session',
-				'post_status' => 'any',
-				'numberposts' => 200,
-				'fields'      => 'ids',
-				'date_query'  => array(
-					array(
-						'column' => 'post_modified_gmt',
-						'before' => VOICEBOARD_RETENTION_DAYS . ' days ago',
+		// In batches until none are left, so a busy day can't push a game past the retention the privacy policy promises.
+		do {
+			$old = get_posts(
+				array(
+					'post_type'   => 'voiceboard_session',
+					'post_status' => 'any',
+					'numberposts' => 200,
+					'fields'      => 'ids',
+					'date_query'  => array(
+						array(
+							'column' => 'post_modified_gmt',
+							'before' => VOICEBOARD_RETENTION_DAYS . ' days ago',
+						),
 					),
-				),
-			)
-		);
-		foreach ( $old as $id ) {
-			wp_delete_post( $id, true );
-		}
+				)
+			);
+			$deleted = 0;
+			foreach ( $old as $id ) {
+				$deleted += wp_delete_post( $id, true ) ? 1 : 0;
+			}
+		} while ( $deleted );
 	}
 );
 

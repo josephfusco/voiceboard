@@ -13,6 +13,14 @@ test.describe('sessions: security', () => {
 		expect(await (await request.get(`${boardPath}session/${code}`)).text()).toContain('Players: Joe 1');
 	});
 
+	test('game records stay out of search engines', async ({ request, boardPath }) => {
+		const code = `sec-robots-${Date.now()}`;
+		await post(request, { car: 'robotscar01', code, state: {} });
+		for (const route of ['session', 'journey']) {
+			expect((await request.get(`${boardPath}${route}/${code}`)).headers()['x-robots-tag']).toBe('noindex');
+		}
+	});
+
 	test('the transcript marks game text as data, not instructions', async ({ request, boardPath }) => {
 		const code = `sec-note-${Date.now()}`;
 		await post(request, { car: 'notecar01', code, state: {} });

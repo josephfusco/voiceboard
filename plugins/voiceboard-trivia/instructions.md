@@ -10,6 +10,6 @@ Screens: ask, reveal, score, end.
 
 Example game:
 
-1. {board}?g=trivia&code=blue-otter&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
-2. {board}?g=trivia&code=blue-otter&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
-3. Repeat for each question, then: {board}?g=trivia&code=blue-otter&st=end&fx=confetti
+1. {board}?g=trivia&code=blue-otter-4827&st=ask&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&p=Joe:0,Sam:0&timer=15
+2. {board}?g=trivia&code=blue-otter-4827&st=reveal&t=Space&n=1&of=5&q=Which+planet+has+the+most+moons%3F&c=Jupiter|Saturn|Uranus|Neptune&a=B&r=Sam&add=Sam:100
+3. Repeat for each question, then: {board}?g=trivia&code=blue-otter-4827&st=end&fx=confetti

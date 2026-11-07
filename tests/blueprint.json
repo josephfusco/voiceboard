@@ -22,7 +22,8 @@
 			"step": "defineWpConfigConsts",
 			"consts": {
 				"VOICEBOARD_IP_PER_MIN": 100000,
-				"VOICEBOARD_NEW_PER_HOUR": 100000
+				"VOICEBOARD_NEW_PER_HOUR": 100000,
+				"VOICEBOARD_MISSES_PER_HOUR": 100000
 			}
 		},
 		{

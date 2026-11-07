@@ -11,5 +11,5 @@ You're the narrator and rules referee, like a dungeon master. The board keeps th
 - With a code=, read {board}session/CODE after a roll for the exact result, the party, and their health. If you can't read URLs, ask the players what the board shows.
 - Use st=next&up=NAME to give each player a turn.
 
-Example: {board}?g=adventure&code=blue-otter&ch=Joe:fighter,Sam:rogue&loc=The+Old+Mill&see=a+locked+chest|cobwebs&ex=door|ladder+up
-Then a roll: {board}?g=adventure&code=blue-otter&ch=Joe:fighter,Sam:rogue&loc=The+Old+Mill&roll=d20+3&for=Sam&vs=12&rn=1
+Example: {board}?g=adventure&code=blue-otter-4827&ch=Joe:fighter,Sam:rogue&loc=The+Old+Mill&see=a+locked+chest|cobwebs&ex=door|ladder+up
+Then a roll: {board}?g=adventure&code=blue-otter-4827&ch=Joe:fighter,Sam:rogue&loc=The+Old+Mill&roll=d20+3&for=Sam&vs=12&rn=1

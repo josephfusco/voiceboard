@@ -30,10 +30,14 @@ function voiceboard_clean_code( $code ): string {
  * the site salt and kept for the length of the window; they're never stored with game data.
  */
 function voiceboard_rate_limited( string $key, int $limit, int $window = MINUTE_IN_SECONDS ): bool {
-	$key  = 'voiceboard_rate_' . md5( wp_salt() . $key );
+	$key  = voiceboard_rate_key( $key );
 	$hits = (int) get_transient( $key );
 	set_transient( $key, $hits + 1, $window );
 	return $hits >= $limit;
+}
+
+function voiceboard_rate_key( string $key ): string {
+	return 'voiceboard_rate_' . md5( wp_salt() . $key );
 }
 
 function voiceboard_client(): string {
