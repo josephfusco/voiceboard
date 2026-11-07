@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.2](https://github.com/josephfusco/voiceboard/compare/v0.11.1...v0.11.2) (2026-11-07)
+
+
+### Bug Fixes
+
+* allow the Cloudflare Web Analytics beacon in the board's CSP ([685a34a](https://github.com/josephfusco/voiceboard/commit/685a34a5edc39c40c4ff6107cc512faf5071d070))
+* allow the Cloudflare Web Analytics beacon in the board's CSP ([e0cfdd4](https://github.com/josephfusco/voiceboard/commit/e0cfdd4de700dcdfb607f25852aa37b901de7721))
+
 ## [0.11.1](https://github.com/josephfusco/voiceboard/compare/v0.11.0...v0.11.1) (2026-10-05)
 
 
