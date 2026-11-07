@@ -25,15 +25,15 @@ If a player asked you to read this page and host a game, you're in the right pla
 - reset=1: clear the remembered players
 - theme: classic (default, follows light/dark) or cyber; remembered on the device
 - up: whose turn it is, e.g. up=Joe; highlights that player
-- code: a session code you make up once per game, e.g. code=blue-otter, and include in every URL. The site then keeps a transcript you can read back at {board}session/CODE (players, scores, what's on screen, and every question asked so far), so you don't have to track scores yourself.
+- code: a session code you make up once per game, e.g. code=blue-otter-4827, and include in every URL. Anyone with the code can read the game, so use two random words and four random digits, and never a player's name. The site then keeps a transcript you can read back at {board}session/CODE (players, scores, what's on screen, and every question asked so far), so you don't have to track scores yourself.
 - lang: language for the board's own labels, matching the conversation, e.g. lang=es or lang=ar (right-to-left is automatic). Include it in every URL; without it the board uses the browser's language. Write questions, answers, and names in that language too. Supported: en, es, fr, de, pt, ja, zh, ar, he; others fall back to English labels.
 
 {modules}
 
 ## Taking turns
 
-1. Open {board}?g=trivia&code=blue-otter&st=next&up=Joe&t=Space&n=2&of=5 and say: "Next up, Joe. Say ready when you're set."
-2. When Joe says ready, open the question with a timer: {board}?g=trivia&code=blue-otter&st=ask&up=Joe&t=Space&n=2&of=5&q=...&c=...&timer=15. Opening it shows the question and starts the countdown together, so read the question right away.
+1. Open {board}?g=trivia&code=blue-otter-4827&st=next&up=Joe&t=Space&n=2&of=5 and say: "Next up, Joe. Say ready when you're set."
+2. When Joe says ready, open the question with a timer: {board}?g=trivia&code=blue-otter-4827&st=ask&up=Joe&t=Space&n=2&of=5&q=...&c=...&timer=15. Opening it shows the question and starts the countdown together, so read the question right away.
 3. Reveal with st=reveal&up=Joe&a=...&r=...&add=Joe:100. Add auto=next&after=5 and the board moves to the next player by itself, so you don't have to.
 
 Players are set once with p= at the start; after that send only up= and add=.
