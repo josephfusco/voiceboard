@@ -9,10 +9,12 @@ defined( 'ABSPATH' ) || exit;
  * Headers for the board page. Script files, styles, and API calls are same-origin only. Inline
  * scripts are allowed because hosts' edge networks inject bot-detection scripts that change on
  * every request (so no hash can cover them), and blocking those can get real visitors challenged.
- * The board puts no visitor-supplied content into its HTML, so this costs little.
+ * The board puts no visitor-supplied content into its HTML, so this costs little. The Cloudflare
+ * Web Analytics beacon is allowed for sites that turn it on; its versioned path needs the trailing
+ * slash, and it posts to /cdn-cgi/rum on this origin. Nothing loads unless the host injects it.
  */
 function voiceboard_board_headers(): void {
-	header( "Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" );
+	header( "Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" );
 	voiceboard_common_headers();
 }
 
